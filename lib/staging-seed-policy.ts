@@ -6,6 +6,14 @@ import { assertProviderConfiguration } from "@/lib/providers";
 export const STAGING_DATABASE_NAME = "sukoon_demo_staging";
 export const STAGING_SEED_CONFIRMATION = "CLIENT_DEMO_SYNTHETIC_V1";
 
+/** Internal-only handoff needed by the guarded seed to accept synthetic shares. */
+export function stagingSeedAllowsInternalInvitationToken(env: NodeJS.ProcessEnv = process.env) {
+  return env.APP_ENV === "staging" &&
+    env.NODE_ENV === "production" &&
+    env.SUKOON_RUNTIME_PROFILE === "STAGING" &&
+    env.SUKOON_STAGING_SEED_CONFIRMATION === STAGING_SEED_CONFIRMATION;
+}
+
 export function stagingSeedCapabilities(env: NodeJS.ProcessEnv = process.env) {
   return {
     documents: env.SUKOON_DOCUMENTS_MODE === "unavailable" ? "unavailable" as const : "available" as const,

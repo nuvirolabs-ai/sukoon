@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertStagingSeedEnvironment, stagingSeedCapabilities, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
+import { assertStagingSeedEnvironment, stagingSeedAllowsInternalInvitationToken, stagingSeedCapabilities, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
 
 const valid = {
   APP_ENV: "staging",
@@ -64,5 +64,11 @@ describe("staging seed guard", () => {
   it("reports partial staging capabilities without treating disabled providers as available", () => {
     expect(stagingSeedCapabilities(partial)).toEqual({ documents: "unavailable", email: "unavailable" });
     expect(stagingSeedCapabilities(valid)).toEqual({ documents: "available", email: "available" });
+  });
+
+  it("allows internal invitation tokens only during the exact guarded staging seed", () => {
+    expect(stagingSeedAllowsInternalInvitationToken(partial)).toBe(true);
+    expect(stagingSeedAllowsInternalInvitationToken({ ...partial, SUKOON_STAGING_SEED_CONFIRMATION: "" })).toBe(false);
+    expect(stagingSeedAllowsInternalInvitationToken({ ...partial, APP_ENV: "production" })).toBe(false);
   });
 });

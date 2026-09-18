@@ -7,6 +7,7 @@ import { LocalObjectStorageAdapter, SandboxEmailAdapter } from "@/lib/providers"
 import { sha256Hex } from "@/lib/vault-repository";
 import { captureShareInvitation } from "@/lib/share-mailbox";
 import { SHARE_CAPABILITIES, authorizeSharedDocument, authorizeSharedProperty, getActiveSharesForUser, shareScopeAllows, type ShareCapability } from "@/lib/authz";
+import { stagingSeedAllowsInternalInvitationToken } from "@/lib/staging-seed-policy";
 
 export const SHARE_ROLES = ["FAMILY", "LAWYER", "CA", "BUYER", "ARCHITECT"] as const;
 export type ShareRole = (typeof SHARE_ROLES)[number];
@@ -101,7 +102,8 @@ export async function createShareInvitationForUser(userId: string, propertyId: s
   const mail = new SandboxEmailAdapter();
   const sent = await mail.send({ to: inviteeEmail, subject: `Sukoon invitation for ${propertyId}`, text: `An authenticated Sukoon invitation is waiting. Use the local app to sign in and accept it. Invitation token: ${rawToken}` });
   captureShareInvitation({ to: inviteeEmail, subject: `Sukoon invitation for ${propertyId}`, text: `Invitation ${row.id}; ${sent.outcome === "sandbox" ? sent.note : "provider boundary"}` });
-  return { invitation: grantDto(row), invitationToken: process.env.NODE_ENV === "production" ? null : rawToken, delivery: sent.outcome === "sandbox" ? sent.note : sent.outcome === "available" ? "Delivered by configured provider." : sent.reason };
+  const exposeInternalSeedToken = stagingSeedAllowsInternalInvitationToken();
+  return { invitation: grantDto(row), invitationToken: process.env.NODE_ENV === "production" && !exposeInternalSeedToken ? null : rawToken, delivery: sent.outcome === "sandbox" ? sent.note : sent.outcome === "available" ? "Delivered by configured provider." : sent.reason };
 }
 
 export async function acceptShareInvitationForUser(userId: string, userEmail: string, rawToken: unknown) {
