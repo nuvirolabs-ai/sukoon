@@ -1,0 +1,9 @@
+# Inert repository example. Run only after the installation/update approval.
+# Foreground one-shot freshclam; no daemon, listener, startup item or public uploads.
+DatabaseDirectory /Users/tanutejas/Documents/Sukoon/.data/clamav/signatures
+CVDCertsDirectory /opt/homebrew/etc/clamav/certs
+DatabaseMirror database.clamav.net
+DNSDatabaseInfo current.cvd.clamav.net
+ScriptedUpdates yes
+MaxAttempts 3
+LogTime yes

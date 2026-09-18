@@ -1,0 +1,1857 @@
+// Sukoon's durable local foundation. Auth tables follow Better Auth's Prisma
+// adapter contract; application records carry workspace ownership all the way
+// down to child rows so the database cannot silently cross tenant boundaries.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                  String               @id
+  name                String
+  email               String               @unique
+  emailVerified       Boolean              @default(false)
+  image               String?
+  role                String               @default("owner")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  workspace           Workspace?
+  consents            ConsentRecord[]
+  privacyRequests     PrivacyRequest[]
+  idempotency         IdempotencyRecord[]
+  ruleAuditEvents     RuleAuditEvent[]
+  assessmentSnapshots AssessmentSnapshot[]
+  shareOperations     ShareOperation[]
+  exportPackages      ExportPackage[]
+  assistantRequests   AssistantRequest[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Workspace {
+  purchaseWorkspaces PurchaseWorkspace[]
+  processingControl ProcessingControl?
+  id                  String                 @id
+  ownerUserId         String                 @unique
+  name                String
+  lang                String                 @default("en")
+  referralCode        String                 @default("")
+  version             Int                    @default(0)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  owner               User                   @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  properties          Property[]
+  docs                PropertyDoc[]
+  bills               Bill[]
+  maintenance         Maintenance[]
+  timeline            TimelineEvent[]
+  shares              ShareLink[]
+  tenants             Tenant[]
+  bookings            Booking[]
+  reminders           Reminder[]
+  durableReminders    DurableReminder[]
+  reminderAttempts    ReminderAttempt[]
+  listings            Listing[]
+  projects            ConstructionProject[]
+  propertyHistory     PropertyHistory[]
+  documentVersions    DocumentVersion[]
+  parsingRuns         DocumentParsingRun[]
+  ocrRuns             DocumentOcrRun[]
+  aiRuns              AiExtractionRun[]
+  aiProposals         AiFieldProposal[]
+  obligations         Obligation[]
+  occurrences         ObligationOccurrence[]
+  payments            ObligationPayment[]
+  ledgerEntries       ExpenseLedgerEntry[]
+  assessmentSnapshots AssessmentSnapshot[]
+  assessmentItems     AssessmentItem[]
+  maintenanceEvents   MaintenanceEvent[]
+  maintenanceDocuments MaintenanceDocumentLink[]
+  shareOperations     ShareOperation[]
+  notificationPreferences NotificationPreference[]
+  searchProjections   SearchProjection[]
+  exportPackages      ExportPackage[]
+  exportPackageItems  ExportPackageItem[]
+  assistantRequests   AssistantRequest[]
+
+  @@index([ownerUserId])
+}
+
+// Buyer-controlled prospect records, never owned Property Passports.
+model PurchaseWorkspace {
+  id String @id
+  workspaceId String
+  name String
+  version Int @default(0)
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidates PurchaseCandidate[]
+  @@unique([id, workspaceId])
+}
+
+model PurchaseCandidate {
+  documents PropertyDoc[]
+  id String @id
+  purchaseWorkspaceId String
+  workspaceId String
+  name String
+  propertyType String?
+  location String?
+  areaValue String?
+  areaUnit String?
+  askingPricePaise BigInt?
+  budgetPaise BigInt?
+  source String?
+  notes String?
+  stage String @default("CONSIDERING")
+  version Int @default(0)
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  purchaseWorkspace PurchaseWorkspace @relation(fields: [purchaseWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  entries PurchaseEntry[]
+  @@unique([id, workspaceId])
+  @@index([purchaseWorkspaceId])
+}
+
+model PurchaseEntry {
+  version Int @default(0)
+  state String @default("OPEN")
+  events PurchaseEvidenceEvent[]
+  id String @id
+  candidateId String
+  workspaceId String
+  kind String
+  body String
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  candidate PurchaseCandidate @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([candidateId, createdAt])
+}
+
+model Property {
+  id                  String                 @id
+  workspaceId         String
+  name                String
+  type                String
+  city                String
+  area                String
+  address             String
+  jurisdiction        String                 @default("")
+  areaValue           String?
+  areaUnit            String?
+  areaType            String?
+  ownershipAssertion  String                 @default("self_asserted")
+  ownershipProvenance String                 @default("")
+  identifiers         Json?
+  carpetAreaSqft      Int?
+  plotSizeSqft        Int?
+  ownerName           String
+  purchaseDate        String?
+  purchaseValuePaise  BigInt?
+  loanActive          Boolean                @default(false)
+  loanBalancePaise    BigInt?
+  insuranceUntil      String?
+  occupancy           String?
+  photoUrl            String?
+  coOwners            String?
+  rentAmountPaise     BigInt?
+  status              String                 @default("active")
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  version             Int                    @default(0)
+  workspace           Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  docs                PropertyDoc[]
+  bills               Bill[]
+  maintenance         Maintenance[]
+  timeline            TimelineEvent[]
+  shares              ShareLink[]
+  tenants             Tenant[]
+  bookings            Booking[]
+  reminders           Reminder[]
+  durableReminders    DurableReminder[]
+  listings            Listing[]
+  projects            ConstructionProject[]
+  history             PropertyHistory[]
+  obligations         Obligation[]
+  occurrences         ObligationOccurrence[]
+  payments            ObligationPayment[]
+  ledgerEntries       ExpenseLedgerEntry[]
+  assessmentSnapshots AssessmentSnapshot[]
+  maintenanceEvents  MaintenanceEvent[]
+  maintenanceDocuments MaintenanceDocumentLink[]
+  shareOperations    ShareOperation[]
+  searchProjections SearchProjection[]
+  exportPackages    ExportPackage[]
+  exportPackageItems ExportPackageItem[]
+  assistantRequests AssistantRequest[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, status])
+}
+
+model PropertyHistory {
+  id            String    @id
+  workspaceId   String
+  propertyId    String
+  actorUserId   String
+  field         String
+  previousValue Json?
+  nextValue     Json?
+  source        String
+  createdAt     DateTime  @default(now())
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property      Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, propertyId, createdAt])
+}
+
+model PurchaseEvidenceEvent {
+  id String @id
+  entryId String
+  action String
+  note String
+  source String
+  actorUserId String
+  documentVersionId String?
+  requestKey String @unique
+  payloadHash String
+  createdAt DateTime @default(now())
+  entry PurchaseEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  documentVersion DocumentVersion? @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  @@index([entryId, createdAt])
+}
+
+model PropertyDoc {
+  purchaseCandidateId String?
+  purchaseCandidate PurchaseCandidate? @relation(fields: [purchaseCandidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  constructionLinks ConstructionDocumentLink[]
+  id               String               @id
+  workspaceId      String
+  propertyId       String?
+  type             String
+  name             String
+  originalFilename String               @default("")
+  displayName      String               @default("")
+  subtype          String?
+  provenance       String               @default("user_uploaded")
+  // T02 post-purchase import lineage. Set only on copies created by the
+  // explicit import executor; the seller/candidate originals are never moved.
+  sourceDocumentId String?
+  sourceVersionId  String?
+  sourceSha256     String               @default("")
+  sourceCandidateId String?
+  uploadedBy       String?
+  uploadDate       String
+  sizeBytes        Int
+  sha256           String               @default("")
+  storageKey       String
+  mimeType         String
+  processingState  String               @default("awaiting_review")
+  scanStatus       String               @default("scan_pending")
+  reviewStatus     String               @default("awaiting_review")
+  archivedAt       DateTime?
+  deletedAt        DateTime?
+  idempotencyKey   String?              @unique
+  verified         Boolean              @default(false)
+  notes            String?
+  extracted        Json?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  version          Int                  @default(0)
+  workspace        Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property         Property?            @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  versions         DocumentVersion[]
+  parsingRuns      DocumentParsingRun[]
+  ocrRuns          DocumentOcrRun[]
+  aiRuns           AiExtractionRun[]
+  proposals        AiFieldProposal[]
+  maintenanceDocumentLinks MaintenanceDocumentLink[]
+  shareOperations  ShareOperation[]
+  searchProjections SearchProjection[]
+  exportPackageItems ExportPackageItem[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model DocumentVersion {
+  purchaseEvidenceEvents PurchaseEvidenceEvent[]
+  scanEvidence DocumentScanEvidence[]
+  constructionLinks ConstructionDocumentLink[]
+  id               String               @id
+  workspaceId      String
+  documentId       String
+  version          Int
+  originalFilename String
+  displayName      String
+  mimeType         String
+  sizeBytes        Int
+  sha256           String
+  storageKey       String
+  scanStatus       String
+  processingState  String
+  reviewStatus     String
+  source           String               @default("user_uploaded")
+  uploadedBy       String
+  uploadedAt       DateTime             @default(now())
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  workspace        Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  document         PropertyDoc          @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  parsingRuns      DocumentParsingRun[]
+  ocrRuns          DocumentOcrRun[]
+  aiRuns           AiExtractionRun[]
+  proposals        AiFieldProposal[]
+  maintenanceDocumentLinks MaintenanceDocumentLink[]
+  searchProjections SearchProjection[]
+  exportPackageItems ExportPackageItem[]
+
+  @@unique([id, workspaceId])
+  @@unique([documentId, version])
+  @@index([workspaceId, documentId, version])
+}
+
+model DocumentScanEvidence {
+  id                String @id
+  documentVersionId String
+  jobId             String
+  attempt           Int
+  evidence          Json
+  createdAt         DateTime @default(now())
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, attempt])
+  @@index([documentVersionId, createdAt])
+}
+
+// S19: private PostgreSQL search projection. Rows are workspace-scoped and
+// only contain active clean document metadata plus approved parsed text.
+// Nothing here is a public/global index and searchable text is never returned
+// unless the caller is authorized for the source document.
+model SearchProjection {
+  id                 String          @id
+  workspaceId        String
+  propertyId         String
+  documentId         String?
+  documentVersionId  String?
+  entityType         String
+  sourceType         String
+  title              String
+  category           String?
+  searchableText     String?
+  searchableChunks   Json?
+  searchableTextChars Int             @default(0)
+  reviewState        String
+  visibilityState    String           @default("ACTIVE")
+  archivedAt         DateTime?
+  deletedAt          DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  workspace          Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property           Property         @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  document           PropertyDoc?     @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  documentVersion    DocumentVersion? @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([workspaceId, entityType, propertyId, documentId, documentVersionId])
+  @@index([workspaceId, propertyId, entityType, visibilityState])
+  @@index([workspaceId, updatedAt])
+}
+
+model DocumentParsingRun {
+  id                String          @id
+  workspaceId       String
+  documentId        String
+  documentVersionId String
+  idempotencyKey    String          @unique
+  status            String
+  method            String
+  parserVersion     String
+  pageCount         Int?
+  textChars         Int             @default(0)
+  textChunks        Json?
+  error             Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  workspace         Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  document          PropertyDoc     @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  version           DocumentVersion @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, documentId, createdAt])
+}
+
+model DocumentOcrRun {
+  id                  String          @id
+  workspaceId         String
+  documentId          String
+  documentVersionId   String
+  idempotencyKey      String          @unique
+  status              String
+  method              String
+  providerEnvironment String
+  pageCount           Int?
+  textChars           Int             @default(0)
+  textChunks          Json?
+  error               Json?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  workspace           Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  document            PropertyDoc     @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  version             DocumentVersion @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, documentId, createdAt])
+}
+
+model AiExtractionRun {
+  id                  String            @id
+  workspaceId         String
+  documentId          String
+  documentVersionId   String
+  parsingRunId        String?
+  idempotencyKey      String            @unique
+  status              String
+  method              String
+  providerEnvironment String
+  response            Json?
+  error               Json?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  workspace           Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  document            PropertyDoc       @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  version             DocumentVersion   @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  proposals           AiFieldProposal[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, documentId, createdAt])
+}
+
+model AiFieldProposal {
+  id                String          @id
+  workspaceId       String
+  runId             String
+  documentId        String
+  documentVersionId String
+  fieldName         String
+  proposedValue     Json
+  acceptedValue     Json?
+  state             String          @default("proposed")
+  sourcePage        Int?
+  sourceChunk       String?
+  extractionMethod  String
+  confidence        Json?
+  evidence          Json
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  workspace         Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  run               AiExtractionRun @relation(fields: [runId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  document          PropertyDoc     @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  version           DocumentVersion @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, documentId, state])
+}
+
+model Bill {
+  id           String    @id
+  workspaceId  String
+  propertyId   String
+  type         String
+  title        String
+  amountPaise  BigInt
+  dueDate      String
+  paidDate     String?
+  status       String
+  receiptDocId String?
+  recurring    String?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  version      Int       @default(0)
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property     Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, status])
+}
+
+model Maintenance {
+  id             String    @id
+  workspaceId    String
+  propertyId     String
+  task           String
+  dateReported   String
+  provider       String?
+  quotePaise     BigInt?
+  finalCostPaise BigInt?
+  status         String
+  warrantyUntil  String?
+  notes          String?
+  category       String    @default("Other")
+  description    String?
+  location       String?
+  priority       String    @default("NORMAL")
+  contactDetails String?
+  dateStarted    String?
+  dateCompleted  String?
+  source         String    @default("OWNER_REPORTED")
+  idempotencyKey String?   @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  version        Int       @default(0)
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property       Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  events         MaintenanceEvent[]
+  documentLinks  MaintenanceDocumentLink[]
+  invoiceObligation Obligation?
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model TimelineEvent {
+  id          String    @id
+  workspaceId String
+  propertyId  String
+  date        String
+  title       String
+  detail      String?
+  kind        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  version     Int       @default(0)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property    Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, date])
+}
+
+model ShareLink {
+  id          String           @id
+  workspaceId String
+  propertyId  String
+  grantorId   String
+  role        String
+  inviteeEmail String          @default("")
+  inviteeUserId String?
+  acceptedAt  DateTime?
+  tokenHash   String           @unique
+  expiresAt   String
+  revokedAt   DateTime?
+  note        String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  version     Int              @default(0)
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property    Property         @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  scopes      ShareLinkScope[]
+  operations  ShareOperation[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model ShareLinkScope {
+  id          String    @id
+  shareLinkId String
+  docType     String?
+  documentId  String?
+  scopeType   String
+  shareLink   ShareLink @relation(fields: [shareLinkId], references: [id], onDelete: Cascade)
+
+  @@index([shareLinkId])
+}
+
+model Tenant {
+  id              String    @id
+  workspaceId     String
+  propertyId      String
+  name            String
+  phone           String?
+  rentAmountPaise BigInt
+  depositPaise    BigInt?
+  startDate       String
+  endDate         String
+  status          String
+  agreementDocId  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  version         Int       @default(0)
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property        Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, status])
+}
+
+model Booking {
+  id          String    @id
+  workspaceId String
+  propertyId  String
+  category    String
+  vendor      String?
+  date        String
+  status      String
+  costPaise   BigInt?
+  rating      Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  version     Int       @default(0)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property    Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model Reminder {
+  id          String    @id
+  workspaceId String
+  propertyId  String
+  kind        String
+  title       String
+  dueDate     String
+  done        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  version     Int       @default(0)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property    Property  @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, done])
+}
+
+// S16: durable, truthful reminder instances derived from manual obligations
+// or explicitly selected property deadlines. Delivery is tracked separately
+// from scheduling and never claims external delivery without provider proof.
+model DurableReminder {
+  id             String                @id
+  workspaceId    String
+  propertyId     String
+  sourceType     String
+  sourceId       String
+  obligationId   String?
+  occurrenceId   String?
+  offsetDays     Int
+  scheduledAt    DateTime
+  timezone       String
+  localTime      String
+  channel        String
+  state          String                @default("SCHEDULED")
+  readAt         DateTime?
+  snoozedUntil   DateTime?
+  attemptCount   Int                   @default(0)
+  lastAttemptAt  DateTime?
+  deliveredAt    DateTime?
+  failureState   String?
+  failureReason  String?
+  idempotencyKey String                @unique
+  deepLink       String
+  title          String
+  body           String
+  version        Int                   @default(0)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  workspace      Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property       Property              @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  obligation     Obligation?           @relation(fields: [obligationId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  occurrence     ObligationOccurrence? @relation(fields: [occurrenceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  attempts       ReminderAttempt[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, state, scheduledAt])
+  @@index([obligationId, occurrenceId, channel])
+}
+
+model NotificationPreference {
+  id          String   @id
+  workspaceId String
+  channel     String
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, channel])
+  @@index([workspaceId, enabled])
+}
+
+model ReminderAttempt {
+  id              String          @id
+  workspaceId     String
+  reminderId      String
+  attemptNumber   Int
+  state           String
+  providerOutcome String?
+  providerMessageId String?
+  attemptedAt     DateTime        @default(now())
+  deliveredAt     DateTime?
+  failureReason   String?
+  idempotencyKey  String          @unique
+  createdAt       DateTime        @default(now())
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  reminder        DurableReminder @relation(fields: [reminderId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([reminderId, attemptNumber])
+  @@index([workspaceId, reminderId, attemptedAt])
+}
+
+model MaintenanceEvent {
+  id            String      @id
+  workspaceId   String
+  propertyId    String
+  maintenanceId String
+  eventType     String
+  fromStatus    String?
+  toStatus      String?
+  detail        Json?
+  idempotencyKey String     @unique
+  createdAt     DateTime    @default(now())
+  workspace     Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property      Property    @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  maintenance   Maintenance @relation(fields: [maintenanceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, propertyId, maintenanceId, createdAt])
+}
+
+model MaintenanceDocumentLink {
+  id               String          @id
+  workspaceId      String
+  propertyId       String
+  maintenanceId    String
+  documentId       String
+  documentVersionId String?
+  linkType         String
+  createdAt        DateTime        @default(now())
+  workspace        Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property         Property        @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  maintenance      Maintenance     @relation(fields: [maintenanceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  document         PropertyDoc     @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  documentVersion  DocumentVersion? @relation(fields: [documentVersionId], references: [id], onDelete: SetNull)
+
+  @@unique([maintenanceId, documentId, linkType])
+  @@index([workspaceId, propertyId, maintenanceId])
+}
+
+// S18: an identity-bound grant. The token is invitation-only and is never a
+// permanent public document URL. Capabilities are stored in ShareLinkScope.
+model ShareOperation {
+  id             String      @id
+  workspaceId    String
+  propertyId     String
+  shareLinkId    String
+  documentId     String
+  requestedByUserId String
+  status         String
+  output        Json?
+  failureReason  String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  workspace      Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property       Property    @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  shareLink      ShareLink   @relation(fields: [shareLinkId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  document       PropertyDoc @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  requestedBy    User        @relation(fields: [requestedByUserId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, propertyId, shareLinkId, createdAt])
+}
+
+// S21: selected export package and its authenticated temporary artifact.
+model ExportPackage {
+  id                    String             @id
+  workspaceId           String
+  propertyId            String
+  requestedByUserId     String
+  status                String             @default("QUEUED")
+  includePropertyMetadata Boolean          @default(false)
+  selectionHash         String
+  artifactStorageKey    String?
+  artifactSha256        String?
+  artifactSizeBytes     Int?
+  expiresAt             DateTime
+  generatedAt           DateTime?
+  revokedAt             DateTime?
+  failureReason         String?
+  manifest              Json?
+  idempotencyKey        String             @unique
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  workspace             Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property              Property           @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  requestedBy           User               @relation(fields: [requestedByUserId], references: [id], onDelete: Cascade)
+  items                 ExportPackageItem[]
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, status, expiresAt])
+  @@index([requestedByUserId, createdAt])
+}
+
+model ExportPackageItem {
+  id                String         @id
+  workspaceId       String
+  packageId         String
+  propertyId        String
+  documentId        String
+  documentVersionId String
+  sourceType        String
+  createdAt         DateTime       @default(now())
+  workspace          Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  package            ExportPackage  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  property           Property       @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  document           PropertyDoc    @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  documentVersion    DocumentVersion @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([packageId, documentId, documentVersionId])
+  @@index([workspaceId, propertyId, packageId])
+}
+
+// S20: no raw prompt or answer is persisted. This is an audit/rate-limit row
+// containing only bounded metadata and the authorization context.
+model AssistantRequest {
+  id                 String     @id
+  workspaceId        String
+  requestedByUserId  String
+  propertyId         String?
+  providerEnvironment String
+  outputState        String
+  inputChars         Int
+  retrievalCount     Int          @default(0)
+  estimatedCostPaise BigInt?
+  actualCostPaise    BigInt?
+  cancelledAt        DateTime?
+  createdAt          DateTime     @default(now())
+  workspace          Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  requestedBy        User         @relation(fields: [requestedByUserId], references: [id], onDelete: Cascade)
+  property           Property?    @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, requestedByUserId, createdAt])
+  @@index([workspaceId, propertyId, createdAt])
+}
+
+model Listing {
+  id             String    @id
+  workspaceId    String
+  propertyId     String?
+  title          String
+  city           String
+  type           String
+  pricePaise     BigInt
+  carpetAreaSqft Int?
+  verified       Boolean   @default(false)
+  healthScore    Int?
+  contactMasked  String
+  description    String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  version        Int       @default(0)
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property       Property? @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, city])
+}
+
+model ConstructionProject {
+  id           String    @id
+  workspaceId  String
+  propertyId   String?
+  name         String
+  plotSizeSqft Int
+  spec         String
+  budgetPaise  BigInt
+  currentStage Int
+  stageStatus  Json
+  startDate    String
+  notes        String?
+  projectType  String @default("NEW_HOME")
+  status       String @default("PLANNING")
+  targetCompletionDate String?
+  builtUpArea  Decimal? @db.Decimal(14, 3)
+  areaUnit     String @default("sqft")
+  floorCount   Int @default(1)
+  qualityLevel String @default("STANDARD")
+  requirements Json?
+  initialBudgetPaise BigInt @default(0)
+  currency     String @default("INR")
+  currentStageId String?
+  createdBy    String?
+  archivedAt   DateTime?
+  completedAt  DateTime?
+  completionSummary Json?
+  templateVersion String @default("legacy")
+  // Construction OS Core 1.0: versioned plan pointer + display timezone.
+  currentPlanVersionId String?
+  timezone String @default("Asia/Kolkata")
+  stages ConstructionStage[]
+  tasks ConstructionTask[]
+  budgets ConstructionBudgetItem[]
+  costs ConstructionCost[]
+  materials MaterialRequirement[]
+  prices MaterialPriceEntry[]
+  procurement ProcurementNeed[]
+  contacts ConstructionContact[]
+  updates ConstructionUpdate[]
+  events ConstructionEvent[]
+  documents ConstructionDocumentLink[]
+  planVersions ConstructionPlanVersion[]
+  milestones ConstructionMilestone[]
+  dependencies ConstructionDependency[]
+  decisions ConstructionDecision[]
+  decisionOptions ConstructionDecisionOption[]
+  issues ConstructionIssue[]
+  inspections ConstructionInspection[]
+  changes ConstructionChange[]
+  commitments ConstructionCommitment[]
+  supplierQuotes SupplierQuote[]
+  orders ConstructionOrder[]
+  deliveries ConstructionDelivery[]
+  guidance ConstructionGuidance[]
+  handovers ConstructionHandover[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  version      Int       @default(0)
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property     Property? @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model ConstructionStage {
+  tasks ConstructionTask[]
+  id String @id
+  workspaceId String
+  projectId String
+  name String
+  sequence Int
+  description String @default("")
+  status String @default("NOT_STARTED")
+  expectedStart String?
+  expectedEnd String?
+  actualStart String?
+  actualEnd String?
+  notes String @default("")
+  dependsOnId String?
+  source String @default("USER_ENTERED")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@unique([projectId, sequence])
+}
+
+model ConstructionTask {
+  sequence Int @default(0)
+  stage ConstructionStage @relation(fields: [stageId, projectId, workspaceId], references: [id, projectId, workspaceId], onDelete: Cascade)
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String
+  title String
+  description String @default("")
+  status String @default("TODO")
+  priority String @default("NORMAL")
+  dueDate String?
+  assignedContactId String?
+  dependsOnId String?
+  estimatePaise BigInt @default(0)
+  notes String @default("")
+  completedAt DateTime?
+  required Boolean @default(true)
+  source String @default("USER_ENTERED")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId, stageId, status])
+}
+
+model ConstructionBudgetItem {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  category String
+  estimatedPaise BigInt
+  notes String @default("")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId])
+}
+
+model ConstructionCost {
+  @@unique([obligationId, workspaceId])
+  ledgerEntry ExpenseLedgerEntry? @relation(fields: [ledgerEntryId], references: [id], onDelete: Restrict)
+  obligation Obligation? @relation(fields: [obligationId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  commitment ConstructionCommitment? @relation(fields: [commitmentId, workspaceId], references: [id, workspaceId], onDelete: NoAction, onUpdate: NoAction)
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  taskId String?
+  budgetItemId String?
+  commitmentId String?
+  title String
+  source String
+  ledgerEntryId String? @unique
+  obligationId String? @unique
+  documentLinkId String?
+  recordedDate String
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId])
+}
+
+model MaterialRequirement {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  category String
+  name String
+  quantity Decimal @db.Decimal(14, 3)
+  unit String
+  requiredByDate String?
+  estimatedUnitRatePaise BigInt @default(0)
+  actualUnitRatePaise BigInt?
+  supplierContactId String?
+  provenance String @default("USER_ENTERED")
+  status String @default("PLANNED")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId, requiredByDate])
+}
+
+model MaterialPriceEntry {
+  id String @id
+  workspaceId String
+  projectId String
+  materialId String
+  brand String @default("")
+  grade String @default("")
+  dealer String @default("")
+  location String
+  recordedDate String
+  unit String
+  pricePaise BigInt
+  provenance String @default("USER_ENTERED")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId, materialId, recordedDate])
+}
+
+model ProcurementNeed {
+  id String @id
+  workspaceId String
+  projectId String
+  materialId String
+  status String @default("PLANNED")
+  supplierContactId String?
+  notes String @default("")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([projectId, materialId])
+}
+
+model ConstructionContact {
+  id String @id
+  workspaceId String
+  projectId String
+  name String
+  company String @default("")
+  role String
+  phone String @default("")
+  email String @default("")
+  notes String @default("")
+  provenance String @default("OWNER_ENTERED")
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId])
+}
+
+model ConstructionUpdate {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  title String
+  description String
+  issueStatus String @default("NONE")
+  createdBy String
+  occurredAt DateTime
+  createdAt DateTime @default(now())
+  // Construction OS Core 1.0: lightweight site-log context (all optional).
+  photoRefs Json?
+  workerCount Int?
+  weatherNote String?
+  workCompletedIds Json?
+  decisionRequestIds Json?
+  deliveryIds Json?
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@index([projectId, occurredAt])
+}
+
+model ConstructionDocumentLink {
+  document PropertyDoc @relation(fields: [documentId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  documentVersion DocumentVersion @relation(fields: [documentVersionId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  taskId String?
+  updateId String?
+  documentId String
+  documentVersionId String
+  category String
+  // Construction OS Core 1.0: contextual link target (project/stage/milestone/
+  // work/decision/issue/inspection/change/commitment/expense/material/order/
+  // delivery/handover). documentId/versionId remain the protected Vault record.
+  contextType String @default("PROJECT")
+  contextId String?
+  label String @default("")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  // One Vault version may be relevant in several contexts (stage + milestone
+  // + inspection); the same version in the same context links only once.
+  // NULL contextIds are kept distinct by the database, so the application
+  // duplicate check below remains authoritative for unscoped links.
+  @@unique([projectId, documentVersionId, contextType, contextId])
+}
+
+model ConstructionEvent {
+  id String @id
+  workspaceId String
+  projectId String
+  actorId String
+  eventType String
+  title String
+  visibility String @default("PROJECT")
+  payload Json
+  requestKey String
+  payloadHash String
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([projectId, requestKey])
+  @@index([projectId, createdAt])
+}
+
+// Construction OS Core 1.0 domain delta. All tables carry workspaceId +
+// projectId with a composite project FK (cascade) so tenant isolation matches
+// the existing Construction tables. Cross-object links inside Construction
+// are plain validated string references (same convention as dependsOnId).
+
+model ConstructionPlanVersion {
+  id String @id
+  workspaceId String
+  projectId String
+  versionNumber Int
+  label String @default("")
+  status String @default("DRAFT")
+  createdBy String?
+  notes String @default("")
+  createdAt DateTime @default(now())
+  activatedAt DateTime?
+  supersededAt DateTime?
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@unique([projectId, versionNumber])
+  @@index([projectId, status])
+}
+
+model ConstructionMilestone {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  name String
+  status String @default("PLANNED")
+  plannedDate String?
+  actualDate String?
+  description String @default("")
+  sequence Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, stageId])
+}
+
+model ConstructionDependency {
+  id String @id
+  workspaceId String
+  projectId String
+  predecessorType String
+  predecessorId String
+  successorType String
+  successorId String
+  dependencyType String @default("FINISH_TO_START")
+  notes String @default("")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, successorType, successorId])
+  @@index([projectId, predecessorType, predecessorId])
+}
+
+model ConstructionDecision {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  workItemId String?
+  requestedBy String
+  assignedTo String
+  title String
+  context String @default("")
+  dueDate String?
+  status String @default("OPEN")
+  selectedOptionId String?
+  decisionComment String @default("")
+  decidedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  options ConstructionDecisionOption[]
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, status])
+}
+
+model ConstructionDecisionOption {
+  id String @id
+  workspaceId String
+  projectId String
+  decisionId String
+  label String
+  description String @default("")
+  estimatedCostImpactPaise BigInt @default(0)
+  estimatedScheduleImpactDays Int @default(0)
+  attachmentDocumentIds Json @default("[]")
+  createdAt DateTime @default(now())
+  decision ConstructionDecision @relation(fields: [decisionId, projectId, workspaceId], references: [id, projectId, workspaceId], onDelete: Cascade)
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, decisionId])
+}
+
+model ConstructionIssue {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  workItemId String?
+  title String
+  description String @default("")
+  severity String @default("MEDIUM")
+  status String @default("OPEN")
+  reportedBy String
+  assignedTo String?
+  reportedAt DateTime @default(now())
+  costImpactPaise BigInt?
+  scheduleImpactDays Int?
+  resolution String @default("")
+  resolvedAt DateTime?
+  photoRefs Json @default("[]")
+  attachmentDocumentIds Json @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, status])
+}
+
+model ConstructionInspection {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  workItemId String?
+  performedBy String
+  performedAt DateTime
+  title String
+  status String @default("RECORDED")
+  result String @default("RECORDED")
+  notes String @default("")
+  checklist Json?
+  issueIds Json @default("[]")
+  documentIds Json @default("[]")
+  photoRefs Json @default("[]")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, performedAt])
+}
+
+model ConstructionChange {
+  id String @id
+  workspaceId String
+  projectId String
+  stageId String?
+  title String
+  reason String @default("")
+  requestedBy String
+  approvedBy String?
+  status String @default("PROPOSED")
+  originalScope String @default("")
+  revisedScope String @default("")
+  estimatedCostImpactPaise BigInt @default(0)
+  actualCostImpactPaise BigInt?
+  estimatedScheduleImpactDays Int @default(0)
+  actualScheduleImpactDays Int?
+  affectedWorkItemIds Json @default("[]")
+  documentIds Json @default("[]")
+  requestedAt DateTime @default(now())
+  decidedAt DateTime?
+  implementedAt DateTime?
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, status])
+}
+
+model ConstructionCommitment {
+  costs ConstructionCost[]
+  id String @id
+  workspaceId String
+  projectId String
+  budgetCategoryId String?
+  vendorOrPersonId String?
+  title String
+  amountPaise BigInt
+  currency String @default("INR")
+  status String @default("ACTIVE")
+  committedAt DateTime @default(now())
+  expectedBy String?
+  sourceType String?
+  sourceId String?
+  notes String @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, workspaceId])
+  @@index([projectId, status])
+}
+
+model SupplierQuote {
+  id String @id
+  workspaceId String
+  projectId String
+  materialRequirementId String
+  supplierName String
+  supplierId String?
+  quantity Decimal @db.Decimal(14, 3)
+  unit String
+  unitRatePaise BigInt
+  taxPaise BigInt @default(0)
+  deliveryChargePaise BigInt @default(0)
+  totalPaise BigInt
+  deliveryDate String?
+  validUntil String?
+  documentId String?
+  status String @default("RECEIVED")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, materialRequirementId])
+}
+
+model ConstructionOrder {
+  id String @id
+  workspaceId String
+  projectId String
+  materialRequirementId String?
+  commitmentId String?
+  supplierName String
+  supplierId String?
+  orderedQuantity Decimal @db.Decimal(14, 3)
+  unit String
+  totalPaise BigInt
+  orderedAt DateTime @default(now())
+  expectedDelivery String?
+  status String @default("PLACED")
+  documentId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, status])
+}
+
+model ConstructionDelivery {
+  id String @id
+  workspaceId String
+  projectId String
+  orderId String?
+  materialRequirementId String?
+  supplierName String?
+  expectedQuantity Decimal? @db.Decimal(14, 3)
+  receivedQuantity Decimal @db.Decimal(14, 3)
+  unit String
+  receivedBy String
+  receivedAt DateTime @default(now())
+  condition String?
+  challanDocumentId String?
+  photoRefs Json @default("[]")
+  notes String @default("")
+  createdAt DateTime @default(now())
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([id, projectId, workspaceId])
+  @@index([projectId, orderId])
+}
+
+model ConstructionGuidance {
+  id String @id
+  workspaceId String
+  projectId String
+  ruleKey String
+  subjectType String
+  subjectId String
+  type String
+  priority String @default("NORMAL")
+  title String
+  reason String @default("")
+  consequence String?
+  actionType String @default("NONE")
+  actionTarget String?
+  relevanceKey String
+  status String @default("ACTIVE")
+  provenance Json?
+  relevantUntil String?
+  resolvedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([projectId, relevanceKey])
+  @@index([projectId, status])
+}
+
+model ConstructionHandover {
+  id String @id
+  workspaceId String
+  projectId String
+  status String @default("NOT_STARTED")
+  handoverDate String?
+  finalRecordedSpendPaise BigInt?
+  finalPhotoRefs Json @default("[]")
+  finalDocumentIds Json @default("[]")
+  warranties Json @default("[]")
+  manuals Json @default("[]")
+  snagItemIds Json @default("[]")
+  professionalRecords Json @default("[]")
+  notes String @default("")
+  completedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project ConstructionProject @relation(fields: [projectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  @@unique([projectId])
+}
+
+// S12: neutral, versioned content rules. These are deliberately global and
+// contain typed applicability only; they are not a legal advice engine.
+model ChecklistRule {
+  revision Int @default(1)
+  id                   String           @id
+  stableKey            String
+  version              Int
+  contentType          String
+  title                String
+  description          String
+  category             String
+  jurisdiction         String?
+  propertyType         String?
+  ownershipContext     String?
+  evidenceCategory     String?
+  requiresConfirmation Boolean          @default(false)
+  effectiveFrom        String
+  effectiveUntil       String?
+  sourceName           String?
+  sourceReference      Json?
+  sourcePublishedDate  String?
+  reviewer             String?
+  reviewedAt           DateTime?
+  status               String           @default("DRAFT")
+  supersedesId         String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  supersedes           ChecklistRule?   @relation("RuleSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
+  supersededBy         ChecklistRule[]  @relation("RuleSupersession")
+  auditEvents          RuleAuditEvent[]
+  assessmentItems      AssessmentItem[]
+
+  @@unique([stableKey, version])
+  @@index([status, effectiveFrom, effectiveUntil])
+  @@index([stableKey, status])
+}
+
+// S22: reviewed buyer education is global content, separate from private
+// property data. Only current PUBLISHED rows are exposed to the app.
+model EducationContent {
+  id            String   @id
+  slug          String   @unique
+  contentType   String
+  title         String
+  summary       String
+  body          Json
+  sourceName    String
+  sourceReference Json
+  reviewer      String
+  reviewedAt    DateTime
+  effectiveFrom String
+  expiresAt     String?
+  status        String   @default("DRAFT")
+  version       Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([contentType, status, effectiveFrom, expiresAt])
+}
+
+model RuleAuditEvent {
+  id          String        @id
+  ruleId      String
+  actorUserId String
+  action      String
+  fromStatus  String?
+  toStatus    String?
+  detail      Json?
+  createdAt   DateTime      @default(now())
+  rule        ChecklistRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  actor       User          @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+
+  @@index([ruleId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+// S13: append-only explainable assessment snapshots. Each run creates a new
+// snapshot and copies the stable rule/version identifiers into its items.
+model AssessmentSnapshot {
+  id              String           @id
+  workspaceId     String
+  propertyId      String
+  propertyVersion Int
+  assessment      String
+  score           Int?
+  applicableCount Int
+  satisfiedCount  Int
+  unknownCount    Int
+  evaluatedAt     DateTime         @default(now())
+  createdAt       DateTime         @default(now())
+  workspace       Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property        Property         @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  items           AssessmentItem[]
+  evaluator       User?            @relation(fields: [evaluatorUserId], references: [id], onDelete: SetNull)
+  evaluatorUserId String?
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, evaluatedAt])
+}
+
+model AssessmentItem {
+  id                        String             @id
+  workspaceId               String
+  snapshotId                String
+  propertyId                String
+  ruleId                    String?
+  ruleStableKey             String
+  ruleVersion               Int?
+  requirement               String
+  applicability             String
+  evidenceState             String
+  evidenceDocumentId        String?
+  evidenceDocumentVersionId String?
+  contribution              String
+  result                    String
+  suggestedAction           String?
+  explanation               String
+  createdAt                 DateTime           @default(now())
+  workspace                 Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  snapshot                  AssessmentSnapshot @relation(fields: [snapshotId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  rule                      ChecklistRule?     @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, evidenceState])
+  @@index([snapshotId, workspaceId])
+}
+
+// S14: manual-first, property-linked obligations. Dates are date-only ISO
+// values; recurrence is generated into idempotent cycle occurrences.
+model Obligation {
+  constructionCost ConstructionCost?
+  id             String                 @id
+  workspaceId    String
+  propertyId     String
+  type           String
+  label          String
+  direction      String
+  amountPaise    BigInt?
+  currency       String
+  dueDate        String
+  timezone       String
+  recurrenceType String
+  recurrenceDay  Int?
+  source         String                 @default("USER_ENTERED")
+  notes          String?
+  reminderConfig Json?
+  maintenanceId String? @unique
+  active         Boolean                @default(true)
+  version        Int                    @default(0)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  workspace      Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property       Property               @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  occurrences    ObligationOccurrence[]
+  payments       ObligationPayment[]
+  durableReminders DurableReminder[]
+  maintenance   Maintenance? @relation(fields: [maintenanceId, workspaceId], references: [id, workspaceId], onDelete: Restrict)
+
+  @@unique([id, workspaceId])
+  @@unique([maintenanceId, workspaceId])
+  @@index([workspaceId, propertyId, active, dueDate])
+}
+
+model ObligationOccurrence {
+  id           String              @id
+  workspaceId  String
+  propertyId   String
+  obligationId String
+  cycleKey     String
+  dueDate      String
+  amountPaise  BigInt?
+  currency     String
+  status       String              @default("OPEN")
+  source       String              @default("GENERATED")
+  version      Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  workspace    Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property     Property            @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  obligation   Obligation          @relation(fields: [obligationId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  payments     ObligationPayment[]
+  durableReminders DurableReminder[]
+
+  @@unique([obligationId, cycleKey])
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, dueDate, status])
+}
+
+// S15: no gateway credentials or provider state; only owner-entered records.
+model ObligationPayment {
+  id                       String               @id
+  workspaceId              String
+  propertyId               String
+  obligationId             String
+  occurrenceId             String
+  amountPaise              BigInt
+  currency                 String
+  paymentDate              String
+  method                   String
+  status                   String               @default("RECORDED")
+  source                   String               @default("USER_ENTERED")
+  notes                    String?
+  idempotencyKey           String               @unique
+  receiptDocumentId        String?
+  receiptDocumentVersionId String?
+  reversedAt               DateTime?
+  reversalOfId             String?
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  version                  Int                  @default(0)
+  workspace                Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property                 Property             @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  obligation               Obligation           @relation(fields: [obligationId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  occurrence               ObligationOccurrence @relation(fields: [occurrenceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  reversalOf               ObligationPayment?   @relation("PaymentReversal", fields: [reversalOfId], references: [id], onDelete: SetNull)
+  reversals                ObligationPayment[]  @relation("PaymentReversal")
+  ledgerEntry              ExpenseLedgerEntry?
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId, occurrenceId, status])
+}
+
+model ExpenseLedgerEntry {
+  constructionCost ConstructionCost?
+  id           String             @id
+  workspaceId  String
+  propertyId   String
+  paymentId    String?            @unique
+  obligationId String?
+  occurrenceId String?
+  amountPaise  BigInt
+  currency     String
+  entryType    String
+  canonicalKey String             @unique
+  // Construction corrections retain the original and append signed ledger effects.
+  reversalOfId String?            @unique
+  replacementForId String?        @unique
+  correctionReason String?
+  actorUserId String?
+  reversalOf ExpenseLedgerEntry? @relation("LedgerReversal", fields: [reversalOfId, workspaceId, propertyId], references: [id, workspaceId, propertyId], onDelete: NoAction, onUpdate: NoAction)
+  reversals ExpenseLedgerEntry[] @relation("LedgerReversal")
+  replacementFor ExpenseLedgerEntry? @relation("LedgerReplacement", fields: [replacementForId, workspaceId, propertyId], references: [id, workspaceId, propertyId], onDelete: NoAction, onUpdate: NoAction)
+  replacements ExpenseLedgerEntry[] @relation("LedgerReplacement")
+  createdAt    DateTime           @default(now())
+  workspace    Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property     Property           @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  payment      ObligationPayment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, propertyId, createdAt])
+  @@unique([id, workspaceId, propertyId])
+}
+
+model ConsentRecord {
+  id            String    @id
+  userId        String
+  purpose       String
+  policyVersion String
+  grantedAt     DateTime
+  withdrawnAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+}
+
+model ProcessingControl {
+  workspaceId String @id
+  withdrawnAt DateTime
+  noticeVersion String
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+// Request intake only: execution awaits an approved retention/export policy.
+model PrivacyRequest {
+  exportScope String?
+  expiresAt DateTime?
+  artifactKey String?
+  artifactSha256 String?
+  failureCode String?
+  completedAt DateTime?
+  id          String   @id
+  userId      String
+  kind        String
+  propertyId  String?
+  requestKey  String
+  status      String   @default("AWAITING_POLICY")
+  createdAt   DateTime @default(now())
+  cancelledAt DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, requestKey])
+  @@index([userId, createdAt])
+}
+
+model IdempotencyRecord {
+  id              String   @id
+  principalUserId String
+  action          String
+  requestKey      String
+  payloadHash     String
+  response        Json
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [principalUserId], references: [id], onDelete: Cascade)
+
+  @@unique([principalUserId, action, requestKey])
+  @@index([principalUserId, createdAt])
+}
+
+model OutboxEvent {
+  id             String      @id
+  aggregateType  String
+  aggregateId    String
+  eventType      String
+  payload        Json
+  idempotencyKey String?     @unique
+  correlationId  String?
+  status         String      @default("queued")
+  attempts       Int         @default(0)
+  maxAttempts    Int         @default(3)
+  nextAttemptAt  DateTime    @default(now())
+  lockedAt       DateTime?
+  lockedBy       String?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  lastError      Json?
+  deadLetteredAt DateTime?
+  createdAt      DateTime    @default(now())
+  processedAt    DateTime?
+  effects        JobEffect[]
+
+  @@index([status, nextAttemptAt, createdAt])
+  @@index([lockedAt, status])
+  @@index([aggregateType, aggregateId])
+}
+
+model JobEffect {
+  id            String      @id
+  jobId         String      @unique
+  effectKey     String      @unique
+  aggregateType String
+  aggregateId   String
+  result        Json?
+  createdAt     DateTime    @default(now())
+  job           OutboxEvent @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([aggregateType, aggregateId])
+}
+
+model WorkerHeartbeat {
+  id              String   @id
+  environment     String
+  status          String
+  startedAt       DateTime
+  lastSeenAt      DateTime
+  lastCompletedAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([environment, lastSeenAt])
+}

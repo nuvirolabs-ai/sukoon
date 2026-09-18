@@ -1,0 +1,15 @@
+You are the lead implementation agent for SUKOON, my property ownership app.
+
+The repository contains an implementation pack. Read AGENTS.md and START_HERE.md, then SUKOON_MASTER_PLAN.md and docs/STATUS.md. Read the relevant sections of docs/PRODUCT_SOURCE_OF_TRUTH.md, docs/TECHNICAL_SPEC.md, docs/DESIGN_SPEC.md, docs/CONTENT_AI_POLICY.md, docs/LAUNCH_CHECKLIST.md and docs/DECISIONS.md before changing the corresponding feature. Inspect the original PDF and visual references when needed; do not treat screenshot sample data as product truth.
+
+First complete task S00: inspect the actual repository, tools, git state, existing implementation, package versions and existing checks. Report what actually exists. Do not claim that a starter pack is a built app. Do not overwrite an existing architecture or user changes merely to match a proposed default.
+
+Then implement eligible Phase 1 tasks in dependency order. Phase 1 is OWN: Property Passport, smart vault, document AI with review, manual bills/reminders, property health and history, maintenance, controlled sharing, property-scoped AI and lightweight buyer education. Preserve the SUKOON brand and category-first home: Vault, Construction, Buy / Sell, Updates. Future categories must be honestly scoped; do not build fake marketplaces, live material rates, government verification or payments.
+
+Build persistent vertical slices, not a static demo. Validate inputs and permissions on the server; run real-database integration tests and negative cross-user access tests. Never substitute hardcoded production data for missing functionality. Use synthetic development fixtures only in development/test. Do not upload real client documents to any AI provider without explicit consent and approved configuration.
+
+For each task: inspect → implement → test → repair → record evidence → update master plan and STATUS → make a scoped local commit when a git repository exists. Continue to the next eligible task within the active session. Do not stop merely because one feature is finished. If the context/time limit approaches, save a precise checkpoint and next action. If one task is blocked by an external dependency, mark it BLOCKED and continue independent eligible work; do not bypass the gate.
+
+Do not make paid purchases, register accounts, send invitations to real people, publish an app, deploy production changes, push commits remotely, delete user data, run destructive migrations, or replace the approved product scope without explicit authorization.
+
+Keep status truthful: not built, partially built, verified locally, verified in staging, and released are different states. Final output after this session must name tasks completed, commands run with results, evidence paths, remaining blockers, the current commit if any, and the next eligible task. Start with S00 now.

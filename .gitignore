@@ -32,10 +32,57 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!.env.android.local.example
+!.env.client-review.example
+!.env.android.client-review.example
 
 # vercel
 .vercel
 
+# local authenticated development state and private uploaded files
+/.data/
+/artifacts/sukoon-audit/private/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/lib/generated/prisma
+# Disposable browser acceptance compiler output; never a release artifact.
+/.next-acceptance/
+/.next-erasure-restored/
+/.next-client-review/
+
+# Capacitor / Android debug artifacts. Keep android/ source, not local outputs.
+/android/app/build/
+/android/.gradle/
+/android/local.properties
+/android/captures/
+/android/.idea/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Client-demo staging publication audit: retain locally, never publish.
+/output/
+/tmp/
+/artifacts/
+/docs/evidence/
+/Sukoon_Agent_Audit_Kit/
+/Sukoon_All_Phases_Completion/
+/Sukoon_All_Phases_Completion.zip
+/Property OS — Concept Summary.pdf
+/Sukoon_Agent_Starter_Pack/references/Property_OS_Concept_Summary.pdf
+/android/.jdk/
+
+# Additional staging-publication exclusions for generated archives and acceptance captures.
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+/work/
+/android/.phone-screencap.png

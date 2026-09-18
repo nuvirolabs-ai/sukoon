@@ -1,0 +1,3 @@
+FROM clamav/clamav-debian:stable@sha256:51e8a6c78895b68bfbbadf8030cc10b4a992d85738f0af9c8f1050b2a176f786
+
+EXPOSE 3310

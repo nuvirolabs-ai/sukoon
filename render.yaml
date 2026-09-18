@@ -1,0 +1,234 @@
+# Sukoon CLIENT DEMO STAGING only.
+# First apply intentionally keeps the Render-generated web hostname. Add the
+# custom domain only after generated-host infrastructure and auth checks pass.
+projects:
+  - name: sukoon-demo-staging
+    environments:
+      - name: demo-staging
+        networking:
+          isolation: enabled
+        permissions:
+          protection: enabled
+        services:
+          - name: sukoon-web
+            type: web
+            runtime: node
+            plan: 0.5c-512mb
+            region: singapore
+            buildCommand: npm ci && npm run db:generate && npm run build
+            preDeployCommand: npm run db:migrate:deploy
+            startCommand: npm start -- --hostname 0.0.0.0
+            healthCheckPath: /api/health
+            autoDeployTrigger: off
+            maxShutdownDelaySeconds: 120
+            envVars:
+              - key: APP_ENV
+                value: staging
+              - key: NODE_ENV
+                value: production
+              - key: SUKOON_RUNTIME_PROFILE
+                value: STAGING
+              - key: PORT
+                value: "10000"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: sukoon-db
+                  property: connectionString
+              - key: BETTER_AUTH_URL
+                fromService:
+                  name: sukoon-web
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
+              - key: BETTER_AUTH_TRUSTED_ORIGINS
+                fromService:
+                  name: sukoon-web
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
+              - key: SUKOON_TRUSTED_ORIGINS
+                fromService:
+                  name: sukoon-web
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
+              - key: BETTER_AUTH_SECRET
+                generateValue: true
+              - key: SUKOON_STORAGE_PROVIDER
+                value: remote
+              - key: SUKOON_STORAGE_ENDPOINT
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  property: hostport
+              - key: SUKOON_STORAGE_BUCKET
+                value: sukoon-demo-staging
+              - key: SUKOON_STORAGE_ACCESS_KEY
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  envVarKey: AWS_ACCESS_KEY_ID
+              - key: SUKOON_STORAGE_SECRET_KEY
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  envVarKey: AWS_SECRET_ACCESS_KEY
+              - key: SUKOON_SCANNER_PROVIDER
+                value: remote
+              - key: SUKOON_CLAMAV_ENDPOINT
+                fromService:
+                  name: sukoon-clamav
+                  type: pserv
+                  property: hostport
+              - key: SUKOON_EMAIL_PROVIDER
+                value: remote
+              - key: SUKOON_SMTP_HOST
+                sync: false
+              - key: SUKOON_SMTP_PORT
+                sync: false
+              - key: SUKOON_SMTP_TLS_MODE
+                sync: false
+              - key: SUKOON_SMTP_USERNAME
+                sync: false
+              - key: SUKOON_SMTP_PASSWORD
+                sync: false
+              - key: SUKOON_EMAIL_FROM
+                sync: false
+
+          - name: sukoon-worker
+            type: worker
+            runtime: node
+            plan: 0.5c-512mb
+            region: singapore
+            buildCommand: npm ci && npm run db:generate
+            startCommand: npm run worker:staging
+            autoDeployTrigger: off
+            maxShutdownDelaySeconds: 120
+            envVars:
+              - key: APP_ENV
+                value: staging
+              - key: NODE_ENV
+                value: production
+              - key: SUKOON_RUNTIME_PROFILE
+                value: STAGING
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: sukoon-db
+                  property: connectionString
+              - key: BETTER_AUTH_URL
+                fromService:
+                  name: sukoon-web
+                  type: web
+                  envVarKey: RENDER_EXTERNAL_URL
+              - key: SUKOON_STORAGE_PROVIDER
+                value: remote
+              - key: SUKOON_STORAGE_ENDPOINT
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  property: hostport
+              - key: SUKOON_STORAGE_BUCKET
+                value: sukoon-demo-staging
+              - key: SUKOON_STORAGE_ACCESS_KEY
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  envVarKey: AWS_ACCESS_KEY_ID
+              - key: SUKOON_STORAGE_SECRET_KEY
+                fromService:
+                  name: sukoon-storage
+                  type: pserv
+                  envVarKey: AWS_SECRET_ACCESS_KEY
+              - key: SUKOON_SCANNER_PROVIDER
+                value: remote
+              - key: SUKOON_CLAMAV_ENDPOINT
+                fromService:
+                  name: sukoon-clamav
+                  type: pserv
+                  property: hostport
+              - key: SUKOON_EMAIL_PROVIDER
+                value: remote
+              - key: SUKOON_SMTP_HOST
+                sync: false
+              - key: SUKOON_SMTP_PORT
+                sync: false
+              - key: SUKOON_SMTP_TLS_MODE
+                sync: false
+              - key: SUKOON_SMTP_USERNAME
+                sync: false
+              - key: SUKOON_SMTP_PASSWORD
+                sync: false
+              - key: SUKOON_EMAIL_FROM
+                sync: false
+
+          - name: sukoon-storage
+            type: pserv
+            runtime: docker
+            plan: 0.5c-512mb
+            region: singapore
+            dockerfilePath: infra/seaweedfs/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: off
+            maxShutdownDelaySeconds: 60
+            disk:
+              name: sukoon-storage-disk
+              mountPath: /data
+              sizeGB: 10
+            envVars:
+              - key: AWS_ACCESS_KEY_ID
+                generateValue: true
+              - key: AWS_SECRET_ACCESS_KEY
+                generateValue: true
+              - key: S3_BUCKET
+                value: sukoon-demo-staging
+
+          - name: sukoon-clamav
+            type: pserv
+            runtime: docker
+            plan: 1c-2g
+            region: singapore
+            dockerfilePath: infra/clamav/Dockerfile
+            dockerContext: .
+            autoDeployTrigger: off
+            maxShutdownDelaySeconds: 60
+            disk:
+              name: sukoon-clamav-signatures
+              mountPath: /var/lib/clamav
+              sizeGB: 5
+            envVars:
+              - key: CLAMAV_NO_MILTERD
+                value: "true"
+              - key: FRESHCLAM_CHECKS
+                value: "1"
+              - key: CLAMD_CONF_TCPSocket
+                value: "3310"
+              - key: CLAMD_CONF_TCPAddr
+                value: 0.0.0.0
+              - key: CLAMD_CONF_StreamMaxLength
+                value: 25M
+              - key: CLAMD_CONF_MaxScanSize
+                value: 100M
+              - key: CLAMD_CONF_MaxFileSize
+                value: 25M
+              - key: CLAMD_CONF_MaxScanTime
+                value: "30000"
+              - key: CLAMD_CONF_AlertBrokenMedia
+                value: "yes"
+              - key: CLAMD_CONF_AlertEncrypted
+                value: "yes"
+              - key: CLAMD_CONF_AlertEncryptedArchive
+                value: "yes"
+              - key: CLAMD_CONF_AlertEncryptedDoc
+                value: "yes"
+              - key: CLAMD_CONF_ScanPDF
+                value: "yes"
+              - key: CLAMD_CONF_ScanImage
+                value: "yes"
+
+        databases:
+          - name: sukoon-db
+            plan: 0.5c-1g
+            region: singapore
+            databaseName: sukoon_demo_staging
+            postgresMajorVersion: "17"
+            diskSizeGB: 15
+
+previews:
+  generation: off

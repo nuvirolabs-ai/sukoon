@@ -1,0 +1,96 @@
+{
+  "pack": "Sukoon Agent Starter Pack",
+  "version": "1.0",
+  "artifact_type": "implementation-specification-and-agent-instructions",
+  "not_application_code": true,
+  "application_build_or_deployment_verified": false,
+  "scope": "Phase 1 OWN, based on pages 6–7 of the supplied concept PDF",
+  "validation": {
+    "task_count": 31,
+    "dependency_graph_acyclic": true,
+    "requirements_mapped": 12,
+    "initial_ready_tasks": [
+      "S00"
+    ],
+    "initial_done_tasks": 0,
+    "source_files_preserved_byte_for_byte": true,
+    "markdown_fences_balanced": true
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 10646,
+      "sha256": "3617b7d04a1561de0255a9ca6058eaf1985aa38419534d6cc686ffcb33abe759"
+    },
+    {
+      "path": "START_HERE.md",
+      "bytes": 5196,
+      "sha256": "1ec07df57db897cff4ffd87388b5628417548b7f7fc6f706ea5774ce51035725"
+    },
+    {
+      "path": "START_PROMPT.txt",
+      "bytes": 2850,
+      "sha256": "b350e846dc94f166e1de5235742c9953bd5b7e099c9e837335577e34d4bf9352"
+    },
+    {
+      "path": "SUKOON_MASTER_PLAN.md",
+      "bytes": 28782,
+      "sha256": "1c5ba52aa273d4ce058c1e49a2b02c2e3fbeaacd4a95e15028e2516b9add31fb"
+    },
+    {
+      "path": "docs/CONTENT_AI_POLICY.md",
+      "bytes": 10874,
+      "sha256": "fc7179defe07e8e289f2889c86647463941fcc6658a65f25c083c4664099622f"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "bytes": 4156,
+      "sha256": "cb37f8946d70be49da1f4882d487ca4be52b2611b27fab12256541017c037862"
+    },
+    {
+      "path": "docs/DESIGN_SPEC.md",
+      "bytes": 7935,
+      "sha256": "0d71568557024e3d1e5aa5033190642a5a623c9316e134e4222f2b862f97ad1f"
+    },
+    {
+      "path": "docs/LAUNCH_CHECKLIST.md",
+      "bytes": 6771,
+      "sha256": "7483adeeab24906b75b2d435aee6c4523f309c5adcf69a6099baf0b3a1f5681e"
+    },
+    {
+      "path": "docs/PRODUCT_SOURCE_OF_TRUTH.md",
+      "bytes": 15405,
+      "sha256": "6c1abc2554e236b1201399c0a0be3eee12dfba15f2f60b9f7fe1e09c71147faa"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 1503,
+      "sha256": "061aa023535054da35a6bfb266d09aa1f0e347138dc34bd4199f6b55a1e4d75b"
+    },
+    {
+      "path": "docs/TECHNICAL_SPEC.md",
+      "bytes": 26312,
+      "sha256": "04730239e68dd649b13743758a7a5a84418725242302d9bff48bb9a6008e3083"
+    },
+    {
+      "path": "references/Property_OS_Concept_Summary.pdf",
+      "bytes": 164708,
+      "sha256": "2afc51cd055485c727fee304ed8430d86ff75273813594c4f47e1ef0d8d7ca98"
+    },
+    {
+      "path": "references/SOURCE_MAP.md",
+      "bytes": 4566,
+      "sha256": "d83cbc5790ac9dfcae8d4197c0216ef132fc8903d8be738076db7c0e2d87c8dd"
+    },
+    {
+      "path": "references/home-latest-reference.png",
+      "bytes": 1422861,
+      "sha256": "844f23399cabc2635254b5ebf65b0fd36ffe5472d1af33598fead5106456ed6a"
+    },
+    {
+      "path": "references/sukoon-logo-original.jpeg",
+      "bytes": 13422,
+      "sha256": "34e2cc3433ab5cbd2bb8d17a67e57d95eabe6591f917ff8280641e51a9ee7884"
+    }
+  ]
+}
