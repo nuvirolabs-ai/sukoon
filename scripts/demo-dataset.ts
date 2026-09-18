@@ -129,6 +129,24 @@ async function timeline(ws, propertyId, title, detail, date = iso(0), kind = "de
 const DEMO_RULE_SOURCE = "Synthetic demo content — not legal advice — v1";
 async function ensureDemoRule(operatorId, input) {
   let rule = await prisma.checklistRule.findFirst({ where: { stableKey: input.stableKey, status: { in: ["DRAFT", "IN_REVIEW", "PUBLISHED"] } }, orderBy: { version: "desc" } });
+  if (stagingSeed) {
+    if (rule) return rule;
+    const seeded = await prisma.$transaction(async (tx) => {
+      const created = await tx.checklistRule.create({ data: {
+        id: randomUUID(), stableKey: input.stableKey, version: 1, contentType: input.contentType ?? "checklist",
+        title: input.title, description: input.description, category: input.category,
+        jurisdiction: input.jurisdiction ?? null, propertyType: input.propertyType ?? null,
+        ownershipContext: input.ownershipContext ?? null, evidenceCategory: input.evidenceCategory ?? null,
+        requiresConfirmation: input.requiresConfirmation === true, effectiveFrom: input.effectiveFrom,
+        effectiveUntil: input.effectiveUntil ?? null, sourceName: DEMO_RULE_SOURCE,
+        sourceReference: { kind: "synthetic_demo", dataset: "SYNTHETIC DEMO DATASET v1", reviewedFor: "guarded staging seed" },
+        sourcePublishedDate: iso(0), reviewer: "Synthetic demo operator", reviewedAt: at(0), status: "PUBLISHED",
+      } });
+      await tx.ruleAuditEvent.create({ data: { id: randomUUID(), ruleId: created.id, actorUserId: operatorId, action: "seeded", fromStatus: null, toStatus: "PUBLISHED", detail: { dataset: "SYNTHETIC DEMO DATASET v1", guarded: true } } });
+      return created;
+    });
+    return seeded;
+  }
   if (!rule) rule = await createRuleDraftForOperator(operatorId, input);
   if (rule.status === "PUBLISHED") return rule;
   if (rule.status === "DRAFT") {
