@@ -7,6 +7,8 @@ import { S3ObjectStorageAdapter } from "@/lib/s3-object-storage";
 import {
   LocalObjectStorageAdapter,
   LocalUnavailableScanner,
+  UnavailableDocumentScanner,
+  UnavailableObjectStorageAdapter,
   assertProviderConfiguration,
   UnavailableAiExtraction,
   UnavailableOcrAdapter,
@@ -49,6 +51,10 @@ export function localDocumentProcessingDependencies(): DocumentProcessingDepende
 export function documentProcessingDependenciesForEnvironment(env: NodeJS.ProcessEnv = process.env): DocumentProcessingDependencies {
   if (env.APP_ENV !== "staging" && env.SUKOON_RUNTIME_PROFILE !== "STAGING") return localDocumentProcessingDependencies();
   assertProviderConfiguration(env);
+  if (env.SUKOON_DOCUMENTS_MODE === "unavailable") {
+    const storage = new UnavailableObjectStorageAdapter();
+    return { storage, scanner: new UnavailableDocumentScanner(), parser: new LocalTextPdfParser(storage), ocr: new UnavailableOcrAdapter(), ai: new UnavailableAiExtraction() };
+  }
   const storage = new S3ObjectStorageAdapter({ endpoint: env.SUKOON_STORAGE_ENDPOINT!, bucket: env.SUKOON_STORAGE_BUCKET!, accessKeyId: env.SUKOON_STORAGE_ACCESS_KEY!, secretAccessKey: env.SUKOON_STORAGE_SECRET_KEY! });
   return {
     storage,

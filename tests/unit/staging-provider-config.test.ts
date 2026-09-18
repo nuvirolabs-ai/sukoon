@@ -30,6 +30,19 @@ const stagingEnv = {
   SUKOON_EMAIL_FROM: "Sukoon Demo <demo@example.test>",
 } as const;
 
+const partialStagingEnv = {
+  APP_ENV: "staging",
+  NODE_ENV: "production",
+  SUKOON_RUNTIME_PROFILE: "STAGING",
+  DATABASE_URL: "postgresql://render-host-test:5432/sukoon_demo_staging",
+  BETTER_AUTH_URL: "https://demo.sukoon.nuvirolabs.com",
+  SUKOON_DOCUMENTS_MODE: "unavailable",
+  SUKOON_STORAGE_PROVIDER: "unconfigured",
+  SUKOON_SCANNER_PROVIDER: "unconfigured",
+  SUKOON_EMAIL_MODE: "unavailable",
+  SUKOON_EMAIL_PROVIDER: "unconfigured",
+} as const;
+
 describe("staging provider contract", () => {
   it("accepts the required remote web providers while optional capabilities remain unavailable", () => {
     const configuration = providerConfiguration(stagingEnv);
@@ -70,5 +83,21 @@ describe("staging provider contract", () => {
     expect(dependencies.email.environment).toBe("remote");
     expect(dependencies.email.id).toBe("staging-smtp");
     expect(dependencies.push.environment).toBe("unconfigured");
+  });
+
+  it("allows explicit partial staging only with fail-closed document and email capabilities", async () => {
+    const configuration = providerConfiguration(partialStagingEnv);
+    expect(configuration.errors).toEqual([]);
+    expect(configuration.bindings).toMatchObject({ objectStorage: "unconfigured", malwareScan: "unconfigured", email: "unconfigured" });
+
+    const dependencies = documentProcessingDependenciesForEnvironment(partialStagingEnv);
+    expect(dependencies.storage.environment).toBe("unconfigured");
+    expect(dependencies.scanner.environment).toBe("unconfigured");
+    await expect(dependencies.storage.put({ storageKey: "demo/document.pdf", bytes: new Uint8Array([1]), contentType: "application/pdf" })).resolves.toEqual({ outcome: "unavailable", reason: "DOCUMENT_STORAGE_DISABLED" });
+    await expect(dependencies.scanner.scan({ storageKey: "demo/document.pdf", contentType: "application/pdf", sizeBytes: 1, documentVersionId: "version", sha256: "a".repeat(64) })).resolves.toMatchObject({ outcome: "unavailable", reason: "DOCUMENT_SCANNING_DISABLED" });
+
+    const reminderDependencies = stagingReminderWorkerDependencies(partialStagingEnv);
+    expect(reminderDependencies.email.environment).toBe("unconfigured");
+    expect(reminderDependencies.email.id).toBe("staging-email-unavailable");
   });
 });

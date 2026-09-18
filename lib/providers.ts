@@ -35,6 +35,28 @@ export interface ObjectStoragePort {
   delete(storageKey: string): Promise<ProviderResult<{ storageKey: string }>>;
 }
 
+/** Explicit partial-staging adapter. It never writes local files or claims availability. */
+export class UnavailableObjectStorageAdapter implements ObjectStoragePort {
+  readonly id = "staging-document-storage-unavailable";
+  readonly environment: AdapterEnvironment = "unconfigured";
+
+  async put(): Promise<ProviderResult<{ storageKey: string }>> {
+    return { outcome: "unavailable", reason: "DOCUMENT_STORAGE_DISABLED" };
+  }
+
+  async get(): Promise<ProviderResult<{ bytes: Uint8Array; contentType: string }>> {
+    return { outcome: "unavailable", reason: "DOCUMENT_STORAGE_DISABLED" };
+  }
+
+  async delete(): Promise<ProviderResult<{ storageKey: string }>> {
+    return { outcome: "unavailable", reason: "DOCUMENT_STORAGE_DISABLED" };
+  }
+
+  async probe() {
+    return { ready: false as const, reason: "DOCUMENT_STORAGE_DISABLED" };
+  }
+}
+
 export interface MalwareScanPort {
   readonly id: string;
   readonly environment: AdapterEnvironment;
@@ -151,6 +173,20 @@ export class LocalUnavailableScanner implements MalwareScanPort {
   }
 }
 
+/** Explicit partial-staging scanner. It never marks a document clean. */
+export class UnavailableDocumentScanner implements MalwareScanPort {
+  readonly id = "staging-document-scanning-unavailable";
+  readonly environment: AdapterEnvironment = "unconfigured";
+
+  async scan(): Promise<ScanResult> {
+    return { outcome: "unavailable", reason: "DOCUMENT_SCANNING_DISABLED" };
+  }
+
+  async probe() {
+    return { ready: false as const, reason: "DOCUMENT_SCANNING_DISABLED" };
+  }
+}
+
 /** A sandbox capture is observable local test behavior, not external delivery. */
 export class SandboxEmailAdapter implements TransactionalEmailPort {
   readonly id = "sandbox-mailbox";
@@ -159,6 +195,16 @@ export class SandboxEmailAdapter implements TransactionalEmailPort {
   async send(_input: { to: string; subject: string; text: string; idempotencyKey?: string }): Promise<ProviderResult<{ messageId: string }>> {
     void _input;
     return { outcome: "sandbox", value: { messageId: "sandbox-captured" }, note: "Captured locally; no email was delivered." };
+  }
+}
+
+/** Explicit partial-staging email adapter. It never claims delivery. */
+export class UnavailableEmailAdapter implements TransactionalEmailPort {
+  readonly id = "staging-email-unavailable";
+  readonly environment: AdapterEnvironment = "unconfigured";
+
+  async send(): Promise<ProviderResult<{ messageId: string }>> {
+    return { outcome: "unavailable", reason: "EMAIL_DELIVERY_UNAVAILABLE" };
   }
 }
 
@@ -245,16 +291,28 @@ function stagingEnvironment(env: NodeJS.ProcessEnv) {
 
 function stagingConfigurationErrors(env: NodeJS.ProcessEnv, bindings: Record<ProviderCapability, AdapterEnvironment>) {
   const errors: string[] = [];
+  const documentsUnavailable = env.SUKOON_DOCUMENTS_MODE === "unavailable";
+  const emailUnavailable = env.SUKOON_EMAIL_MODE === "unavailable";
   if (env.SUKOON_RUNTIME_PROFILE !== "STAGING") errors.push("Staging requires SUKOON_RUNTIME_PROFILE=STAGING.");
   for (const capability of ["objectStorage", "malwareScan", "email"] as const) {
+    if ((capability === "objectStorage" || capability === "malwareScan") && documentsUnavailable) {
+      if (bindings[capability] === "remote") errors.push(`${capability} must remain unconfigured while hosted documents are unavailable.`);
+      continue;
+    }
+    if (capability === "email" && emailUnavailable) {
+      if (bindings[capability] === "remote") errors.push("email must remain unconfigured while staged email delivery is unavailable.");
+      continue;
+    }
     if (bindings[capability] !== "remote") errors.push(`${capability} requires a remote provider in staging, received ${bindings[capability]}.`);
   }
-  const required = [
-    "DATABASE_URL", "BETTER_AUTH_URL", "SUKOON_STORAGE_ENDPOINT", "SUKOON_STORAGE_BUCKET",
-    "SUKOON_STORAGE_ACCESS_KEY", "SUKOON_STORAGE_SECRET_KEY", "SUKOON_CLAMAV_ENDPOINT",
-    "SUKOON_SMTP_HOST", "SUKOON_SMTP_PORT", "SUKOON_SMTP_TLS_MODE", "SUKOON_SMTP_USERNAME", "SUKOON_SMTP_PASSWORD", "SUKOON_EMAIL_FROM",
-  ] as const;
+  const required = ["DATABASE_URL", "BETTER_AUTH_URL"] as const;
   for (const name of required) if (!env[name]) errors.push(`${name} is required for staging.`);
+  if (!documentsUnavailable) {
+    for (const name of ["SUKOON_STORAGE_ENDPOINT", "SUKOON_STORAGE_BUCKET", "SUKOON_STORAGE_ACCESS_KEY", "SUKOON_STORAGE_SECRET_KEY", "SUKOON_CLAMAV_ENDPOINT"] as const) if (!env[name]) errors.push(`${name} is required for staging.`);
+  }
+  if (!emailUnavailable) {
+    for (const name of ["SUKOON_SMTP_HOST", "SUKOON_SMTP_PORT", "SUKOON_SMTP_TLS_MODE", "SUKOON_SMTP_USERNAME", "SUKOON_SMTP_PASSWORD", "SUKOON_EMAIL_FROM"] as const) if (!env[name]) errors.push(`${name} is required for staging.`);
+  }
   if (env.BETTER_AUTH_URL) {
     try {
       const origin = new URL(env.BETTER_AUTH_URL);

@@ -23,6 +23,19 @@ const valid = {
   SUKOON_EMAIL_FROM: "Sukoon Demo <demo@example.test>",
 } as const;
 
+const partial = {
+  APP_ENV: "staging",
+  NODE_ENV: "production",
+  SUKOON_RUNTIME_PROFILE: "STAGING",
+  DATABASE_URL: "postgresql://render-host-test:5432/sukoon_demo_staging",
+  BETTER_AUTH_URL: "https://demo.sukoon.nuvirolabs.com",
+  SUKOON_DOCUMENTS_MODE: "unavailable",
+  SUKOON_STORAGE_PROVIDER: "unconfigured",
+  SUKOON_SCANNER_PROVIDER: "unconfigured",
+  SUKOON_EMAIL_MODE: "unavailable",
+  SUKOON_EMAIL_PROVIDER: "unconfigured",
+} as const;
+
 describe("staging worker readiness", () => {
   it("rejects local/test profiles, local data roots and non-staging databases", () => {
     expect(() => assertWorkerEnvironment({ APP_ENV: "local", NODE_ENV: "development", DATABASE_URL: "postgresql://localhost/sukoon_s02_local_review" })).toThrow("WORKER_STAGING_ONLY");
@@ -38,5 +51,9 @@ describe("staging worker readiness", () => {
 
   it("allows consumption only after the current schema and providers are confirmed", async () => {
     await expect(checkWorkerReadiness(valid, { migrationsReady: async () => true })).resolves.toEqual({ ready: true, environment: "staging" });
+  });
+
+  it("allows the worker to run in explicit partial mode without claiming document or email readiness", async () => {
+    await expect(checkWorkerReadiness(partial, { migrationsReady: async () => true })).resolves.toEqual({ ready: true, environment: "staging" });
   });
 });

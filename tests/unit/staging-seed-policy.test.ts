@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertStagingSeedEnvironment, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
+import { assertStagingSeedEnvironment, stagingSeedCapabilities, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
 
 const valid = {
   APP_ENV: "staging",
@@ -24,6 +24,20 @@ const valid = {
   SUKOON_EMAIL_FROM: "Sukoon Demo <demo@example.test>",
 } as const;
 
+const partial = {
+  APP_ENV: "staging",
+  NODE_ENV: "production",
+  SUKOON_RUNTIME_PROFILE: "STAGING",
+  SUKOON_STAGING_SEED_CONFIRMATION: STAGING_SEED_CONFIRMATION,
+  DATABASE_URL: "postgresql://render-host-test:5432/sukoon_demo_staging",
+  BETTER_AUTH_URL: "https://demo.sukoon.nuvirolabs.com",
+  SUKOON_DOCUMENTS_MODE: "unavailable",
+  SUKOON_STORAGE_PROVIDER: "unconfigured",
+  SUKOON_SCANNER_PROVIDER: "unconfigured",
+  SUKOON_EMAIL_MODE: "unavailable",
+  SUKOON_EMAIL_PROVIDER: "unconfigured",
+} as const;
+
 describe("staging seed guard", () => {
   it("requires an explicit synthetic confirmation and exact database scope", () => {
     expect(() => assertStagingSeedEnvironment({ ...valid, SUKOON_STAGING_SEED_CONFIRMATION: "" })).toThrow("STAGING_SEED_CONFIRMATION_REQUIRED");
@@ -41,5 +55,14 @@ describe("staging seed guard", () => {
 
   it("accepts only a fully configured staging environment", () => {
     expect(() => assertStagingSeedEnvironment(valid, "sukoon_demo_staging")).not.toThrow();
+  });
+
+  it("accepts explicit partial staging without document or SMTP providers", () => {
+    expect(() => assertStagingSeedEnvironment(partial, "sukoon_demo_staging")).not.toThrow();
+  });
+
+  it("reports partial staging capabilities without treating disabled providers as available", () => {
+    expect(stagingSeedCapabilities(partial)).toEqual({ documents: "unavailable", email: "unavailable" });
+    expect(stagingSeedCapabilities(valid)).toEqual({ documents: "available", email: "available" });
   });
 });

@@ -2,7 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceForUser } from "@/lib/repository";
 import { enqueueJob, runWorkerOnce, type JobRecord } from "@/lib/worker";
-import { SandboxEmailAdapter, UnavailablePushAdapter, type PushNotificationPort, type TransactionalEmailPort } from "@/lib/providers";
+import { SandboxEmailAdapter, UnavailableEmailAdapter, UnavailablePushAdapter, type PushNotificationPort, type TransactionalEmailPort } from "@/lib/providers";
 import { SmtpEmailAdapter, smtpConfigFromEnvironment } from "@/lib/smtp-mailbox";
 
 export const REMINDER_STATES = ["SCHEDULED", "READY", "DISPATCHING", "DELIVERED", "FAILED_RETRYABLE", "FAILED_TERMINAL", "CANCELLED"] as const;
@@ -323,6 +323,7 @@ export function localReminderWorkerDependencies(): ReminderWorkerDependencies {
 }
 
 export function stagingReminderWorkerDependencies(env: NodeJS.Dict<string> = process.env): ReminderWorkerDependencies {
+  if (env.SUKOON_EMAIL_MODE === "unavailable") return { email: new UnavailableEmailAdapter(), push: new UnavailablePushAdapter() };
   return { email: new SmtpEmailAdapter(smtpConfigFromEnvironment(env)), push: new UnavailablePushAdapter() };
 }
 

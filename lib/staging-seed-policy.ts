@@ -6,6 +6,13 @@ import { assertProviderConfiguration } from "@/lib/providers";
 export const STAGING_DATABASE_NAME = "sukoon_demo_staging";
 export const STAGING_SEED_CONFIRMATION = "CLIENT_DEMO_SYNTHETIC_V1";
 
+export function stagingSeedCapabilities(env: NodeJS.ProcessEnv = process.env) {
+  return {
+    documents: env.SUKOON_DOCUMENTS_MODE === "unavailable" ? "unavailable" as const : "available" as const,
+    email: env.SUKOON_EMAIL_MODE === "unavailable" ? "unavailable" as const : "available" as const,
+  };
+}
+
 function databaseName(raw: string | undefined) {
   try {
     const url = new URL(raw ?? "");
@@ -22,10 +29,14 @@ export function assertStagingSeedEnvironment(env: NodeJS.ProcessEnv = process.en
   if (env.SUKOON_STAGING_SEED_CONFIRMATION !== STAGING_SEED_CONFIRMATION) throw new Error("STAGING_SEED_CONFIRMATION_REQUIRED");
   if (env.SUKOON_DATA_DIR && path.resolve(env.SUKOON_DATA_DIR) === path.resolve(".data")) throw new Error("STAGING_SEED_LOCAL_DATA_FORBIDDEN");
   if (databaseName(env.DATABASE_URL) !== STAGING_DATABASE_NAME || (actualDatabaseName !== undefined && actualDatabaseName !== STAGING_DATABASE_NAME)) throw new Error("STAGING_SEED_DATABASE_SCOPE_INVALID");
-  if (env.SUKOON_STORAGE_PROVIDER !== "remote" || !env.SUKOON_STORAGE_BUCKET?.startsWith("sukoon-demo-staging")) throw new Error("STAGING_SEED_STORAGE_SCOPE_INVALID");
-  if (env.SUKOON_SCANNER_PROVIDER !== "remote") throw new Error("STAGING_SEED_SCANNER_SCOPE_INVALID");
-  if (env.SUKOON_EMAIL_PROVIDER !== "remote" || env.SUKOON_AUTH_MAILBOX === "memory" || env.SUKOON_AUTH_MAILBOX === "sandbox") throw new Error("STAGING_SEED_EMAIL_SCOPE_INVALID");
-  try { validatePrivateStorageEndpoint(env.SUKOON_STORAGE_ENDPOINT ?? ""); } catch { throw new Error("STAGING_SEED_STORAGE_ENDPOINT_INVALID"); }
-  try { validatePrivateScannerEndpoint(env.SUKOON_CLAMAV_ENDPOINT ?? ""); } catch { throw new Error("STAGING_SEED_SCANNER_ENDPOINT_INVALID"); }
+  const documentsUnavailable = env.SUKOON_DOCUMENTS_MODE === "unavailable";
+  const emailUnavailable = env.SUKOON_EMAIL_MODE === "unavailable";
+  if (!documentsUnavailable && (env.SUKOON_STORAGE_PROVIDER !== "remote" || !env.SUKOON_STORAGE_BUCKET?.startsWith("sukoon-demo-staging"))) throw new Error("STAGING_SEED_STORAGE_SCOPE_INVALID");
+  if (!documentsUnavailable && env.SUKOON_SCANNER_PROVIDER !== "remote") throw new Error("STAGING_SEED_SCANNER_SCOPE_INVALID");
+  if (!emailUnavailable && (env.SUKOON_EMAIL_PROVIDER !== "remote" || env.SUKOON_AUTH_MAILBOX === "memory" || env.SUKOON_AUTH_MAILBOX === "sandbox")) throw new Error("STAGING_SEED_EMAIL_SCOPE_INVALID");
+  if (!documentsUnavailable) {
+    try { validatePrivateStorageEndpoint(env.SUKOON_STORAGE_ENDPOINT ?? ""); } catch { throw new Error("STAGING_SEED_STORAGE_ENDPOINT_INVALID"); }
+    try { validatePrivateScannerEndpoint(env.SUKOON_CLAMAV_ENDPOINT ?? ""); } catch { throw new Error("STAGING_SEED_SCANNER_ENDPOINT_INVALID"); }
+  }
   try { assertProviderConfiguration(env); } catch { throw new Error("STAGING_SEED_PROVIDER_CONFIGURATION_INVALID"); }
 }
