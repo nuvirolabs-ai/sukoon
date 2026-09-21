@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { deliverVerificationOtp, isEmailDeliveryConfigured } from "@/lib/auth-mailbox";
 import { sessionLifetimeSeconds } from "@/lib/session-policy";
 import { trustedOriginList } from "@/lib/trusted-origins";
-import { clientReviewAuthPlugin } from "@/lib/client-review-auth";
+import { clientReviewAuthPlugin, stagingReviewAuthPlugin } from "@/lib/client-review-auth";
 
 const secret = process.env.BETTER_AUTH_SECRET;
 if (!secret || secret.length < 32) {
@@ -36,7 +36,7 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
     cookieCache: { enabled: false },
   },
-  plugins: [localTransportGuard, clientReviewAuthPlugin(),
+  plugins: [localTransportGuard, clientReviewAuthPlugin(), stagingReviewAuthPlugin(),
     emailOTP({
       otpLength: 6,
       expiresIn: 5 * 60,

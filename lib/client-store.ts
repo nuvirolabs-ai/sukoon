@@ -10,7 +10,10 @@ export type ClientSnapshot = {
   error?: string;
 };
 
-export const clientReviewClient = process.env.NEXT_PUBLIC_SUKOON_RUNTIME_PROFILE === "CLIENT_REVIEW";
+const runtimeProfile = process.env.NEXT_PUBLIC_SUKOON_RUNTIME_PROFILE;
+export const clientReviewClient = runtimeProfile === "CLIENT_REVIEW";
+export const stagingReviewClient = runtimeProfile === "STAGING";
+export const reviewCodeClient = clientReviewClient || stagingReviewClient;
 
 let snapshot: ClientSnapshot = { status: "loading", state: null, email: null, version: 0 };
 const SERVER_SNAPSHOT: ClientSnapshot = { status: "loading", state: null, email: null, version: 0 };
@@ -109,8 +112,16 @@ export async function requestOtp(email: string) {
 }
 
 export async function signInClientReview(email: string, accessCode: string) {
+  return signInReviewEndpoint("/api/auth/client-review/sign-in", email, accessCode);
+}
+
+export async function signInStagingReview(email: string, accessCode: string) {
+  return signInReviewEndpoint("/api/auth/staging-review/sign-in", email, accessCode);
+}
+
+async function signInReviewEndpoint(path: string, email: string, accessCode: string) {
   const epoch = ++accountEpoch;
-  const response = await fetch("/api/auth/client-review/sign-in", {
+  const response = await fetch(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email.trim(), accessCode }),

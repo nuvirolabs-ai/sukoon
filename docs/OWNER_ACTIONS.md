@@ -2,12 +2,13 @@
 
 ## Client-demo staging decision set — approval boundary
 
-The repository-side Render plan is prepared on local branch
-`codex/sukoon-render-demo-staging`, but this checkout has no configured Git
-remote. It is therefore not yet true that a clean remote staging branch
-represents the current product. The owner must connect/authorize the approved
-Git provider, push the reviewed branch and confirm the Render Blueprint points
-at that exact branch/SHA. The publication audit and `.gitignore` now exclude
+The repository-side Render plan and staging-review authentication change are
+prepared on local branch `codex/sukoon-render-demo-staging`, with the approved
+`origin` remote configured. The current V1 baseline is preserved by local
+checkpoint branch `codex/sukoon-v1-dirty-checkpoint-20260921` at
+`989b3656a94af075f311c721d5cf83e160d3b12b`. After the dedicated auth commit is
+reviewed, push that branch and confirm the existing Render web service points
+at the exact pushed SHA. The publication audit and `.gitignore` now exclude
 local `.data`, OTP/session history, databases, ClamAV signatures, private
 documents, EICAR/malware fixtures, APKs, archives and temporary acceptance
 output; do not force-add them.
@@ -18,7 +19,7 @@ enabled and permissions protection enabled where the workspace plan supports
 them. The first apply creates only four services and one dedicated paid
 Postgres database from `render.yaml`: web, worker, private SeaweedFS storage,
 private ClamAV and `sukoon_demo_staging`. No Render, DNS, SMTP or billable
-resource has been created.
+resource has been created by the staging-review auth task.
 
 Before clicking Deploy Blueprint, approve the following estimate explicitly:
 
@@ -56,14 +57,15 @@ the result is malformed, or the scanner is unavailable.
 
 ### Owner actions required to cross the boundary
 
-1. Approve the $73.25/month staging estimate (or send a revised budget) and
-   authorize the Render workspace/project creation. This is the first external
-   gate; do not click Deploy Blueprint before it is explicit.
-2. Authorize/connect the Git provider and push the current reviewed branch as a
-   clean remote staging branch. Confirm the exact SHA that Render will use.
-3. Supply approved staging SMTP host, port, TLS mode, username, password and a
-   verified sender through Render's secret prompt. Do not put credentials in
-   chat or Git. The local sandbox mailbox is not used remotely.
+1. For the currently approved auth-only task, authorize the existing Render
+   account/service deployment and configure the three staging-review variables
+   in Render without exposing their values. Do not create SMTP, storage,
+   ClamAV or another Postgres.
+2. Confirm the exact pushed SHA that the existing web service will deploy.
+3. If a later full client-demo deployment is approved, separately supply
+   staging SMTP host, port, TLS mode, username, password and a verified sender
+   through Render's secret prompt. Do not put credentials in chat or Git. The
+   local sandbox mailbox is not used remotely.
 4. If the SMTP provider requires it, add its separate DKIM, SPF and/or
    domain-verification DNS records. These are in addition to the application
    DNS record.

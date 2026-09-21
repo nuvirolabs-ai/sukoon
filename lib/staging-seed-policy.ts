@@ -6,6 +6,12 @@ import { assertProviderConfiguration } from "@/lib/providers";
 export const STAGING_DATABASE_NAME = "sukoon_demo_staging";
 export const STAGING_SEED_CONFIRMATION = "CLIENT_DEMO_SYNTHETIC_V1";
 
+export function stagingReviewOwnerEmail(env: NodeJS.Dict<string> = process.env) {
+  const email = (env.SUKOON_STAGING_REVIEW_EMAIL ?? "akshay-review@sukoon.local").trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error("STAGING_REVIEW_EMAIL_INVALID");
+  return email;
+}
+
 /** Internal-only handoff needed by the guarded seed to accept synthetic shares. */
 export function stagingSeedAllowsInternalInvitationToken(env: NodeJS.ProcessEnv = process.env) {
   return env.APP_ENV === "staging" &&

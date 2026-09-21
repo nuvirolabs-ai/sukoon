@@ -1,12 +1,12 @@
 # Sukoon client demo staging runbook
 
-**Status:** `REPOSITORY_PREPARED_COST_APPROVAL_REQUIRED` — 2026-09-17
+**Status:** `STAGING_REVIEW_AUTH_IMPLEMENTED_EXTERNAL_DEPLOYMENT_PENDING` — 2026-09-21
 
 This runbook prepares the isolated client-demo environment requested for `https://demo.sukoon.nuvirolabs.com`. It is not a deployment claim. No external resource, DNS record, database, bucket, email provider, server or paid service has been created by this checkpoint.
 
 ## Current repository-side checkpoint
 
-- The current working tree is on local branch `codex/sukoon-render-demo-staging`; no Git remote is configured, so a clean remote staging branch cannot yet be verified or pushed. The publication audit passed for 429 non-ignored tracked/untracked candidate paths without printing secret values. Before any push, stage only the reviewed source, migration, infrastructure, docs and tests; never stage `.data`, OTP/session history, databases, ClamAV signatures, private documents, EICAR/malware fixtures, APKs, archives or temporary acceptance output.
+- The reviewed source is on local branch `codex/sukoon-render-demo-staging`, with remote `origin` set to the approved `nuvirolabs-ai/sukoon` repository. The V1 baseline is preserved by local checkpoint branch `codex/sukoon-v1-dirty-checkpoint-20260921` at `989b3656a94af075f311c721d5cf83e160d3b12b`; its recovery bundle is retained outside the repository. The publication audit passed without printing secret values. Before any push, stage only the reviewed source, infrastructure, docs and tests; never stage `.data`, OTP/session history, databases, ClamAV signatures, private documents, EICAR/malware fixtures, APKs, archives or temporary acceptance output.
 - The repository-side staging contract is implemented and tested: remote S3-compatible storage, private clamd scanning, remote SMTP OTP delivery, web-owned Prisma migrations, worker migration readiness/fail-closed behavior, staging heartbeats, guarded synthetic seed and authenticated readiness checks. No Render resource, DNS record, SMTP provider or external message has been created.
 - The first Render Blueprint is now present in the working tree at `../render.yaml`. It defines one `sukoon-demo-staging` project and `demo-staging` environment with isolation/protection enabled, four services plus one dedicated paid Postgres database, all in Singapore, and preview generation disabled. The web service self-references Render's generated `RENDER_EXTERNAL_URL` for the first infrastructure/auth check; no custom domain is in the first apply.
 
@@ -18,7 +18,7 @@ The selected `sukoon-clamav` implementation is the official Cisco Talos `clamav/
 
 ## Earlier audit record
 
-- No Sukoon deployment manifest, linked `.vercel` project, Docker Compose deployment, managed-database binding or object-storage adapter exists in the checkout.
+- No Render deployment has been performed by this checkpoint. The existing `render.yaml` remains a reference for the previously approved isolated topology; it must not be applied wholesale for this task because SMTP, storage, ClamAV and a new Postgres are explicitly out of scope.
 - `demo.sukoon.nuvirolabs.com` did not resolve during the audit. The exact DNS record cannot be specified until an approved hosting target supplies its canonical hostname or public address.
 - The available Vercel CLI session exposes existing Signor Vale projects, including older Sukoon projects, but no approved Nuvirolabs client-demo project or `nuvirolabs.com` domain. Those projects and domains were not reused.
 - The current runtime selects local filesystem storage, local ClamAV and the in-memory sandbox OTP transport for `APP_ENV=local`. It does not yet select those implementations as staging providers under a production Next runtime. Staging provider integration must be completed and tested before any remote APK is built.
@@ -70,7 +70,7 @@ Provide these as one staging decision set; do not put secrets into this reposito
 5. **Monitoring:** approved health/alert destination, operating owner, response window, worker/database/storage alert thresholds and backup destination.
 6. **Staging policy:** demo-account allowlist, document retention/cleanup date, whether Akshay may upload documents during the demo, and the staging restore/rollback owner.
 
-No paid service or external email delivery will be activated until the relevant provider and spend are explicitly approved.
+No paid service, external email delivery, SMTP, storage, ClamAV or additional Postgres will be activated by the staging-review authentication task.
 
 ## Staging configuration contract
 
@@ -94,6 +94,29 @@ SUKOON_CLAMAV_DATABASE=<staging host private signature path>
 ```
 
 The staging process must fail closed if it sees a local/test/sandbox adapter, a localhost database that is not the isolated staging database, the local `.data` root, an HTTP public origin, a wildcard trusted origin, the local OTP mailbox, a missing secret or a public object-storage policy. OCR, live AI, push, government connections and payment gateways remain unavailable unless separately approved; they must not block ordinary scanned-document/manual-review demo flows or be represented as live.
+
+## Hosted synthetic review login
+
+The hosted CLIENT DEMO / STAGING profile supports a separate access-code sign-in for the approved synthetic Akshay account when SMTP is intentionally unavailable. It is a distinct Better Auth endpoint and is enabled only when all four runtime conditions are true:
+
+```text
+APP_ENV=staging
+NODE_ENV=production
+SUKOON_RUNTIME_PROFILE=STAGING
+SUKOON_STAGING_REVIEW_LOGIN=true
+```
+
+The web service receives these Render environment variables through the secret configuration surface; their values are never committed or exposed to the browser:
+
+```text
+SUKOON_STAGING_REVIEW_LOGIN=true
+SUKOON_STAGING_REVIEW_EMAIL=<approved synthetic review email>
+SUKOON_STAGING_REVIEW_ACCESS_CODE=<new random value, at least 32 characters>
+```
+
+The browser receives only the non-secret `STAGING` runtime profile and submits the entered email/code to `/api/auth/staging-review/sign-in`. The server requires the exact allowlisted email, compares the code in constant time, throttles repeated failures, and creates an ordinary Better Auth session cookie. It does not read the local mailbox, fall back to OTP, bypass authorization, or enable the route in LOCAL, CLIENT_REVIEW or PRODUCTION. The staging seed uses the configured review email, with the synthetic `akshay-review@sukoon.local` default, so the seeded user and login allowlist remain aligned.
+
+This mode does not make document processing available. If storage or scanning is disabled in staging, upload/preview/download remains explicitly unavailable and no clean verdict is fabricated.
 
 For the Render Blueprint, `BETTER_AUTH_URL`, `BETTER_AUTH_TRUSTED_ORIGINS` and `SUKOON_TRUSTED_ORIGINS` initially self-reference the web service's generated `RENDER_EXTERNAL_URL`. After that hostname's health and auth checks pass, add the owner-approved custom domain, set all three origins to `https://demo.sukoon.nuvirolabs.com`, verify authentication, then disable the Render subdomain. The first Blueprint intentionally does not contain the custom domain because Render requires a custom domain before its subdomain can be disabled.
 

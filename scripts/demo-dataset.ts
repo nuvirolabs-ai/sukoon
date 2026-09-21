@@ -25,17 +25,17 @@ import { JobOwnershipError } from "../lib/worker";
 import { demoPaise, demoRupees, DEMO_MONEY_EXPECTATIONS } from "../lib/demo-money";
 import { createRuleDraftForOperator, transitionRuleForOperator, updateRuleDraftForOperator } from "../lib/rules";
 import { evaluatePropertyHealthForUser } from "../lib/assessment";
-import { assertStagingSeedEnvironment, stagingSeedCapabilities, STAGING_DATABASE_NAME } from "../lib/staging-seed-policy";
+import { assertStagingSeedEnvironment, stagingReviewOwnerEmail, stagingSeedCapabilities, STAGING_DATABASE_NAME } from "../lib/staging-seed-policy";
 
 const VERSION = "1";
 const reviewSeed = process.argv[2] === "client-review";
 const seedPrefix = reviewSeed ? "client-review-v1" : "demo-v1";
-const OWNER = reviewSeed ? (process.env.SUKOON_CLIENT_REVIEW_EMAIL ?? "akshay-review@sukoon.local") : "demo-owner@sukoon.local";
+const stagingSeed = process.env.APP_ENV === "staging" && process.env.SUKOON_RUNTIME_PROFILE === "STAGING";
+const OWNER = stagingSeed ? stagingReviewOwnerEmail() : reviewSeed ? (process.env.SUKOON_CLIENT_REVIEW_EMAIL ?? "akshay-review@sukoon.local") : "demo-owner@sukoon.local";
 const PERSONAS = {
   owner: OWNER, lawyer: reviewSeed ? "akshay-review-lawyer@sukoon.local" : "demo-lawyer@sukoon.local", architect: reviewSeed ? "akshay-review-architect@sukoon.local" : "demo-architect@sukoon.local", coowner: reviewSeed ? "akshay-review-coowner@sukoon.local" : "demo-coowner@sukoon.local", buyer: reviewSeed ? "akshay-review-buyer@sukoon.local" : "demo-buyer@sukoon.local", operator: reviewSeed ? "akshay-review-operator@sukoon.local" : "demo-operator@sukoon.local",
 };
 const APPROVED_DB = "sukoon_s02_local_20260911";
-const stagingSeed = process.env.APP_ENV === "staging" && process.env.SUKOON_RUNTIME_PROFILE === "STAGING";
 const root = path.resolve(process.env.SUKOON_DATA_DIR ?? ".data");
 const markerDir = path.join(root, "synthetic-demo");
 const markerPath = path.join(markerDir, reviewSeed ? `${seedPrefix}.json` : "dataset-v1.json");

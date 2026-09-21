@@ -28,6 +28,8 @@ projects:
                 value: production
               - key: SUKOON_RUNTIME_PROFILE
                 value: STAGING
+              - key: NEXT_PUBLIC_SUKOON_RUNTIME_PROFILE
+                value: STAGING
               - key: PORT
                 value: "10000"
               - key: DATABASE_URL
@@ -90,6 +92,12 @@ projects:
               - key: SUKOON_SMTP_PASSWORD
                 sync: false
               - key: SUKOON_EMAIL_FROM
+                sync: false
+              - key: SUKOON_STAGING_REVIEW_LOGIN
+                sync: false
+              - key: SUKOON_STAGING_REVIEW_EMAIL
+                sync: false
+              - key: SUKOON_STAGING_REVIEW_ACCESS_CODE
                 sync: false
 
           - name: sukoon-worker

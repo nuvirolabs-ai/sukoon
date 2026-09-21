@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertStagingSeedEnvironment, stagingSeedAllowsInternalInvitationToken, stagingSeedCapabilities, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
+import { assertStagingSeedEnvironment, stagingReviewOwnerEmail, stagingSeedAllowsInternalInvitationToken, stagingSeedCapabilities, STAGING_SEED_CONFIRMATION } from "@/lib/staging-seed-policy";
 
 const valid = {
   APP_ENV: "staging",
@@ -39,6 +39,12 @@ const partial = {
 } as const;
 
 describe("staging seed guard", () => {
+  it("seeds the configured synthetic staging review email and uses the safe Akshay default", () => {
+    expect(stagingReviewOwnerEmail({ SUKOON_STAGING_REVIEW_EMAIL: " Akshay-Review@Sukoon.Local " })).toBe("akshay-review@sukoon.local");
+    expect(stagingReviewOwnerEmail({})).toBe("akshay-review@sukoon.local");
+    expect(() => stagingReviewOwnerEmail({ SUKOON_STAGING_REVIEW_EMAIL: "not-an-email" })).toThrow("STAGING_REVIEW_EMAIL_INVALID");
+  });
+
   it("requires an explicit synthetic confirmation and exact database scope", () => {
     expect(() => assertStagingSeedEnvironment({ ...valid, SUKOON_STAGING_SEED_CONFIRMATION: "" })).toThrow("STAGING_SEED_CONFIRMATION_REQUIRED");
     expect(() => assertStagingSeedEnvironment({ ...valid, DATABASE_URL: "postgresql://render-host:5432/other" })).toThrow("STAGING_SEED_DATABASE_SCOPE_INVALID");
