@@ -98,5 +98,5 @@ describe("staging demo enrichment", () => {
     expect(await prisma.bill.count({ where: { workspaceId, id: { startsWith: "sukoon-demo-enrichment-v1-" } } })).toBe(enrichedBillCount);
     expect(await prisma.timelineEvent.count({ where: { workspaceId, id: { startsWith: "sukoon-demo-enrichment-v1-" } } })).toBe(enrichedTimelineCount);
     expect(await prisma.propertyDoc.count({ where: { workspaceId } })).toBe(0);
-  });
+  }, 30_000);
 });

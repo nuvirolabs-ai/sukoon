@@ -574,7 +574,7 @@ async function constructionAction(args: { db: Db; ownerId: string; projectId: st
 }
 
 async function enrichConstructionState(args: { db: Db; ownerId: string; workspaceId: string; projectId: string; propertyId: string; activeStageId: string | null; created: Record<string, number>; skipped: Record<string, number>; conflicts: string[] }) {
-  const { db, ownerId, projectId, activeStageId } = args;
+  const { db, projectId, activeStageId } = args;
   const existingDecision = await db.constructionDecision.findFirst({ where: { projectId, title: "Electrical layout decision" } });
   if (!existingDecision) await constructionAction({ ...args, action: "DECISION_CREATE", semanticKey: "electrical-layout-decision", body: { stageId: activeStageId, title: "Electrical layout decision", assignedTo: "Rohan Shah", dueDate: "2026-10-02", context: `${DEMO_ENRICHMENT_NAMESPACE} · choose the electrical layout before rough-in; no professional approval is implied.`, options: [{ label: "Proceed with current layout", description: "Synthetic option for owner discussion.", estimatedCostImpactPaise: "0", estimatedScheduleImpactDays: 0 }, { label: "Revise outlet plan", description: "Synthetic alternative for owner discussion.", estimatedCostImpactPaise: "850000", estimatedScheduleImpactDays: 7 }] } });
   const cementIssue = await db.constructionIssue.findFirst({ where: { projectId, title: "Cement shortage" } });
