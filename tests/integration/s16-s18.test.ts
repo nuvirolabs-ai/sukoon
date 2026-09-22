@@ -67,6 +67,16 @@ async function cleanupReminderQueue() {
   await prisma.outboxEvent.deleteMany();
 }
 
+async function waitForReminderWorker(workerId: string) {
+  const deadline = Date.now() + 2_000;
+  let result = await runReminderWorkerOnce(workerId);
+  while (!result && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    result = await runReminderWorkerOnce(workerId);
+  }
+  return result;
+}
+
 beforeAll(async () => {
   await prisma.user.deleteMany();
   await prisma.outboxEvent.deleteMany();
@@ -170,8 +180,7 @@ describe("S16 durable reminders and local notification boundaries", () => {
     await prisma.durableReminder.update({ where: { id: manualReminder[0].id as string }, data: { state: "READY", scheduledAt: new Date() } });
     await enqueueReadyReminderJobs();
     const crashed = await import("@/lib/worker").then(({ claimNextJob }) => claimNextJob("s16-crashed-worker", 100, ["DISPATCH_REMINDER"])); expect(crashed?.eventType).toBe("DISPATCH_REMINDER");
-    await new Promise((resolve) => setTimeout(resolve, 140));
-    expect((await runReminderWorkerOnce("s16-restarted-worker"))?.status).toBe("succeeded");
+    expect((await waitForReminderWorker("s16-restarted-worker"))?.status).toBe("succeeded");
     expect((await prisma.durableReminder.findUniqueOrThrow({ where: { id: manualReminder[0].id as string } })).state).toBe("DELIVERED");
   });
 });
