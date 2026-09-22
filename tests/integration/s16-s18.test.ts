@@ -69,10 +69,10 @@ async function cleanupReminderQueue() {
 
 async function waitForReminderWorker(workerId: string) {
   const deadline = Date.now() + 2_000;
-  let result = await runReminderWorkerOnce(workerId);
+  let result = await runReminderWorkerOnce(workerId, undefined, { leaseMs: 100 });
   while (!result && Date.now() < deadline) {
     await new Promise((resolve) => setTimeout(resolve, 25));
-    result = await runReminderWorkerOnce(workerId);
+    result = await runReminderWorkerOnce(workerId, undefined, { leaseMs: 100 });
   }
   return result;
 }

@@ -313,9 +313,9 @@ async function dispatchReminder(job: JobRecord, deps: ReminderWorkerDependencies
   throw Object.assign(new Error(result.reason), { code: "REMINDER_PROVIDER_UNAVAILABLE" });
 }
 
-export async function runReminderWorkerOnce(workerId: string, dependencies: ReminderWorkerDependencies = localReminderWorkerDependencies()) {
+export async function runReminderWorkerOnce(workerId: string, dependencies: ReminderWorkerDependencies = localReminderWorkerDependencies(), options?: { leaseMs?: number }) {
   await enqueueReadyReminderJobs();
-  return runWorkerOnce(workerId, (job) => dispatchReminder(job, dependencies), {eventTypes: ["DISPATCH_REMINDER"]});
+  return runWorkerOnce(workerId, (job) => dispatchReminder(job, dependencies), { eventTypes: ["DISPATCH_REMINDER"], leaseMs: options?.leaseMs });
 }
 
 export function localReminderWorkerDependencies(): ReminderWorkerDependencies {
