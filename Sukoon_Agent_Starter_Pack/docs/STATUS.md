@@ -1,5 +1,23 @@
 # SUKOON — Current Implementation State
 
+## Latest checkpoint — DEMO_ENRICHMENT_CODE_TESTED, 2026-09-22
+
+An additive `SUKOON_DEMO_ENRICHMENT_V1` seed is implemented for the existing
+synthetic Akshay staging workspace. It is fixed to the `2026-09-22` anchor,
+uses deterministic namespaced IDs/domain request keys, preserves the existing
+user/properties/project/purchase workspace/payment history, and requires the
+exact production-staging profile plus database `sukoon_demo_staging`. It
+refuses local `.data` and all other database names. It creates no document or
+document-version rows and makes no scan, OCR, AI, legal, government, provider
+or payment-gateway claim.
+
+The isolated focused unit and integration tests pass, including a second-run
+idempotency check and zero-document-write assertion. Lint and typecheck pass.
+The command is `npm run demo:enrich:staging`; it has not yet been run against
+hosted staging in this checkpoint. Hosted browser acceptance and deployment
+evidence remain open. See `../../docs/evidence/DEMO_ENRICHMENT.md` and the
+staging runbook. No production action or new infrastructure was taken.
+
 ## Latest checkpoint — FINAL_CLIENT_REVIEW_PHYSICAL_MOTO, 2026-09-17
 
 The authorized Moto installed the client-review APK successfully and completed

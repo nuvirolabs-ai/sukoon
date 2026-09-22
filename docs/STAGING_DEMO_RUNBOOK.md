@@ -1,8 +1,38 @@
 # Sukoon client demo staging runbook
 
-**Status:** `STAGING_REVIEW_AUTH_IMPLEMENTED_EXTERNAL_DEPLOYMENT_PENDING` — 2026-09-21
+**Status:** `DEMO_ENRICHMENT_CODE_TESTED_STAGING_EXECUTION_PENDING` — 2026-09-22
 
 This runbook prepares the isolated client-demo environment requested for `https://demo.sukoon.nuvirolabs.com`. It is not a deployment claim. No external resource, DNS record, database, bucket, email provider, server or paid service has been created by this checkpoint.
+
+## Latest additive demo-enrichment checkpoint — 2026-09-22
+
+The repository now contains `SUKOON_DEMO_ENRICHMENT_V1`, a separate additive
+seed for the existing Akshay staging workspace. It is anchored to
+`2026-09-22`, uses stable namespaced IDs and request keys, and refuses to run
+unless all of the following are true: `APP_ENV=staging`, `NODE_ENV=production`,
+`SUKOON_RUNTIME_PROFILE=STAGING`, the exact confirmation namespace is present,
+and the connected database is named `sukoon_demo_staging`. It also refuses the
+local `.data` root. The command is:
+
+```text
+npm run demo:enrich:staging
+```
+
+The command never creates or modifies `PropertyDoc` or `DocumentVersion` rows,
+never writes scan/review/OCR/AI/provider evidence, never creates a payment
+provider record, and does not replace the existing user, properties, project,
+purchase workspace or payment history. Existing domain services are used for
+obligations/payments, maintenance, construction state, reminders and purchase
+entries; historical timeline/bill rows are additive, deterministic owner-entered
+synthetic records. It is safe to rerun: an existing namespaced row is reported
+as skipped, and an idempotency collision or missing baseline record fails closed.
+
+Fresh local evidence (isolated integration database) is recorded in
+`docs/evidence/DEMO_ENRICHMENT.md`. It proves the plan, scope guard,
+idempotent rerun and zero document writes only; it is not hosted staging
+execution or browser acceptance. Hosted execution remains pending until the
+existing staging service is deliberately run with the command above against
+the existing staging database.
 
 ## Current repository-side checkpoint
 

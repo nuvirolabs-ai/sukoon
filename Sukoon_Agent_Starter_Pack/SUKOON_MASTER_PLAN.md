@@ -1,5 +1,21 @@
 # SUKOON — Master Implementation Plan
 
+## Current additive staging-demo slice — DEMO_ENRICHMENT_V1, 2026-09-22
+
+The existing synthetic staging workspace has a repository-side enrichment
+executor ready for the next authorized staging action. It is not a baseline
+reseed and it does not replace the existing Akshay user, three properties,
+Construction project, Purchase Workspace or payment records. The fixed
+namespace/anchor, exact staging/database guard, zero-document boundary and
+local idempotency evidence are recorded in `../docs/evidence/DEMO_ENRICHMENT.md`.
+
+Status dimensions: code/tested; reviewed content synthetic-only; provider
+integration none; hosted browser acceptance pending; device/release not
+claimed. Next action is to run the guarded command against the existing
+`sukoon_demo_staging` database only, then inspect authenticated Home, Properties,
+Bills, Maintenance, Construction, Buy/Sell, Search and Updates. Do not run the
+command against local, test or production databases.
+
 ## Current repository-side staging checkpoint — R03, 2026-09-17
 
 R03 is **REPOSITORY_PREPARED / COST_APPROVAL_REQUIRED**, not deployed. The

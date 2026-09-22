@@ -18,6 +18,7 @@
     "worker:staging": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production tsx scripts/run-staging-worker.ts",
     "demo:seed": "APP_ENV=local SUKOON_DATA_DIR=.data tsx scripts/demo-dataset.ts seed",
     "demo:seed:staging": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production tsx scripts/demo-dataset.ts staging",
+    "demo:enrich:staging": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production SUKOON_DEMO_ENRICHMENT_CONFIRMATION=SUKOON_DEMO_ENRICHMENT_V1 tsx scripts/demo-enrichment.ts",
     "demo:reset": "APP_ENV=local SUKOON_DATA_DIR=.data tsx scripts/demo-dataset.ts reset",
     "seed:construction-ab": "APP_ENV=local SUKOON_DATA_DIR=.data tsx scripts/seed-construction-ab-v1.ts",
     "build": "next build",
