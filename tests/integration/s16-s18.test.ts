@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { toNextJsHandler } from "better-auth/next-js";
 import { randomUUID } from "node:crypto";
 import { auth } from "@/lib/auth";
@@ -61,8 +61,15 @@ async function makeCleanDocument(ownerEmail: string, propertyId: string, label: 
 
 let ownerCookie = ""; let familyCookie = ""; let lawyerCookie = ""; let userBCookie = ""; let operatorCookie = ""; let propertyId = ""; let otherPropertyId = ""; let registryId = ""; let hiddenId = ""; let maintenanceId = ""; let shareId = ""; let operationId = "";
 
+async function cleanupReminderQueue() {
+  await prisma.reminderAttempt.deleteMany();
+  await prisma.durableReminder.deleteMany();
+  await prisma.outboxEvent.deleteMany();
+}
+
 beforeAll(async () => {
   await prisma.user.deleteMany();
+  await prisma.outboxEvent.deleteMany();
   clearLocalMailbox();
   ownerCookie = await signIn("s16-owner@example.com");
   familyCookie = await signIn("s16-family@example.com");
@@ -77,7 +84,8 @@ beforeAll(async () => {
   hiddenId = (await makeCleanDocument("s16-owner@example.com", propertyId, "hidden")).id;
 });
 
-afterAll(async () => { await prisma.user.deleteMany(); clearLocalMailbox(); });
+afterAll(async () => { await prisma.outboxEvent.deleteMany(); await prisma.user.deleteMany(); clearLocalMailbox(); });
+afterEach(cleanupReminderQueue);
 
 describe("S16 durable reminders and local notification boundaries", () => {
   it("uses date-only local semantics across timezone, month-end, leap-day, and chosen delivery time", async () => {

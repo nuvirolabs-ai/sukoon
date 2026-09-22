@@ -6,7 +6,7 @@ import {runReminderWorkerOnce} from "@/lib/durable-reminders";
 import {runDocumentJobOnce} from "@/lib/document-processing";
 
 async function cleanup() {
-  await prisma.outboxEvent.deleteMany({ where: { idempotencyKey: { startsWith: "s08-" } } });
+  await prisma.outboxEvent.deleteMany();
 }
 
 beforeAll(cleanup);
