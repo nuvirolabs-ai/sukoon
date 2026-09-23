@@ -1,4 +1,5 @@
 import { requirePrincipal, AuthorizationError } from "@/lib/authz";
+import { hasTrustedOrigin } from "@/lib/request-origin";
 import { buyerStory, sellerStory, transactionCommand } from "@/lib/transactions";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    if (request.headers.get("origin") !== new URL(request.url).origin) return json({ error: { message: "Same-origin request required." } }, 403);
+    if (!hasTrustedOrigin(request)) return json({ error: { message: "Same-origin request required." } }, 403);
     const actor = await principal(request);
     let input: unknown;
     try { input = await request.json(); } catch { return json({ error: { message: "Invalid JSON." } }, 400); }

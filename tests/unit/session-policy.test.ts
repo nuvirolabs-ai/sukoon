@@ -12,4 +12,11 @@ describe("isolated acceptance session lifetime", () => {
     expect(hasTrustedOrigin(new Request("http://localhost:3100/api/operations/content"))).toBe(false);
     expect(hasTrustedOrigin(new Request("http://localhost:3100/api/operations/content", { headers: { origin: "https://attacker.invalid" } }))).toBe(false);
   });
+  it("accepts the configured public origin when the request URL is the internal bind address", () => {
+    const env = { APP_ENV: "staging", SUKOON_RUNTIME_PROFILE: "STAGING", BETTER_AUTH_URL: "https://demo.example.test" };
+    const internal = "https://0.0.0.0:10000/api/transactions";
+    expect(hasTrustedOrigin(new Request(internal, { headers: { origin: "https://demo.example.test" } }), env)).toBe(true);
+    expect(hasTrustedOrigin(new Request(internal, { headers: { origin: "https://0.0.0.0:10000" } }), env)).toBe(false);
+    expect(hasTrustedOrigin(new Request(internal), env)).toBe(false);
+  });
 });

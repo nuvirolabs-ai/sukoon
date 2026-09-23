@@ -1,4 +1,5 @@
 import { requirePrincipal, AuthorizationError } from "@/lib/authz";
+import { hasTrustedOrigin } from "@/lib/request-origin";
 import { purchaseCommand, purchaseSnapshot } from "@/lib/purchases";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -17,7 +18,7 @@ async function handle(request: Request) {
       if (!workspace) { if (id) throw new AuthorizationError("PURCHASE_NOT_FOUND", 404, "Purchase not found."); return json({ data: [] }); }
       return json({ data: await purchaseSnapshot(await requirePrincipal(request), id) });
     }
-    if (request.headers.get("origin") !== new URL(request.url).origin) return json({ error: { message: "Same-origin request required." } }, 403);
+    if (!hasTrustedOrigin(request)) return json({ error: { message: "Same-origin request required." } }, 403);
     let input: unknown; try { input = await request.json(); } catch { return json({ error: { message: "Invalid JSON." } }, 400); }
     if (!input || typeof input !== "object" || Array.isArray(input)) return json({ error: { message: "Object required." } }, 400);
     // A new buyer needs an account container, never a fabricated owned property.
