@@ -8,6 +8,7 @@ import { useToast } from "@/components/motion/Toast";
 import { inr } from "@/lib/utils";
 import { purchaseMeta, splitPurchaseName } from "@/lib/purchase-presentation";
 import { CandidateForm, findCandidate, usePurchaseWorkspaces } from "@/components/PurchaseWorkspace";
+import { BuyerStory } from "@/components/TransactionStory";
 
 type Evidence = { id: string; body: string; kind: string; state: string };
 
@@ -74,7 +75,8 @@ export default function PurchaseOverviewPage() {
           <Metric label="Asking" value={candidate.askingPricePaise ? inr(Number(candidate.askingPricePaise) / 100) : "Not entered"} />
           <Metric label="Your target" value={candidate.budgetPaise ? inr(Number(candidate.budgetPaise) / 100) : "Not entered"} />
         </div>
-        <p className="text-[15px]">{displayLabel(candidate.stage)}</p>
+        <p className="text-[15px]">{displayLabel(candidate.transactionPhase || candidate.stage)}</p>
+        <BuyerStory candidateId={candidate.id} />
         <section>
           <h2 className="section-heading">Progress</h2>
           <GroupedList>

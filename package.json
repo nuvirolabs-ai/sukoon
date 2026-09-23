@@ -21,6 +21,8 @@
     "demo:enrich:staging": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production SUKOON_DEMO_ENRICHMENT_CONFIRMATION=SUKOON_DEMO_ENRICHMENT_V1 tsx scripts/demo-enrichment.ts",
     "demo:reset": "APP_ENV=local SUKOON_DATA_DIR=.data tsx scripts/demo-dataset.ts reset",
     "seed:construction-ab": "APP_ENV=local SUKOON_DATA_DIR=.data tsx scripts/seed-construction-ab-v1.ts",
+    "construction:populate": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production SUKOON_CONSTRUCTION_POPULATE_CONFIRMATION=SUKOON_CONSTRUCTION_POPULATE_V2 tsx scripts/construction-populate.ts",
+    "transactions:populate": "APP_ENV=staging SUKOON_RUNTIME_PROFILE=STAGING NODE_ENV=production SUKOON_TRANSACTION_DEMO_CONFIRMATION=SUKOON_TRANSACTION_DEMO_V1 tsx scripts/transaction-populate.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

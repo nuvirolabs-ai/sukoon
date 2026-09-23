@@ -128,6 +128,18 @@ model Workspace {
   exportPackages      ExportPackage[]
   exportPackageItems  ExportPackageItem[]
   assistantRequests   AssistantRequest[]
+  scenarioManifests   ScenarioManifest[]
+  saleWorkspaces      SaleWorkspace[]
+  offerRevisions      OfferRevision[]
+  termsRevisions      TermsRevision[]
+  financingCases      FinancingCase[]
+  paymentPlanLines    PaymentPlanLine[]
+  transactionMoney    TransactionMoneyRecord[]
+  transactionVisits   TransactionVisit[]
+  transactionHandovers TransactionHandover[]
+  dealRooms           DealRoom[]
+  dealNotes           DealNote[]
+  transactionGuidance TransactionGuidance[]
 
   @@index([ownerUserId])
 }
@@ -161,12 +173,22 @@ model PurchaseCandidate {
   source String?
   notes String?
   stage String @default("CONSIDERING")
+  transactionPhase String?
+  lifecycle String @default("ACTIVE")
+  linkedPropertyId String?
   version Int @default(0)
   requestKey String @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   purchaseWorkspace PurchaseWorkspace @relation(fields: [purchaseWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
   entries PurchaseEntry[]
+  offers OfferRevision[]
+  terms TermsRevision[]
+  financing FinancingCase?
+  paymentPlanLines PaymentPlanLine[]
+  moneyRecords TransactionMoneyRecord[]
+  visits TransactionVisit[]
+  handover TransactionHandover?
   @@unique([id, workspaceId])
   @@index([purchaseWorkspaceId])
 }
@@ -180,6 +202,7 @@ model PurchaseEntry {
   workspaceId String
   kind String
   body String
+  dueDate String?
   requestKey String @unique
   createdAt DateTime @default(now())
   candidate PurchaseCandidate @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
@@ -242,6 +265,7 @@ model Property {
   exportPackages    ExportPackage[]
   exportPackageItems ExportPackageItem[]
   assistantRequests AssistantRequest[]
+  saleWorkspaces SaleWorkspace[]
 
   @@unique([id, workspaceId])
   @@index([workspaceId, status])
@@ -1854,4 +1878,328 @@ model WorkerHeartbeat {
   updatedAt       DateTime @updatedAt
 
   @@index([environment, lastSeenAt])
+}
+
+// Namespaced demo manifests. Payloads stay stable across reruns.
+model ScenarioManifest {
+  id String @id
+  namespace String
+  workspaceId String
+  subjectType String
+  subjectId String @default("")
+  anchorDate String
+  fingerprint String
+  status String
+  report Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([namespace, workspaceId, subjectType])
+  @@index([workspaceId])
+}
+
+model SaleWorkspace {
+  id String @id
+  workspaceId String
+  propertyId String
+  askingPricePaise BigInt?
+  possessionTargetDate String?
+  description String @default("")
+  phase String @default("CONSIDERING")
+  lifecycle String @default("ACTIVE")
+  version Int @default(0)
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  prospects SaleProspect[]
+  offers OfferRevision[]
+  terms TermsRevision[]
+  paymentPlanLines PaymentPlanLine[]
+  moneyRecords TransactionMoneyRecord[]
+  handover TransactionHandover?
+
+  @@unique([id, workspaceId])
+  @@index([workspaceId, propertyId])
+}
+
+model SaleProspect {
+  id String @id
+  saleWorkspaceId String
+  workspaceId String
+  name String
+  source String?
+  privateNotes String @default("")
+  status String @default("INTERESTED")
+  version Int @default(0)
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  saleWorkspace SaleWorkspace @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  offers OfferRevision[]
+  visits TransactionVisit[]
+
+  @@unique([id, workspaceId])
+  @@index([saleWorkspaceId])
+}
+
+model OfferRevision {
+  id String @id
+  workspaceId String
+  candidateId String?
+  prospectId String?
+  saleWorkspaceId String?
+  amountPaise BigInt
+  currency String @default("INR")
+  authorSource String
+  previousOfferId String?
+  status String @default("RECORDED")
+  termsSnapshot Json
+  offeredOn String
+  requestKey String @unique
+  payloadHash String
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  prospect SaleProspect? @relation(fields: [prospectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  saleWorkspace SaleWorkspace? @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, candidateId])
+  @@index([workspaceId, prospectId])
+}
+
+model TermsRevision {
+  id String @id
+  workspaceId String
+  candidateId String?
+  prospectId String?
+  saleWorkspaceId String?
+  revision Int
+  snapshot Json
+  requestKey String @unique
+  payloadHash String
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  saleWorkspace SaleWorkspace? @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  acknowledgements TermsAcknowledgement[]
+
+  @@index([workspaceId, candidateId])
+}
+
+model TermsAcknowledgement {
+  id String @id
+  workspaceId String
+  termsRevisionId String
+  actorUserId String
+  acknowledgementType String
+  createdAt DateTime @default(now())
+  termsRevision TermsRevision @relation(fields: [termsRevisionId], references: [id], onDelete: Cascade)
+
+  @@unique([termsRevisionId, actorUserId, acknowledgementType])
+  @@index([workspaceId])
+}
+
+model FinancingCase {
+  id String @id
+  workspaceId String
+  candidateId String
+  status String @default("NOT_STARTED")
+  sourceOfFunds String?
+  requestedPaise BigInt?
+  sanctionedPaise BigInt?
+  disbursedPaise BigInt?
+  conditions String @default("")
+  version Int @default(0)
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@unique([candidateId, workspaceId])
+}
+
+model PaymentPlanLine {
+  id String @id
+  workspaceId String
+  candidateId String?
+  saleWorkspaceId String?
+  label String
+  amountPaise BigInt
+  dueDate String?
+  classification String
+  requestKey String @unique
+  payloadHash String
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  saleWorkspace SaleWorkspace? @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, candidateId])
+}
+
+model TransactionMoneyRecord {
+  id String @id
+  workspaceId String
+  candidateId String?
+  saleWorkspaceId String?
+  amountPaise BigInt
+  currency String @default("INR")
+  kind String
+  allocation String
+  reversalOfId String? @unique
+  occurredOn String
+  source String
+  requestKey String @unique
+  note String @default("")
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  saleWorkspace SaleWorkspace? @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  reversalOf TransactionMoneyRecord? @relation("TransactionMoneyReversal", fields: [reversalOfId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reversals TransactionMoneyRecord[] @relation("TransactionMoneyReversal")
+
+  @@index([workspaceId, candidateId])
+}
+
+model TransactionVisit {
+  id String @id
+  workspaceId String
+  candidateId String?
+  prospectId String?
+  startsOn String
+  timezone String @default("Asia/Kolkata")
+  contactName String?
+  notes String @default("")
+  observations String @default("")
+  status String @default("PLANNED")
+  requestKey String @unique
+  payloadHash String
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  prospect SaleProspect? @relation(fields: [prospectId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+
+  @@index([workspaceId, candidateId])
+}
+
+model TransactionHandover {
+  id String @id
+  workspaceId String
+  candidateId String?
+  saleWorkspaceId String?
+  status String @default("NOT_STARTED")
+  plannedDate String?
+  version Int @default(0)
+  snapshot Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  candidate PurchaseCandidate? @relation(fields: [candidateId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  saleWorkspace SaleWorkspace? @relation(fields: [saleWorkspaceId, workspaceId], references: [id, workspaceId], onDelete: Cascade)
+  items TransactionHandoverItem[]
+
+  @@unique([candidateId, workspaceId])
+  @@unique([saleWorkspaceId, workspaceId])
+}
+
+model TransactionHandoverItem {
+  id String @id
+  handoverId String
+  workspaceId String
+  label String
+  disposition String @default("OPEN")
+  note String @default("")
+  handover TransactionHandover @relation(fields: [handoverId], references: [id], onDelete: Cascade)
+
+  @@unique([handoverId, label])
+  @@index([workspaceId])
+}
+
+model DealRoom {
+  id String @id
+  workspaceId String
+  subjectType String
+  subjectId String
+  version Int @default(0)
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  grants DealGrant[]
+  notes DealNote[]
+  disclosures DealDisclosure[]
+
+  @@unique([workspaceId, subjectType, subjectId])
+}
+
+model DealGrant {
+  id String @id
+  roomId String
+  workspaceId String
+  inviteeEmail String
+  inviteeUserId String?
+  roleLabel String
+  capabilities String[]
+  status String @default("INVITED")
+  tokenHash String
+  expiresAt DateTime
+  acceptedAt DateTime?
+  revokedAt DateTime?
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  room DealRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([inviteeUserId, status])
+  @@index([workspaceId])
+}
+
+model DealNote {
+  id String @id
+  roomId String?
+  workspaceId String
+  authorUserId String
+  audience String
+  body String
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  room DealRoom? @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, audience])
+}
+
+model DealDisclosure {
+  id String @id
+  roomId String
+  workspaceId String
+  factKey String
+  factValue String
+  expiresAt DateTime?
+  revokedAt DateTime?
+  requestKey String @unique
+  createdAt DateTime @default(now())
+  room DealRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+model TransactionGuidance {
+  id String @id
+  workspaceId String
+  ruleKey String
+  subjectType String
+  subjectId String
+  relevanceKey String
+  title String
+  href String
+  dueDate String?
+  state String @default("ACTIVE")
+  sourceFingerprint String
+  evaluatedAt DateTime
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, ruleKey, subjectType, subjectId, relevanceKey])
+  @@index([workspaceId, state])
 }

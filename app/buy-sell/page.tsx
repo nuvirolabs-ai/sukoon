@@ -12,7 +12,8 @@ export default function BuySell() {
       <PageHead title="Buy / Sell" />
       <div className="space-y-6 pb-6">
         <GroupedList>
-          <ListRow href="/buy-sell/purchases" title="Purchase workspaces" detail="Private buying journeys" />
+          <ListRow href="/buy-sell/purchases" title="I'm buying" detail="Private candidates, questions, offers and handover" />
+          <ListRow href="/buy-sell/sales" title="I'm selling" detail="Prepare one property you already own" />
         </GroupedList>
         <section>
           <SectionHeader title="Guides" />

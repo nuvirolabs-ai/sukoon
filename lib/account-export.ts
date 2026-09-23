@@ -53,7 +53,8 @@ async function recordsFor(userId: string) {
       shares: { select: { id: true, propertyId: true, role: true, inviteeEmail: true, acceptedAt: true, revokedAt: true, expiresAt: true, scopes: true } },
       projects: { include: { stages: true, tasks: true, budgets: true, costs: true, materials: true, prices: true, procurement: true, contacts: true, updates: true, events: true, documents: true } },
       processingControl: true,
-      purchaseWorkspaces: { select: { id: true, name: true, createdAt: true, candidates: { select: { id: true, name: true, propertyType: true, location: true, areaValue: true, areaUnit: true, askingPricePaise: true, budgetPaise: true, source: true, notes: true, stage: true, version: true, entries: { select: { id: true, kind: true, body: true, state: true, version: true, createdAt: true, events: { select: { id: true, action: true, note: true, source: true, actorUserId: true, documentVersionId: true, createdAt: true }, orderBy: { createdAt: "asc" } } } } } } } },
+      purchaseWorkspaces: { select: { id: true, name: true, createdAt: true, candidates: { select: { id: true, name: true, propertyType: true, location: true, areaValue: true, areaUnit: true, askingPricePaise: true, budgetPaise: true, source: true, notes: true, stage: true, transactionPhase: true, lifecycle: true, linkedPropertyId: true, version: true, entries: { select: { id: true, kind: true, body: true, state: true, dueDate: true, version: true, createdAt: true, events: { select: { id: true, action: true, note: true, source: true, actorUserId: true, documentVersionId: true, createdAt: true }, orderBy: { createdAt: "asc" } } } } } } } },
+      saleWorkspaces: { select: { id: true, propertyId: true, askingPricePaise: true, phase: true, lifecycle: true, description: true, prospects: { select: { id: true, name: true, source: true, status: true } } } },
     } });
     return { account, workspace };
   }, { isolationLevel: "RepeatableRead", timeout: 15000 });
