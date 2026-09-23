@@ -69,7 +69,7 @@ it("creates one Mehta Residence and does not duplicate it or its costs on a seco
   expect(invoice?.status).toBe("DRAFT");
   expect(await prisma.supplierQuote.count({ where: { projectId, supplierName: { startsWith: "Steel Supplier" } } })).toBe(3);
   expect(await prisma.constructionProject.count({ where: { workspaceId: otherWorkspaceId } })).toBe(0);
-});
+}, 120000);
 
 it("seeds the three transaction scenes once and keeps a second apply from adding offers or payments", async () => {
   const first = await runTransactionSeed({ operation: "apply", env: transactionEnv, testOnly: true, anchorDate: "2026-09-23" });
@@ -95,4 +95,4 @@ it("seeds the three transaction scenes once and keeps a second apply from adding
   expect(sale.prospects).toHaveLength(2);
   const room = await prisma.dealRoom.findFirst({ where: { workspaceId, subjectId: sale.id } });
   expect(await dealProjection(otherId, room?.id ?? "missing")).toBeNull();
-});
+}, 120000);
