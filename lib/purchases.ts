@@ -27,7 +27,7 @@ const comparable = (value: unknown) => JSON.stringify(value, (_key, v) => typeof
 
 export async function purchaseSnapshot(principal: Principal, id?: string) {
   if (id && !await authorizePurchaseWorkspace(principal, id)) return fail("PURCHASE_NOT_FOUND", 404);
-  return prisma.purchaseWorkspace.findMany({ where: { workspaceId: principal.workspaceId, ...(id ? { id } : {}) }, select: { id: true, name: true, version: true, candidates: { orderBy: { createdAt: "asc" }, select: { id: true, name: true, propertyType: true, location: true, areaValue: true, areaUnit: true, askingPricePaise: true, budgetPaise: true, source: true, notes: true, stage: true, version: true, entries: { orderBy: { createdAt: "asc" }, select: { id: true, kind: true, body: true, createdAt: true } } } } }, orderBy: { createdAt: "desc" } });
+  return prisma.purchaseWorkspace.findMany({ where: { workspaceId: principal.workspaceId, ...(id ? { id } : {}) }, select: { id: true, name: true, version: true, candidates: { orderBy: { createdAt: "asc" }, select: { id: true, name: true, propertyType: true, location: true, areaValue: true, areaUnit: true, askingPricePaise: true, budgetPaise: true, source: true, notes: true, stage: true, transactionPhase: true, lifecycle: true, linkedPropertyId: true, version: true, entries: { orderBy: { createdAt: "asc" }, select: { id: true, kind: true, body: true, state: true, dueDate: true, createdAt: true } } } } }, orderBy: { createdAt: "desc" } });
 }
 export async function purchaseCommand(principal: Principal, input: Record<string, unknown>) {
   const requestKey = key(input.requestKey);
@@ -61,7 +61,8 @@ export async function purchaseCommand(principal: Principal, input: Record<string
       await tx.$queryRaw`SELECT id FROM "PurchaseCandidate" WHERE id = ${candidateId} FOR UPDATE`;
       const prior = await tx.purchaseEntry.findUnique({ where: { requestKey } });
       if (prior) { if (prior.workspaceId !== principal.workspaceId || prior.candidateId !== candidateId || prior.kind !== kind || prior.body !== body) return fail("REQUEST_CONFLICT", 409); return { id: prior.id }; }
-      return tx.purchaseEntry.create({ data: { id: randomUUID(), candidateId, workspaceId: principal.workspaceId, kind, body, requestKey }, select: { id: true } });
+      const dueDate = typeof input.dueDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(input.dueDate) ? input.dueDate : null;
+      return tx.purchaseEntry.create({ data: { id: randomUUID(), candidateId, workspaceId: principal.workspaceId, kind, body, dueDate, requestKey }, select: { id: true } });
     });
   }
   if (input.action === "update-candidate") {

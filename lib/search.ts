@@ -195,9 +195,11 @@ export async function searchForUser(userId: string, rawQuery: unknown, rawFilter
   const result=await baseSearchForUser(userId,rawQuery,rawFilters);
   const {constructionSearchForUser}=await import("@/lib/construction");
   const construction=rawFilters.documentType?[]:await constructionSearchForUser(userId,result.query,rawFilters.propertyId||undefined);
+  const workspaceForTransactions = await getWorkspaceForUser(userId);
+  const transactions = workspaceForTransactions && result.query && !rawFilters.documentType ? await (await import("@/lib/transactions")).transactionSearchForUser(workspaceForTransactions.id, result.query) : [];
   // Recheck after retrieval; withdrawn intelligence must not leak via cached text or match counts.
   const suppressed = await prisma.propertyDoc.findMany({ where: { id: { in: result.documents.map(row => row.id) }, workspace: { processingControl: { isNot: null } } }, select: { id: true } });
   const denied = new Set(suppressed.map(row => row.id));
   const documents = result.documents.filter(row => !denied.has(row.id));
-  return {...result,documents,records:[...result.records,...construction],counts:{...result.counts,documents:documents.length,records:result.counts.records+construction.length}};
+  return {...result,documents,records:[...result.records,...construction,...transactions],counts:{...result.counts,documents:documents.length,records:result.counts.records+construction.length+transactions.length}};
 }

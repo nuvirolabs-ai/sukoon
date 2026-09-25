@@ -12,8 +12,11 @@ export type PurchaseCandidate = {
   source: string | null;
   notes: string | null;
   stage: string;
+  transactionPhase?: string | null;
+  lifecycle?: string | null;
+  linkedPropertyId?: string | null;
   version: number;
-  entries: Array<{ id: string; kind: string; body: string; createdAt: string }>;
+  entries: Array<{ id: string; kind: string; body: string; state?: string; dueDate?: string | null; createdAt: string }>;
 };
 
 export type PurchaseWorkspace = { id: string; name: string; candidates: PurchaseCandidate[] };
@@ -66,6 +69,17 @@ export function askingCopy(candidate: PurchaseCandidate) {
 
 export function stageCopy(stage: string) {
   return displayLabel(stage);
+}
+
+export function purchaseComparison(rows: PurchaseCandidate[]) {
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    location: row.location?.trim() || "Unknown",
+    asking: row.askingPricePaise ? formatMoneyCompact(Number(row.askingPricePaise) / 100) : "Unknown",
+    area: row.areaValue && row.areaUnit ? `${row.areaValue} ${row.areaUnit}` : "Unknown",
+    situation: displayLabel(row.transactionPhase || row.stage),
+  }));
 }
 
 export function rupeesInput(value: string | null) {

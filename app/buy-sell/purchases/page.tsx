@@ -7,7 +7,7 @@ import { Disclosure, GroupedList } from "@/components/consumer";
 import { AnimatedList } from "@/components/motion/AnimatedList";
 import { PurchaseSkeleton } from "@/components/motion/Skeleton";
 import { useToast } from "@/components/motion/Toast";
-import { askingCopy, partitionPurchaseRows, purchaseMeta, splitPurchaseName, stageCopy, type PurchaseRow } from "@/lib/purchase-presentation";
+import { askingCopy, partitionPurchaseRows, purchaseComparison, purchaseMeta, splitPurchaseName, stageCopy, type PurchaseRow } from "@/lib/purchase-presentation";
 import { usePurchaseWorkspaces } from "@/components/PurchaseWorkspace";
 
 export default function PurchasesPage() {
@@ -69,6 +69,22 @@ export default function PurchasesPage() {
             </GroupedList>
           </section>
         ) : null}
+        {groups.active.length > 1 ? (
+          <section>
+            <h2 className="section-heading"><span>Compare</span></h2>
+            <GroupedList>
+              {purchaseComparison(groups.active).map((row) => (
+                <div key={row.id} className="list-row">
+                  <span className="row-copy">
+                    <span className="row-title">{row.name}</span>
+                    <span className="row-detail">{row.situation} · {row.asking} · {row.area} · {row.location}</span>
+                  </span>
+                </div>
+              ))}
+            </GroupedList>
+            <p className="text-sm text-ink-muted">Missing values stay unknown. Areas are shown with their recorded unit and are not treated as equivalent.</p>
+          </section>
+        ) : null}
         <Disclosure title="New purchase workspace" detail="Add a property you’re considering">
           <p className="text-sm">Track a prospective property privately. Your progress does not establish ownership or legal clearance.</p>
           <form onSubmit={(event) => { event.preventDefault(); void command({ action: "create-workspace", name: new FormData(event.currentTarget).get("name") }); }} className="mt-3 space-y-2">
@@ -103,7 +119,7 @@ function PurchaseJourneyRow({ candidate }: { candidate: PurchaseRow }) {
         <span className="row-title" title={title}>{title}</span>
         {subtitle ? <span className="row-detail">{subtitle}</span> : null}
         <span className="row-detail">{purchaseMeta(candidate)}</span>
-        <span className="row-detail">{askingCopy(candidate)} · {stageCopy(candidate.stage)}</span>
+        <span className="row-detail">{askingCopy(candidate)} · {stageCopy(candidate.transactionPhase || candidate.stage)}</span>
         <span className="row-detail">{summary}</span>
       </span>
       <ChevronRight size={18} aria-hidden="true" />

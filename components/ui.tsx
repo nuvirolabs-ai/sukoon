@@ -11,10 +11,13 @@ import { StatusTransition } from "./motion/StatusTransition";
 import { useScrollState } from "./motion/useScrollState";
 
 export function Shell({ children }: { children: React.ReactNode }) {
+  const path = usePathname();
+  const home = path === "/";
   return (
     <div className="app-shell">
-      <a href="#main-content" className="skip-link">Skip to content</a><main id="main-content" className="app-workspace">{children}</main>
-      <BottomNav />
+      <a href="#main-content" className="skip-link">Skip to content</a>
+      <main id="main-content" className={cx("app-workspace", home && "is-home")}>{children}</main>
+      {home ? null : <BottomNav />}
     </div>
   );
 }
