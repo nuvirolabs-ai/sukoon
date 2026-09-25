@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { ChevronDown, Search, UserRound } from "lucide-react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { HOME_LIFE_SESSION_KEY, primaryAskLines, resolveSelectedLifeId, shortLabel } from "@/lib/home-life-session";
-import type { HomeLife } from "@/lib/home-lives";
+import { HOME_LIFE_SESSION_KEY, otherPlaces, primaryAskLines, resolveSelectedLifeId, shortLabel } from "@/lib/home-life-session";
+import type { HomeCapture, HomeLife, HomeVisualSummary } from "@/lib/home-lives";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 type HomeProperty = { id: string; name: string; city?: string | null; area?: string | null };
@@ -52,6 +52,13 @@ function fallbackLives(properties: HomeProperty[]): HomeLife[] {
       moreCount: 0,
       moreHref: `/property/${property.id}`,
       latestChange: null,
+      upcoming: [],
+      upcomingMoreCount: 0,
+      upcomingMoreHref: null,
+      recentChanges: [],
+      visualSummary: null,
+      place: { id: `house:${property.id}`, title: property.name, shortLabel: shortLabel(property.name), status: "", locality: location, dot: false },
+      capture: [],
     };
   });
 }
@@ -126,7 +133,7 @@ export default function HomePage() {
     window.setTimeout(() => {
       setHeldId(id);
       setLeaving(false);
-    }, 180);
+    }, 220);
   }
 
   if (error && !home) {
@@ -158,14 +165,14 @@ export default function HomePage() {
   }
 
   const ask = life.asks[0] ?? null;
-  const secondaries = life.asks.slice(1);
   const calm = !ask && life.summary.headline === "Nothing needs you.";
   const shared = life.summary.headline === "Shared with you.";
-  const showSecondaries = secondaries.length > 0 || life.moreCount > 0;
   const askLines = ask ? primaryAskLines(ask, life.summary.headline) : null;
+  const quiet = !ask && life.upcoming.length === 0 && life.recentChanges.length === 0;
+  const places = otherPlaces(lives, life.id);
 
   return (
-    <div className={`hv2${showSecondaries ? "" : " is-single"}${calm ? " is-calm" : ""}`} aria-busy="false">
+    <div className={`hv2${calm ? " is-calm" : ""}`} aria-busy="false">
       <header className="hv2-header">
         <div className="hv2-switcher" ref={switcherRef}>
           <button type="button" className="hv2-switcher-trigger" aria-expanded={open} aria-haspopup="dialog" onClick={() => setOpen((value) => !value)}>
@@ -194,13 +201,13 @@ export default function HomePage() {
       <div className={`hv2-layout${leaving ? " is-leaving" : ""}`} key={life.id}>
         <section className="hv2-summary" aria-label="This place">
           {life.summary.phaseWord ? <p className="hv2-phase">{life.summary.phaseWord}</p> : null}
-          {life.summary.headline ? <h1 className="hv2-line">{life.summary.headline}</h1> : null}
-          {life.summary.detail ? <p className="hv2-detail">{life.summary.detail}</p> : null}
-          {life.summary.progressPercent !== null ? (
-            <span className="hv2-bar" aria-hidden="true"><span style={{ width: `${life.summary.progressPercent}%` }} /></span>
+          {quiet ? <h1 className="hv2-line">Everything is in order.</h1> : life.summary.headline ? <h1 className="hv2-line">{life.summary.headline}</h1> : null}
+          {!quiet && life.summary.detail ? <p className="hv2-detail">{life.summary.detail}</p> : null}
+          {!quiet && life.summary.progressPercent !== null ? (
+            <span className="hv2-bar" aria-hidden="true"><span key={life.summary.progressPercent} style={{ width: `${life.summary.progressPercent}%` }} /></span>
           ) : null}
-          {life.summary.caption ? <p className="hv2-caption">{life.summary.caption}</p> : null}
-          {life.summary.situation ? <p className="hv2-situation">{life.summary.situation}</p> : null}
+          {!quiet && life.summary.caption ? <p className="hv2-caption">{life.summary.caption}</p> : null}
+          {!quiet && life.summary.situation ? <p className="hv2-situation">{life.summary.situation}</p> : null}
         </section>
         {ask ? (
           <article className={`hv2-ask${ask.tier <= 1 ? " is-urgent" : ""}`}>
@@ -212,22 +219,41 @@ export default function HomePage() {
           </article>
         ) : null}
         {shared ? <Link href={life.destinationHref} className="hv2-button hv2-open">Open</Link> : null}
-        {life.latestChange ? (
-          <Link href={life.latestChange.href} className="hv2-change">{life.latestChange.sentence}</Link>
-        ) : <span className="hv2-change is-empty" />}
-        {showSecondaries ? (
-          <aside className="hv2-also" aria-label="Also">
-            <p className="hv2-also-label">Also</p>
-            {secondaries.map((row) => (
-              <Link key={row.subjectId} href={row.href} className="hv2-secondary">
+        {life.upcoming.length ? (
+          <section className="hv2-week" aria-label="This week">
+            <p className="hv2-kicker">This week</p>
+            {life.upcoming.map((row) => (
+              <Link key={row.subjectId} href={row.href}>
                 <span>{row.title}</span>
-                {row.meta ? <small>{row.meta}</small> : null}
-                <span aria-hidden="true">→</span>
+                <small>{row.label}</small>
               </Link>
             ))}
-            {life.moreCount > 0 ? <Link href={life.moreHref} className="hv2-more">{life.moreCount} more</Link> : null}
-          </aside>
+            {life.upcomingMoreCount > 0 && life.upcomingMoreHref ? <Link href={life.upcomingMoreHref}>See week</Link> : null}
+          </section>
         ) : null}
+        {life.recentChanges.length ? (
+          <section className="hv2-recent" aria-label="Recent changes">
+            <p className="hv2-kicker">Recent changes</p>
+            {life.recentChanges.map((row) => (
+              <Link key={row.subjectId} href={row.href}>{row.title}</Link>
+            ))}
+          </section>
+        ) : null}
+        <VisualMoment summary={life.visualSummary} />
+        {places.length ? (
+          <section className="hv2-places" aria-label="Your places">
+            <p className="hv2-kicker">Your places</p>
+            <div className="hv2-places-row">
+              {places.map((place) => (
+                <button type="button" key={place.id} onClick={() => choose(place.id)}>
+                  <strong>{place.shortLabel}</strong>
+                  {place.status ? <small>{place.status}</small> : null}
+                </button>
+              ))}
+            </div>
+          </section>
+        ) : null}
+        <Capture actions={life.capture} />
       </div>
       <HomeNav middle={{ href: life.destinationHref, label: life.shortLabel }} />
     </div>
@@ -248,6 +274,63 @@ function LifeGroup({ label, lives, selectedId, onSelect }: { label: string; live
           {life.dot ? <i className="hv2-dot" aria-hidden="true" /> : null}
         </button>
       ))}
+    </div>
+  );
+}
+
+function VisualMoment({ summary }: { summary: HomeVisualSummary | null }) {
+  if (!summary) return null;
+  if (summary.kind === "construction") {
+    return (
+      <section className="hv2-visual" aria-label="The build">
+        {summary.photoHref ? <img src={summary.photoHref} alt={summary.photoAlt ?? ""} /> : null}
+        <ol className="hv2-journey">
+          {summary.journey.map((step) => <li key={step.label} className={`is-${step.state}`}>{step.label}</li>)}
+        </ol>
+        <p>{[summary.stageName, summary.milestoneName, summary.progressPercent !== null ? `${summary.progressPercent}%` : null].filter(Boolean).join(" · ")}</p>
+      </section>
+    );
+  }
+  if (summary.kind === "buying") {
+    return (
+      <section className="hv2-visual" aria-label="The purchase">
+        {summary.you && summary.them ? <p>You {summary.you} · Them {summary.them}</p> : null}
+        {summary.recorded && summary.toward ? <p>{summary.recorded} toward {summary.toward}</p> : null}
+        {summary.openHandover !== null ? <p>{summary.openHandover} open</p> : null}
+        {summary.phaseWord ? <p>{summary.phaseWord}</p> : null}
+        {summary.nextVisit ? <p>{summary.nextVisitHref ? <Link href={summary.nextVisitHref}>Visit {summary.nextVisit}</Link> : `Visit ${summary.nextVisit}`}</p> : null}
+      </section>
+    );
+  }
+  if (summary.kind === "selling") {
+    return (
+      <section className="hv2-visual" aria-label="The sale">
+        {summary.offers.map((offer) => <p key={offer.name}>{offer.name} {offer.amount}</p>)}
+        {summary.privacy ? <p>{summary.privacy}</p> : null}
+      </section>
+    );
+  }
+  return (
+    <section className="hv2-visual" aria-label="This house">
+      {summary.photoHref ? <img src={summary.photoHref} alt="" /> : null}
+      <p>{summary.name}</p>
+      {summary.locality ? <p>{summary.locality}</p> : null}
+      {summary.fact ? <p>{summary.fact}</p> : null}
+    </section>
+  );
+}
+
+function Capture({ actions }: { actions: HomeCapture[] }) {
+  const [open, setOpen] = useState(false);
+  if (!actions.length) return null;
+  return (
+    <div className="hv2-capture">
+      <button type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>+ Record</button>
+      {open ? (
+        <div className="hv2-capture-menu" role="menu">
+          {actions.map((action) => <Link key={action.label} href={action.href} role="menuitem" onClick={() => setOpen(false)}>{action.label}</Link>)}
+        </div>
+      ) : null}
     </div>
   );
 }

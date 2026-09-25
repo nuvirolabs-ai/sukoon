@@ -19,7 +19,7 @@ export async function getHomeProjectionForUser(userId: string) {
     return withHomeLives({ mode: "shared" as const, properties, summary: { propertyCount: properties.length }, attention: [], activity, education: { currentCount: (await listPublishedEducation()).length }, scope: "Only records explicitly shared with this identity are shown." }, sharedLives.lives, sharedLives.defaultLifeId);
   }
   const [properties, reminders, docs, occurrences, maintenance, shares, timeline, assessments] = await Promise.all([
-    prisma.property.findMany({ where: { workspaceId: workspace.id, status: "active" }, orderBy: { createdAt: "asc" }, select: { id: true, name: true, type: true, city: true, area: true, address: true, purchaseValuePaise: true, occupancy: true } }),
+    prisma.property.findMany({ where: { workspaceId: workspace.id, status: "active" }, orderBy: { createdAt: "asc" }, select: { id: true, name: true, type: true, city: true, area: true, address: true, purchaseValuePaise: true, occupancy: true, photoUrl: true } }),
     prisma.durableReminder.findMany({ where: { workspaceId: workspace.id, readAt: null, state: { notIn: ["CANCELLED", "DELIVERED"] } }, orderBy: { scheduledAt: "asc" }, take: 20, select: { id: true, propertyId: true, title: true, body: true, scheduledAt: true, deepLink: true } }),
     prisma.propertyDoc.findMany({ where: { workspaceId: workspace.id, property: { status: "active" }, deletedAt: null, archivedAt: null }, select: { id: true, propertyId: true, name: true, displayName: true, reviewStatus: true, scanStatus: true } }),
     prisma.obligationOccurrence.findMany({ where: { workspaceId: workspace.id, property: { status: "active" }, status: { not: "COMPLETED" } }, include: { payments: { where: { status: "RECORDED", reversalOfId: null }, select: { amountPaise: true } }, obligation: { select: { label: true } } }, orderBy: { dueDate: "asc" }, take: 100 }),
@@ -64,7 +64,7 @@ export async function getHomeProjectionForUser(userId: string) {
   let defaultLifeId: string | null = null;
   try {
     const projected = await loadOwnerHomeLives(userId, workspace.id, {
-      properties: properties.map((property) => ({ id: property.id, name: property.name, city: property.city, area: property.area })),
+      properties: properties.map((property) => ({ id: property.id, name: property.name, city: property.city, area: property.area, photoUrl: property.photoUrl })),
       obligations: outstanding.map((item) => ({ id: item.id, propertyId: item.propertyId, label: item.obligation.label, remainingPaise: String(item.remaining), dueDate: item.dueDate })),
       maintenance: maintenance.map((item) => ({ id: item.id, propertyId: item.propertyId, task: item.task, status: item.status, dateReported: item.dateReported })),
       reminders: reminders.map((item) => ({ id: item.id, propertyId: item.propertyId, title: item.title, scheduledAt: item.scheduledAt.toISOString(), href: item.deepLink })),

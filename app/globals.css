@@ -697,10 +697,10 @@ html.is-android-webview .motion-sheet__panel {
 .hv2-bar { display: block; height: 4px; margin-top: 8px; border-radius: 999px; background: #e7e9e3; overflow: hidden; }
 .hv2-bar > span { display: block; height: 100%; background: #1b3d2f; animation: hv2-bar 480ms cubic-bezier(0.22, 0.61, 0.36, 1); }
 @keyframes hv2-bar { from { width: 0; } }
-.hv2-ask { margin-top: 28px; padding: 20px; border-radius: 16px; background: #fff; }
+.hv2-ask { margin-top: 16px; padding: 16px; border-radius: 16px; background: #fff; }
 .hv2-ask.is-urgent { background: #fbdeda; }
-.hv2-eyebrow { margin: 0; font-size: 11px; font-weight: 560; letter-spacing: 0.06em; text-transform: uppercase; color: #6b706d; }
-.hv2-ask h2 { margin: 6px 0; font-size: 22px; font-weight: 560; line-height: 1.25; color: #202521; }
+.hv2-eyebrow, .hv2-kicker { margin: 0; font-size: 11px; font-weight: 560; letter-spacing: 0.06em; text-transform: uppercase; color: #6b706d; }
+.hv2-ask h2 { margin: 4px 0; font-size: 20px; font-weight: 560; line-height: 1.25; color: #202521; }
 .hv2-ask > p:last-of-type, .hv2-ask-meta { margin: 0 0 16px; font-size: 13px; font-weight: 460; color: #6b706d; }
 .app-shell:has(.is-home) .bottom-navigation { display: none; }
 .hv2-button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; border: 0; border-radius: 999px; background: #1b3d2f; color: #fff; font-size: 16px; font-weight: 560; }
@@ -713,12 +713,35 @@ html.is-android-webview .motion-sheet__panel {
 .hv2-change.is-empty { display: none; }
 .hv2-also { margin-top: 20px; }
 .hv2-also-label { display: none; margin: 0 0 8px; font-size: 13px; color: #6b706d; }
-.hv2-layout { display: grid; grid-template-columns: 1fr; grid-template-areas: "summary" "ask" "also" "change"; animation: hv2-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.hv2-layout { display: grid; grid-template-columns: 1fr; grid-template-areas: "summary" "ask" "week" "recent" "visual" "places" "capture"; animation: hv2-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1); }
 .hv2-layout.is-leaving { animation: hv2-out 220ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
 .hv2-summary { grid-area: summary; }
 .hv2-ask, .hv2-open { grid-area: ask; }
-.hv2-also { grid-area: also; }
-.hv2-change { grid-area: change; }
+.hv2-week { grid-area: week; margin-top: 20px; }
+.hv2-recent { grid-area: recent; margin-top: 20px; }
+.hv2-visual { grid-area: visual; margin-top: 20px; }
+.hv2-places { grid-area: places; margin-top: 20px; }
+.hv2-capture { grid-area: capture; margin-top: 16px; position: relative; }
+.hv2-week a, .hv2-recent a { min-height: 44px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #e8e9e5; color: #202521; font-size: 16px; font-weight: 460; }
+.hv2-week a { animation: hv2-settle 200ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.hv2-recent a { animation: hv2-insert 200ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.hv2-week small { margin-left: auto; color: #6b706d; font-size: 13px; }
+.hv2-journey { display: flex; gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
+.hv2-journey li { flex: 1; font-size: 11px; color: #6b706d; }
+.hv2-journey li.is-current { color: #202521; font-weight: 560; }
+.hv2-journey li.is-done { color: #1b3d2f; }
+.hv2-visual img { display: block; width: 100%; max-height: 160px; object-fit: cover; border-radius: 12px; }
+.hv2-visual p { margin: 6px 0 0; font-size: 16px; }
+.hv2-places-row { display: flex; gap: 8px; overflow-x: auto; margin-top: 8px; }
+.hv2-places-row button { flex: 0 0 calc((100% - 16px) / 3); min-width: 104px; min-height: 72px; padding: 10px; border: 0; border-radius: 12px; background: #fff; text-align: left; color: #202521; transition: background 200ms cubic-bezier(0.32, 0.72, 0, 1); }
+.hv2-places-row button:active { background: rgba(27, 61, 47, 0.09); }
+.hv2-places-row strong, .hv2-places-row small { display: block; font-weight: 460; }
+.hv2-places-row small { color: #6b706d; font-size: 13px; }
+.hv2-capture > button { min-height: 44px; border: 0; background: transparent; color: #202521; font-size: 16px; font-weight: 560; }
+.hv2-capture-menu { position: absolute; left: 0; bottom: 48px; z-index: 5; min-width: 220px; padding: 8px; border: 1px solid #e8e9e5; border-radius: 16px; background: #fff; animation: hv2-pop 220ms cubic-bezier(0.32, 0.72, 0, 1); }
+.hv2-capture-menu a { min-height: 44px; display: flex; align-items: center; color: #202521; font-size: 16px; }
+@keyframes hv2-settle { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hv2-insert { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .hv2-state { padding-top: 48px; display: grid; gap: 16px; }
 .hv2-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .home-nav { position: fixed; z-index: 40; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 10px; border: 1px solid rgba(27, 61, 47, 0.1); border-radius: 26px; background: var(--material-nav); backdrop-filter: blur(20px) saturate(1.3); }
@@ -749,9 +772,8 @@ html.is-android-webview .motion-sheet__panel {
 @keyframes hv2-pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (min-width: 768px) and (max-width: 1439px) {
   .app-workspace.is-home { padding-left: 32px; padding-right: 32px; }
-  .hv2 { max-width: 680px; margin-left: auto; margin-right: auto; }
-  .hv2-layout { grid-template-columns: minmax(0, 60%) minmax(0, 1fr); column-gap: 24px; grid-template-areas: "summary summary" "ask change" "also also"; }
-  .hv2.is-calm .hv2-layout { grid-template-areas: "summary change" "also also"; }
+  .hv2 { max-width: 700px; margin-left: auto; margin-right: auto; }
+  .hv2-layout { grid-template-columns: 1fr 1fr; column-gap: 24px; grid-template-areas: "summary summary" "ask ask" "week recent" "visual visual" "places places" "capture capture"; }
   .hv2-change { margin-top: 28px; }
 }
 @media (min-width: 768px) and (max-width: 999px) {
@@ -765,8 +787,7 @@ html.is-android-webview .motion-sheet__panel {
 @media (min-width: 1440px) {
   .app-workspace.is-home { margin-left: 224px; margin-right: 0; padding: 32px; }
   .hv2 { max-width: none; }
-  .hv2-layout { grid-template-columns: 720px 32px 300px; max-width: 1052px; grid-template-areas: "summary . ." "ask . also" "change . also"; }
-  .hv2.is-single .hv2-layout, .hv2.is-calm .hv2-layout { grid-template-columns: 720px; grid-template-areas: "summary" "ask" "change"; }
+  .hv2-layout { grid-template-columns: minmax(0, 720px) 32px minmax(260px, 300px); max-width: 1052px; grid-template-areas: "summary . week" "ask . week" "visual . capture" "recent . places"; }
   .hv2-also { margin-top: 28px; }
   .hv2-also-label { display: block; }
   .hv2-change { margin-top: 20px; }
@@ -777,7 +798,7 @@ html.is-android-webview .motion-sheet__panel {
   .home-nav a { justify-content: flex-start; height: 48px; min-height: 48px; padding: 0 14px; font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hv2-layout, .hv2-layout.is-leaving, .hv2-switcher-panel, .hv2-scrim, .hv2-bar > span, .home-nav a[aria-current="page"]::before {
+  .hv2-layout, .hv2-layout.is-leaving, .hv2-switcher-panel, .hv2-scrim, .hv2-bar > span, .home-nav a[aria-current="page"]::before, .hv2-week a, .hv2-recent a, .hv2-capture-menu, .hv2-places-row button {
     animation: none !important;
     transition: opacity 120ms linear !important;
     transform: none !important;

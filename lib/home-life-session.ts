@@ -10,6 +10,10 @@ export function shortLabel(title: string): string {
   return words[0] || title;
 }
 
+export function otherPlaces<T extends { id: string; place: unknown }>(lives: readonly T[], selectedId: string | null): Array<T["place"]> {
+  return lives.filter((life) => life.id !== selectedId).map((life) => life.place);
+}
+
 export function resolveSelectedLifeId(
   lifeIds: readonly string[],
   sessionId: string | null,

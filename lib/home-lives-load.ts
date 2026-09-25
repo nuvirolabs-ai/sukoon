@@ -45,7 +45,7 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
   const principal: Principal = { userId, workspaceId, email: user?.email ?? "", role: "owner" };
   const guidance = await evaluateTransactionGuidance(workspaceId, new Date()).catch(() => []);
-  const [projects, candidates, sales, visits, timeline] = await Promise.all([
+  const [projects, candidates, sales, visits, timeline, payments, entries] = await Promise.all([
     prisma.constructionProject.findMany({
       where: { workspaceId, propertyId: { not: null }, archivedAt: null, status: { notIn: ["COMPLETED", "CANCELLED"] } },
       select: { id: true, propertyId: true },
@@ -68,6 +68,18 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
       take: 40,
       select: { id: true, propertyId: true, title: true, detail: true, date: true, createdAt: true },
     }),
+    prisma.transactionMoneyRecord.findMany({
+      where: { workspaceId, reversalOfId: null },
+      orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }],
+      take: 12,
+      select: { id: true, candidateId: true, saleWorkspaceId: true, amountPaise: true, occurredOn: true, note: true, createdAt: true },
+    }),
+    prisma.purchaseEntry.findMany({
+      where: { workspaceId },
+      orderBy: { createdAt: "desc" },
+      take: 12,
+      select: { id: true, candidateId: true, kind: true, body: true, dueDate: true, createdAt: true },
+    }),
   ]);
 
   const projectRows: HomeLivesInput["projects"] = [];
@@ -79,7 +91,7 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
       prisma.constructionStage.findMany({ where: { projectId: project.id }, orderBy: { sequence: "asc" }, select: { id: true, name: true, status: true } }),
       prisma.constructionTask.groupBy({ by: ["stageId", "status"], where: { projectId: project.id }, _count: true }),
       prisma.constructionMilestone.findMany({ where: { projectId: project.id }, orderBy: { sequence: "asc" }, select: { name: true, status: true } }),
-      prisma.constructionUpdate.findMany({ where: { projectId: project.id }, orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }], take: 20, select: { id: true, title: true, description: true, occurredAt: true, createdAt: true } }),
+      prisma.constructionUpdate.findMany({ where: { projectId: project.id }, orderBy: [{ occurredAt: "desc" }, { createdAt: "desc" }], take: 20, select: { id: true, title: true, description: true, occurredAt: true, createdAt: true, photoRefs: true } }),
     ]);
     const progress = progressOf(stages, counts);
     const milestone = milestones.find((item) => item.status === "IN_PROGRESS") ?? milestones.find((item) => !["DONE", "SKIPPED", "CANCELLED"].includes(item.status));
@@ -102,12 +114,14 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
         createdAt: row.createdAt,
         relevantUntil: row.relevantUntil,
       })),
+      stages: stages.map((stage) => ({ name: stage.name, status: stage.status })),
       updates: updates.map((update) => ({
         id: update.id,
         title: update.title,
         description: update.description,
         occurredAt: update.occurredAt.toISOString(),
         createdAt: update.createdAt.toISOString(),
+        photoRefs: Array.isArray(update.photoRefs) ? update.photoRefs.filter((item): item is string => typeof item === "string") : [],
       })),
     });
   }
@@ -190,6 +204,23 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
       contactName: visit.contactName,
       notes: visit.notes,
       status: visit.status,
+    })),
+    payments: payments.map((payment) => ({
+      id: payment.id,
+      candidateId: payment.candidateId,
+      saleId: payment.saleWorkspaceId,
+      amountPaise: payment.amountPaise.toString(),
+      occurredOn: payment.occurredOn,
+      note: payment.note,
+      createdAt: payment.createdAt.toISOString(),
+    })),
+    entries: entries.map((entry) => ({
+      id: entry.id,
+      candidateId: entry.candidateId,
+      kind: entry.kind,
+      body: entry.body,
+      dueDate: entry.dueDate,
+      createdAt: entry.createdAt.toISOString(),
     })),
   });
 }
