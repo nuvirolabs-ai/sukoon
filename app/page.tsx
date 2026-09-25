@@ -16,10 +16,10 @@ type HomePayload = {
 };
 
 const PICTURES: Record<HomePicture, string> = {
-  build: "/home/build.svg",
-  purchase: "/home/purchase.svg",
-  sale: "/home/sale.svg",
-  house: "/home/house.svg",
+  build: "/home/build.jpg",
+  purchase: "/home/purchase.jpg",
+  sale: "/home/sale.jpg",
+  house: "/home/house.jpg",
 };
 
 const sessionListeners = new Set<() => void>();
@@ -208,6 +208,7 @@ export default function HomePage() {
       </header>
       <div className={`hv2-layout${leaving ? " is-leaving" : ""}`} key={life.id}>
         <section className="hv2-summary" aria-label="This place">
+          <LifePicture picture={life.place.picture} photoHref={heroPhoto(life)} alt={heroAlt(life)} />
           {life.summary.phaseWord ? <p className="hv2-phase">{life.summary.phaseWord}</p> : null}
           {quiet ? <h1 className="hv2-line">Everything is in order.</h1> : life.summary.headline ? <h1 className="hv2-line">{life.summary.headline}</h1> : null}
           {!quiet && life.summary.detail ? <p className="hv2-detail">{life.summary.detail}</p> : null}
@@ -216,6 +217,7 @@ export default function HomePage() {
           ) : null}
           {!quiet && life.summary.caption ? <p className="hv2-caption">{life.summary.caption}</p> : null}
           {!quiet && life.summary.situation ? <p className="hv2-situation">{life.summary.situation}</p> : null}
+          <StoryFacts summary={life.visualSummary} />
         </section>
         {ask ? (
           <article className={`hv2-ask${ask.tier <= 1 ? " is-urgent" : ""}`}>
@@ -247,7 +249,6 @@ export default function HomePage() {
             ))}
           </section>
         ) : null}
-        <VisualMoment summary={life.visualSummary} />
         {places.length ? (
           <section className="hv2-places" aria-label="Your places">
             <p className="hv2-kicker">Your places</p>
@@ -257,7 +258,7 @@ export default function HomePage() {
                   <LifePicture picture={place.picture} photoHref={place.photoHref} alt="" compact />
                   <span>
                     <strong>{place.shortLabel}</strong>
-                    {place.status ? <small>{place.status}</small> : null}
+                    <small>{place.status || place.locality || ""}</small>
                   </span>
                 </button>
               ))}
@@ -289,54 +290,38 @@ function LifeGroup({ label, lives, selectedId, onSelect }: { label: string; live
   );
 }
 
-function LifePicture({ picture, photoHref, alt, compact = false }: { picture: HomePicture; photoHref: string | null; alt: string; compact?: boolean }) {
-  const src = photoHref || PICTURES[picture];
-  return <img className={photoHref ? (compact ? "hv2-place-pic" : "hv2-visual-pic") : (compact ? "hv2-place-pic is-drawing" : "hv2-visual-pic is-drawing")} src={src} alt={photoHref ? alt : ""} />;
+function heroPhoto(life: HomeLife): string | null {
+  const visual = life.visualSummary;
+  if (visual?.kind === "construction" || visual?.kind === "house") return visual.photoHref;
+  return life.place.photoHref;
 }
 
-function VisualMoment({ summary }: { summary: HomeVisualSummary | null }) {
+function heroAlt(life: HomeLife): string {
+  const visual = life.visualSummary;
+  if (visual?.kind === "construction" && visual.photoHref) return visual.photoAlt ?? "";
+  return "";
+}
+
+function LifePicture({ picture, photoHref, alt, compact = false }: { picture: HomePicture; photoHref: string | null; alt: string; compact?: boolean }) {
+  return <img className={compact ? "hv2-place-pic" : "hv2-hero"} src={photoHref || PICTURES[picture]} alt={photoHref ? alt : ""} />;
+}
+
+function StoryFacts({ summary }: { summary: HomeVisualSummary | null }) {
   if (!summary) return null;
   if (summary.kind === "construction") {
     return (
-      <section className="hv2-visual" aria-label="The build">
-        <LifePicture picture="build" photoHref={summary.photoHref} alt={summary.photoAlt ?? ""} />
+      <>
         <ol className="hv2-journey">
           {summary.journey.map((step) => <li key={step.label} className={`is-${step.state}`}>{step.label}</li>)}
         </ol>
-        <p>{[summary.stageName, summary.milestoneName, summary.progressPercent !== null ? `${summary.progressPercent}%` : null].filter(Boolean).join(" · ")}</p>
-        {summary.deliveryNote ? <p>{summary.deliveryNote}</p> : null}
-      </section>
+        {summary.deliveryNote ? <p className="hv2-caption">{summary.deliveryNote}</p> : null}
+      </>
     );
   }
-  if (summary.kind === "buying") {
-    return (
-      <section className="hv2-visual" aria-label="The purchase">
-        <LifePicture picture="purchase" photoHref={null} alt="" />
-        {summary.you && summary.them ? <p>You {summary.you} · Them {summary.them}</p> : null}
-        {summary.recorded && summary.toward ? <p>{summary.recorded} toward {summary.toward}</p> : null}
-        {summary.openHandover !== null ? <p>{summary.openHandover} open</p> : null}
-        {summary.phaseWord ? <p>{summary.phaseWord}</p> : null}
-        {summary.nextVisit ? <p>{summary.nextVisitHref ? <Link href={summary.nextVisitHref}>Visit {summary.nextVisit}</Link> : `Visit ${summary.nextVisit}`}</p> : null}
-      </section>
-    );
+  if (summary.kind === "buying" && summary.nextVisit) {
+    return <p className="hv2-caption">{summary.nextVisitHref ? <Link href={summary.nextVisitHref}>Visit {summary.nextVisit}</Link> : `Visit ${summary.nextVisit}`}</p>;
   }
-  if (summary.kind === "selling") {
-    return (
-      <section className="hv2-visual" aria-label="The sale">
-        <LifePicture picture="sale" photoHref={null} alt="" />
-        {summary.offers.map((offer) => <p key={offer.name}>{offer.name} {offer.amount}</p>)}
-        {summary.privacy ? <p>{summary.privacy}</p> : null}
-      </section>
-    );
-  }
-  return (
-    <section className="hv2-visual" aria-label="This house">
-      <LifePicture picture="house" photoHref={summary.photoHref} alt="" />
-      <p>{summary.name}</p>
-      {summary.locality ? <p>{summary.locality}</p> : null}
-      {summary.fact ? <p>{summary.fact}</p> : null}
-    </section>
-  );
+  return null;
 }
 
 function Capture({ actions }: { actions: HomeCapture[] }) {
