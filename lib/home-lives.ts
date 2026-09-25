@@ -61,8 +61,10 @@ export type HomeRecentChange = {
 
 export type HomeJourneyStep = { label: "Foundation" | "Structure" | "Walls" | "Services" | "Finishes"; state: "done" | "current" | "ahead" };
 
+export type HomePicture = "build" | "purchase" | "sale" | "house";
+
 export type HomeVisualSummary =
-  | { kind: "construction"; photoHref: string | null; photoAlt: string | null; stageName: string | null; milestoneName: string | null; progressPercent: number | null; journey: HomeJourneyStep[] }
+  | { kind: "construction"; photoHref: string | null; photoAlt: string | null; stageName: string | null; milestoneName: string | null; progressPercent: number | null; journey: HomeJourneyStep[]; deliveryNote: string | null }
   | { kind: "buying"; phaseWord: string | null; you: string | null; them: string | null; recorded: string | null; toward: string | null; openHandover: number | null; nextVisit: string | null; nextVisitHref: string | null }
   | { kind: "selling"; offers: Array<{ name: string; amount: string }>; privacy: string | null }
   | { kind: "house"; photoHref: string | null; name: string; locality: string | null; fact: string | null };
@@ -74,6 +76,8 @@ export type HomePlace = {
   status: string;
   locality: string | null;
   dot: boolean;
+  picture: HomePicture;
+  photoHref: string | null;
 };
 
 export type HomeCapture = { label: string; href: string };
@@ -149,6 +153,8 @@ export type HomeLivesInput = {
     guidance: HomeGuidanceInput[];
     updates: HomeUpdateInput[];
     stages?: Array<{ name: string; status: string }>;
+    deliveries?: Array<{ id: string; materialName: string; expected: string; received: string; unit: string }>;
+    quotedMaterialNames?: string[];
   }>;
   obligations: Array<{ id: string; propertyId: string; label: string; remainingPaise: string; dueDate: string }>;
   maintenance: Array<{ id: string; propertyId: string; task: string; status: string; dateReported: string }>;
@@ -333,6 +339,85 @@ function moneyToken(value: string): string | null {
 function g04Token(title: string): string | null {
   const match = title.match(/^\d+\s+([a-z][a-z-]*)\s+\S+\s+were short\./i);
   return match?.[1]?.toLowerCase() ?? null;
+}
+
+type MaterialFacts = {
+  deliveries: Array<{ name: string; expected: number; received: number }>;
+  quoted: string[];
+};
+
+function materialFacts(project: HomeLivesInput["projects"][number] | null): MaterialFacts {
+  const deliveries = (project?.deliveries ?? []).flatMap((row) => {
+    const expected = Number(row.expected);
+    const received = Number(row.received);
+    if (!row.materialName.trim() || !Number.isFinite(expected) || !Number.isFinite(received)) return [];
+    return [{ name: row.materialName.trim(), expected, received }];
+  });
+  return { deliveries, quoted: (project?.quotedMaterialNames ?? []).map((name) => name.trim().toLowerCase()).filter(Boolean) };
+}
+
+function quantityLabel(value: number): string {
+  if (Number.isInteger(value)) return String(value);
+  return String(Math.round(value * 1000) / 1000);
+}
+
+function mentions(text: string, name: string): boolean {
+  const escaped = name.trim().toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (!escaped) return false;
+  return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+}
+
+function shortDelivery(text: string, facts: MaterialFacts) {
+  return facts.deliveries.find((row) => row.received < row.expected && mentions(text, row.name)) ?? null;
+}
+
+function quotesRecorded(text: string, facts: MaterialFacts) {
+  return facts.quoted.some((name) => mentions(text, name));
+}
+
+function misleadingMaterialLine(text: string) {
+  return /recorded as required|is needed soon|needs a quote|quote required/i.test(text);
+}
+
+function topicOf(text: string): string | null {
+  if (/\btmt\b/i.test(text) || /\bsteel\b/i.test(text)) return "steel";
+  if (/\bcement\b/i.test(text)) return "cement";
+  return null;
+}
+
+function deliveryLine(row: { name: string; expected: number; received: number }) {
+  const short = row.expected - row.received;
+  return `${row.name} ${quantityLabel(row.received)} received of ${quantityLabel(row.expected)}, ${quantityLabel(short)} outstanding`;
+}
+
+/** Presentation only. Rank order stays; a stored delivery replaces the required-quantity sentence. */
+function shownAsk(candidate: Candidate, facts: MaterialFacts): HomeAsk | null {
+  const text = `${candidate.title} ${candidate.reason}`;
+  const delivery = shortDelivery(text, facts);
+  if (!delivery && quotesRecorded(text, facts) && misleadingMaterialLine(text)) return null;
+  const ask = presentCandidate(candidate);
+  if (delivery && (candidate.ruleKey === "G12" || candidate.ruleKey === "G04" || misleadingMaterialLine(text))) {
+    const line = deliveryLine(delivery);
+    return { ...ask, title: line, reason: `${line}.`, eyebrow: "Delivery", actionLabel: "See the delivery" };
+  }
+  return ask;
+}
+
+function displayedAsks(ranked: Candidate[], facts: MaterialFacts): { shown: HomeAsk[]; moreCount: number } {
+  const shown: HomeAsk[] = [];
+  const topics = new Set<string>();
+  let consumed = 0;
+  for (const row of ranked) {
+    consumed += 1;
+    const ask = shownAsk(row, facts);
+    if (!ask) continue;
+    const topic = topicOf(`${ask.title} ${row.title}`);
+    if (topic && topics.has(topic)) continue;
+    if (topic) topics.add(topic);
+    shown.push(ask);
+    if (shown.length === 3) break;
+  }
+  return { shown, moreCount: Math.max(0, ranked.length - consumed) };
 }
 
 function presentation(ruleKey: string): { eyebrow: string; actionLabel: string } {
@@ -891,6 +976,7 @@ function projectHomeStory(args: {
   location: string | null;
   title: string;
   primary: HomeAsk | null;
+  facts: MaterialFacts;
 }): Pick<HomeLife, "upcoming" | "upcomingMoreCount" | "upcomingMoreHref" | "recentChanges" | "visualSummary" | "capture"> {
   const weekEnd = addDays(args.today, 7);
   const concrete = args.ranked.filter((row) => row.subjectId !== args.primarySubjectId && inWindow(row.dueDate, args.today, weekEnd));
@@ -907,11 +993,20 @@ function projectHomeStory(args: {
     }));
   }
   weekPool.sort((a, b) => (a.dueDate ?? "").localeCompare(b.dueDate ?? "") || a.title.localeCompare(b.title));
-  const weekShown = weekPool.slice(0, 4).map((row) => {
-    const presented = row.reason ? presentCandidate(row) : { title: row.title, href: row.href, ruleKey: row.ruleKey };
+  const weekTopics = new Set<string>();
+  const primaryTopic = topicOf(`${args.primary?.title ?? ""} ${args.primary?.reason ?? ""}`);
+  if (primaryTopic) weekTopics.add(primaryTopic);
+  const weekShown: HomeWeekItem[] = [];
+  for (const row of weekPool) {
+    if (weekShown.length === 4) break;
+    const presented = shownAsk(row, args.facts);
+    if (!presented) continue;
+    const topic = topicOf(`${presented.title} ${row.title}`);
+    if (topic && weekTopics.has(topic)) continue;
+    if (topic) weekTopics.add(topic);
     const date = row.dueDate ?? args.today;
-    return { subjectId: row.subjectId, title: presented.title, href: presented.href, date, label: dateLabel(date, args.today), ruleKey: presented.ruleKey };
-  });
+    weekShown.push({ subjectId: row.subjectId, title: presented.title, href: presented.href, date, label: dateLabel(date, args.today), ruleKey: presented.ruleKey });
+  }
   const used = new Set<string>([...weekShown.map((row) => row.subjectId), ...(args.primarySubjectId ? [args.primarySubjectId] : [])]);
   const usedTitles = [args.primary?.title ?? "", ...weekShown.map((row) => row.title)].filter(Boolean);
   const shortageTokens = args.ranked.map((row) => g04Token(row.title)).filter((token): token is string => Boolean(token));
@@ -943,12 +1038,20 @@ function projectHomeStory(args: {
     if (usedTitles.some((title) => titlesOverlap(title, row.title))) return false;
     const haystack = row.title.toLowerCase();
     if (shortageTokens.some((token) => haystack.includes(token) && /short|received|deliver/.test(haystack))) return false;
+    const topic = topicOf(row.title);
+    if (topic && weekTopics.has(topic)) return false;
+    if (quotesRecorded(row.title, args.facts) && misleadingMaterialLine(row.title)) return false;
     return true;
   });
   recentPool.sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? 1 : -1) : a.date < b.date ? 1 : -1));
   const recentChanges = recentPool.slice(0, 3).map(({ subjectId, title, href, date, source }) => ({ subjectId, title, href, date, source }));
   const selling = Boolean(args.sale && args.sale.prospects.length);
   const photo = (args.project?.updates ?? []).map((update) => (update.photoRefs ?? []).map(realPhoto).find(Boolean) ?? null).find(Boolean) ?? null;
+  const alreadySaid = `${args.primary?.title ?? ""} ${args.primary?.reason ?? ""} ${weekShown.map((row) => row.title).join(" ")}`.toLowerCase();
+  const deliveryNote = args.facts.deliveries
+    .filter((row) => row.received < row.expected)
+    .map(deliveryLine)
+    .find((line) => !alreadySaid.includes(line.toLowerCase())) ?? null;
   let visualSummary: HomeVisualSummary | null = null;
   if (args.project?.stageName || args.project) {
     visualSummary = {
@@ -959,6 +1062,7 @@ function projectHomeStory(args: {
       milestoneName: args.project?.milestoneName ?? null,
       progressPercent: args.project?.progressPercent ?? null,
       journey: journeyFor(args.project?.stageName ?? null),
+      deliveryNote,
     };
   } else if (selling && args.sale) {
     visualSummary = {
@@ -1026,7 +1130,9 @@ function finishLife(args: {
   input: HomeLivesInput;
 }): HomeLife {
   const ranked = rankHomeCandidates(args.candidates);
-  const shown = ranked.slice(0, 3).map(presentCandidate);
+  const facts = materialFacts(args.projects[0] ?? null);
+  const displayed = displayedAsks(ranked, facts);
+  const shown = displayed.shown;
   const primary = shown[0] ?? null;
   const project = args.projects[0] ?? null;
   const orderedProspects = args.sale ? prospectsByOffer(args.sale.prospects) : [];
@@ -1051,7 +1157,7 @@ function finishLife(args: {
   const story = projectHomeStory({
     today: args.input.today,
     ranked,
-    primarySubjectId: ranked[0]?.subjectId ?? null,
+    primarySubjectId: primary?.subjectId ?? ranked[0]?.subjectId ?? null,
     moreHref: args.moreHref,
     project,
     property: args.property,
@@ -1065,7 +1171,10 @@ function finishLife(args: {
     location: args.location,
     title: args.title,
     primary,
+    facts,
   });
+  const picture = pictureFor({ projectId: args.projectId, sale: args.sale, purchase: args.purchase });
+  const photoHref = lifePhoto(project, args.property);
   return {
     id: args.id,
     kind: args.kind,
@@ -1081,7 +1190,7 @@ function finishLife(args: {
     destinationHref: args.destinationHref,
     summary,
     asks: shown,
-    moreCount: Math.max(0, ranked.length - shown.length),
+    moreCount: displayed.moreCount,
     moreHref: args.moreHref,
     latestChange,
     ...story,
@@ -1092,8 +1201,22 @@ function finishLife(args: {
       status: statusLine({ title: args.title, project, prospects: orderedProspects, purchase: args.purchase, primary, maintenance: args.input.maintenance.filter((item) => item.propertyId === args.propertyId) }),
       locality: args.location,
       dot: primary ? primary.tier <= 4 : false,
+      picture,
+      photoHref,
     },
   };
+}
+
+function pictureFor(args: { projectId: string | null; sale: HomeLivesInput["sales"][number] | null; purchase: HomeLivesInput["purchases"][number] | null }): HomePicture {
+  if (args.projectId) return "build";
+  if (args.sale && args.sale.prospects.length) return "sale";
+  if (args.purchase) return "purchase";
+  return "house";
+}
+
+function lifePhoto(project: HomeLivesInput["projects"][number] | null, property: HomeLivesInput["properties"][number] | null): string | null {
+  const fromUpdate = (project?.updates ?? []).map((update) => (update.photoRefs ?? []).map(realPhoto).find(Boolean) ?? null).find(Boolean) ?? null;
+  return fromUpdate ?? realPhoto(property?.photoUrl);
 }
 
 function buildSummary(args: {
@@ -1233,7 +1356,7 @@ export function composeSharedLives(
       upcomingMoreHref: null,
       recentChanges: events.slice(0, 3).map((event) => ({ subjectId: event.id, title: event.title, href: `/shared/${property.id}`, date: civilDate(event.date), source: "timeline" as const })),
       visualSummary: { kind: "house", photoHref: null, name: property.name, locality: locationOf(property, null), fact: "Shared with you." },
-      place: { id: `house:${property.id}`, title: property.name, shortLabel: shortLabel(property.name), status: "Shared with you", locality: locationOf(property, null), dot: false },
+      place: { id: `house:${property.id}`, title: property.name, shortLabel: shortLabel(property.name), status: "Shared with you", locality: locationOf(property, null), dot: false, picture: "house", photoHref: null },
       capture: [],
     };
     return life;

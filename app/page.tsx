@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChevronDown, Search, UserRound } from "lucide-react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { HOME_LIFE_SESSION_KEY, otherPlaces, primaryAskLines, resolveSelectedLifeId, shortLabel } from "@/lib/home-life-session";
-import type { HomeCapture, HomeLife, HomeVisualSummary } from "@/lib/home-lives";
+import type { HomeCapture, HomeLife, HomePicture, HomeVisualSummary } from "@/lib/home-lives";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
 type HomeProperty = { id: string; name: string; city?: string | null; area?: string | null };
@@ -13,6 +13,13 @@ type HomePayload = {
   lives?: HomeLife[] | null;
   defaultLifeId?: string | null;
   properties?: HomeProperty[];
+};
+
+const PICTURES: Record<HomePicture, string> = {
+  build: "/home/build.svg",
+  purchase: "/home/purchase.svg",
+  sale: "/home/sale.svg",
+  house: "/home/house.svg",
 };
 
 const sessionListeners = new Set<() => void>();
@@ -57,7 +64,7 @@ function fallbackLives(properties: HomeProperty[]): HomeLife[] {
       upcomingMoreHref: null,
       recentChanges: [],
       visualSummary: null,
-      place: { id: `house:${property.id}`, title: property.name, shortLabel: shortLabel(property.name), status: "", locality: location, dot: false },
+      place: { id: `house:${property.id}`, title: property.name, shortLabel: shortLabel(property.name), status: "", locality: location, dot: false, picture: "house", photoHref: null },
       capture: [],
     };
   });
@@ -174,6 +181,7 @@ export default function HomePage() {
   return (
     <div className={`hv2${calm ? " is-calm" : ""}`} aria-busy="false">
       <header className="hv2-header">
+        <img className="hv2-logo" src="/brand/sukoon-logo.jpeg" alt="Sukoon" width={717} height={229} />
         <div className="hv2-switcher" ref={switcherRef}>
           <button type="button" className="hv2-switcher-trigger" aria-expanded={open} aria-haspopup="dialog" onClick={() => setOpen((value) => !value)}>
             <span>{life.title}</span>
@@ -246,8 +254,11 @@ export default function HomePage() {
             <div className="hv2-places-row">
               {places.map((place) => (
                 <button type="button" key={place.id} onClick={() => choose(place.id)}>
-                  <strong>{place.shortLabel}</strong>
-                  {place.status ? <small>{place.status}</small> : null}
+                  <LifePicture picture={place.picture} photoHref={place.photoHref} alt="" compact />
+                  <span>
+                    <strong>{place.shortLabel}</strong>
+                    {place.status ? <small>{place.status}</small> : null}
+                  </span>
                 </button>
               ))}
             </div>
@@ -278,22 +289,29 @@ function LifeGroup({ label, lives, selectedId, onSelect }: { label: string; live
   );
 }
 
+function LifePicture({ picture, photoHref, alt, compact = false }: { picture: HomePicture; photoHref: string | null; alt: string; compact?: boolean }) {
+  const src = photoHref || PICTURES[picture];
+  return <img className={photoHref ? (compact ? "hv2-place-pic" : "hv2-visual-pic") : (compact ? "hv2-place-pic is-drawing" : "hv2-visual-pic is-drawing")} src={src} alt={photoHref ? alt : ""} />;
+}
+
 function VisualMoment({ summary }: { summary: HomeVisualSummary | null }) {
   if (!summary) return null;
   if (summary.kind === "construction") {
     return (
       <section className="hv2-visual" aria-label="The build">
-        {summary.photoHref ? <img src={summary.photoHref} alt={summary.photoAlt ?? ""} /> : null}
+        <LifePicture picture="build" photoHref={summary.photoHref} alt={summary.photoAlt ?? ""} />
         <ol className="hv2-journey">
           {summary.journey.map((step) => <li key={step.label} className={`is-${step.state}`}>{step.label}</li>)}
         </ol>
         <p>{[summary.stageName, summary.milestoneName, summary.progressPercent !== null ? `${summary.progressPercent}%` : null].filter(Boolean).join(" · ")}</p>
+        {summary.deliveryNote ? <p>{summary.deliveryNote}</p> : null}
       </section>
     );
   }
   if (summary.kind === "buying") {
     return (
       <section className="hv2-visual" aria-label="The purchase">
+        <LifePicture picture="purchase" photoHref={null} alt="" />
         {summary.you && summary.them ? <p>You {summary.you} · Them {summary.them}</p> : null}
         {summary.recorded && summary.toward ? <p>{summary.recorded} toward {summary.toward}</p> : null}
         {summary.openHandover !== null ? <p>{summary.openHandover} open</p> : null}
@@ -305,6 +323,7 @@ function VisualMoment({ summary }: { summary: HomeVisualSummary | null }) {
   if (summary.kind === "selling") {
     return (
       <section className="hv2-visual" aria-label="The sale">
+        <LifePicture picture="sale" photoHref={null} alt="" />
         {summary.offers.map((offer) => <p key={offer.name}>{offer.name} {offer.amount}</p>)}
         {summary.privacy ? <p>{summary.privacy}</p> : null}
       </section>
@@ -312,7 +331,7 @@ function VisualMoment({ summary }: { summary: HomeVisualSummary | null }) {
   }
   return (
     <section className="hv2-visual" aria-label="This house">
-      {summary.photoHref ? <img src={summary.photoHref} alt="" /> : null}
+      <LifePicture picture="house" photoHref={summary.photoHref} alt="" />
       <p>{summary.name}</p>
       {summary.locality ? <p>{summary.locality}</p> : null}
       {summary.fact ? <p>{summary.fact}</p> : null}

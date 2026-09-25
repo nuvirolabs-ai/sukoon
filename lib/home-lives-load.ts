@@ -12,6 +12,13 @@ type OwnerFacts = {
   documents: HomeLivesInput["documents"];
 };
 
+function quantityText(value: { toString(): string } | null | undefined): string | null {
+  if (value === null || value === undefined) return null;
+  const text = value.toString();
+  if (!/^\d+(\.\d+)?$/.test(text)) return null;
+  return text.includes(".") ? text.replace(/\.?0+$/, "") : text;
+}
+
 function textPaise(value: bigint | null | undefined): string | null {
   return value === null || value === undefined ? null : value.toString();
 }
@@ -82,6 +89,15 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
     }),
   ]);
 
+  const projectIds = projects.map((project) => project.id);
+  const [materials, deliveries, quotes] = await Promise.all([
+    prisma.materialRequirement.findMany({ where: { projectId: { in: projectIds } }, take: 40, select: { id: true, projectId: true, name: true } }),
+    prisma.constructionDelivery.findMany({ where: { projectId: { in: projectIds } }, take: 40, select: { id: true, projectId: true, materialRequirementId: true, expectedQuantity: true, receivedQuantity: true, unit: true } }),
+    prisma.supplierQuote.findMany({ where: { projectId: { in: projectIds }, status: { not: "WITHDRAWN" } }, take: 40, select: { projectId: true, materialRequirementId: true } }),
+  ]);
+  const materialName = new Map(materials.map((row) => [row.id, row.name]));
+  const quotedIds = new Set(quotes.map((row) => `${row.projectId}:${row.materialRequirementId}`));
+
   const projectRows: HomeLivesInput["projects"] = [];
   for (const project of projects) {
     if (!project.propertyId) continue;
@@ -123,6 +139,15 @@ export async function loadOwnerHomeLives(userId: string, workspaceId: string, fa
         createdAt: update.createdAt.toISOString(),
         photoRefs: Array.isArray(update.photoRefs) ? update.photoRefs.filter((item): item is string => typeof item === "string") : [],
       })),
+      deliveries: deliveries.flatMap((row) => {
+        if (row.projectId !== project.id || !row.materialRequirementId) return [];
+        const name = materialName.get(row.materialRequirementId);
+        const expected = quantityText(row.expectedQuantity);
+        const received = quantityText(row.receivedQuantity);
+        if (!name || !expected || !received) return [];
+        return [{ id: row.id, materialName: name, expected, received, unit: row.unit }];
+      }),
+      quotedMaterialNames: materials.flatMap((row) => row.projectId === project.id && quotedIds.has(`${row.projectId}:${row.id}`) ? [row.name] : []),
     });
   }
 

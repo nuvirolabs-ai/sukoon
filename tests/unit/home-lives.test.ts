@@ -530,6 +530,42 @@ describe("Home V2 lives ranking", () => {
     expect(defaultLifeId).toBe("house:plot");
   });
 
+  it("shows the cement delivery and does not repeat a quoted steel line", () => {
+    const life = composeHomeLives(input({
+      properties: [{ id: "plot", name: "Super Corridor Plot", city: "Indore", area: "Super Corridor" }],
+      projects: [{
+        id: "build",
+        propertyId: "plot",
+        stageName: "RCC / Structure",
+        milestoneName: "First-floor slab",
+        progressPercent: 30,
+        deliveries: [{ id: "delivery-cement", materialName: "Cement", expected: "400", received: "390", unit: "bags" }],
+        quotedMaterialNames: ["TMT steel"],
+        updates: [
+          { id: "steel-note", title: "Steel requirement noted", description: "Quotes are recorded and none is selected.", occurredAt: "2026-09-21T12:00:00.000Z", createdAt: "2026-09-21T12:00:00.000Z" },
+          { id: "beam", title: "Beam reinforcement completed", description: "Beam reinforcement was completed.", occurredAt: "2026-09-22T12:00:00.000Z", createdAt: "2026-09-22T12:00:00.000Z" },
+        ],
+        guidance: [
+          guidance({ id: "g12c", ruleKey: "G12", subjectId: "cement-mat", type: "DUE", title: "Cement is needed soon.", reason: "400 bags recorded as required 23 Sep.", actionType: "OPEN_DELIVERY", relevantUntil: "2026-09-24" }),
+          guidance({ id: "g12s", ruleKey: "G12", subjectId: "steel-mat", type: "DUE", title: "TMT steel is needed soon.", reason: "2.8 tonnes recorded as required. It needs a quote.", actionType: "OPEN_DELIVERY", relevantUntil: "2026-09-26" }),
+        ],
+      }],
+    })).lives[0]!;
+    const note = life.visualSummary && life.visualSummary.kind === "construction" ? life.visualSummary.deliveryNote : null;
+    const visible = JSON.stringify({ asks: life.asks, upcoming: life.upcoming, recent: life.recentChanges, note });
+    expect(visible).toContain("Cement 390 received of 400, 10 outstanding");
+    expect(visible).not.toMatch(/recorded as required/);
+    expect(visible).not.toMatch(/is needed soon/);
+    expect(visible).not.toMatch(/needs a quote/);
+    expect(visible).not.toMatch(/20 bags/);
+    const weekSteel = life.upcoming.some((row) => /steel/i.test(row.title));
+    const recentSteel = life.recentChanges.some((row) => /steel/i.test(row.title));
+    expect(weekSteel && recentSteel).toBe(false);
+    expect(life.place.picture).toBe("build");
+    expect(life.place.photoHref).toBeNull();
+    expect(life.visualSummary && life.visualSummary.kind === "construction" ? life.visualSummary.photoHref : "missing").toBeNull();
+  });
+
   it("shortens place names the way the navigation labels read", () => {
     expect(shortLabel("Super Corridor Plot")).toBe("Corridor");
     expect(shortLabel("Palm Meadows Apartment")).toBe("Palm");
