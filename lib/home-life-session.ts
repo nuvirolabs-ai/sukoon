@@ -19,3 +19,24 @@ export function resolveSelectedLifeId(
   if (defaultLifeId && lifeIds.includes(defaultLifeId)) return defaultLifeId;
   return lifeIds[0] ?? null;
 }
+
+function plain(value: string): string {
+  return value.replace(/[.]+$/g, "").trim().toLowerCase();
+}
+
+/** What the primary card draws. A date-only reason stays meta. Extra words come only from the reason. */
+export function primaryAskLines(
+  ask: { title: string; reason: string; meta: string | null },
+  headline: string | null | undefined,
+): { title: string | null; reason: string | null; meta: string | null } {
+  const title = ask.title.trim();
+  const headlineRestates = Boolean(headline && title && plain(headline) === plain(`${title} is still open`));
+  const meta = ask.meta?.trim() || null;
+  const reason = ask.reason?.trim() || null;
+  const reasonIsDate = Boolean(reason && meta && plain(reason) === plain(meta));
+  return {
+    title: headlineRestates ? null : title || null,
+    reason: reasonIsDate ? null : reason,
+    meta: reasonIsDate ? meta : null,
+  };
+}

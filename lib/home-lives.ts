@@ -425,6 +425,11 @@ function privacyCaption(prospects: HomeLivesInput["sales"][number]["prospects"])
   return null;
 }
 
+function isConstructionHistoryEcho(row: { title: string; description: string | null }): boolean {
+  const detail = (row.description ?? "").trim();
+  return row.title === "Construction history updated" && /^Owner recorded a construction event\./i.test(detail);
+}
+
 function changeSentence(description: string | null | undefined, title: string): string {
   const body = (description ?? "").replace(/^[\w-]+\s+synthetic history\.\s*/i, "").trim();
   if (!body) return title.endsWith(".") ? title : `${title}.`;
@@ -471,13 +476,15 @@ export function selectLatestChange(input: {
     if (echoesShortage) return false;
     return true;
   });
-  visible.sort((a, b) => {
+  const specific = visible.filter((row) => !isConstructionHistoryEcho(row));
+  const pool = specific.length ? specific : visible;
+  pool.sort((a, b) => {
     if (a.date !== b.date) return a.date < b.date ? 1 : -1;
     if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1;
     if (a.kind !== b.kind) return a.kind === "site" ? -1 : 1;
     return 0;
   });
-  const winner = visible[0];
+  const winner = pool[0];
   if (!winner) return null;
   return {
     title: winner.title,

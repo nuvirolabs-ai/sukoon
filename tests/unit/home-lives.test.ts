@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveSelectedLifeId } from "@/lib/home-life-session";
+import { primaryAskLines, resolveSelectedLifeId } from "@/lib/home-life-session";
 import {
   composeHomeLives,
   composeSharedLives,
@@ -160,6 +160,100 @@ describe("Home V2 lives ranking", () => {
     expect(change?.subjectId).toBe("beam");
   });
 
+  it("uses a specific site note when a later construction echo is only the generic history line", () => {
+    const change = selectLatestChange({
+      updates: [{
+        id: "beam",
+        title: "Beam reinforcement completed",
+        description: "namespace synthetic history. Beam reinforcement was completed. Electrical conduit work has started.",
+        occurredAt: "2026-09-22T12:00:00.000Z",
+        createdAt: "2026-09-22T12:00:00.000Z",
+        href: "/construction/build?tab=site",
+      }],
+      timeline: [{
+        id: "echo",
+        propertyId: "plot",
+        title: "Construction history updated",
+        detail: "Owner recorded a construction event. Open Construction for authorized details.",
+        date: "2026-09-25",
+        createdAt: "2026-09-25T10:00:00.000Z",
+        href: "/property/plot",
+      }],
+      askSubjectIds: new Set(["decision-1"]),
+      askTitles: ["Reinforcement inspection"],
+      shortageTokens: ["cement"],
+    });
+    expect(change?.title).toBe("Beam reinforcement completed");
+    expect(change?.sentence).toBe("Beam reinforcement was completed.");
+  });
+
+  it("keeps a newer real event ahead of an older site note", () => {
+    const generic = selectLatestChange({
+      updates: [{
+        id: "beam",
+        title: "Beam reinforcement completed",
+        description: "Beam reinforcement was completed.",
+        occurredAt: "2026-09-22",
+        createdAt: "2026-09-22T08:00:00.000Z",
+        href: "/construction/build?tab=site",
+      }],
+      timeline: [{
+        id: "real",
+        propertyId: "plot",
+        title: "Owner recorded a construction event",
+        detail: "Owner recorded a construction event.",
+        date: "2026-09-25",
+        createdAt: "2026-09-25T10:00:00.000Z",
+        href: "/property/plot",
+      }],
+      askSubjectIds: new Set(),
+      askTitles: [],
+      shortageTokens: [],
+    });
+    expect(generic?.title).toBe("Owner recorded a construction event");
+    const newer = selectLatestChange({
+      updates: [{
+        id: "beam",
+        title: "Beam reinforcement completed",
+        description: "Beam reinforcement was completed.",
+        occurredAt: "2026-09-22",
+        createdAt: "2026-09-22T08:00:00.000Z",
+        href: "/construction/build?tab=site",
+      }],
+      timeline: [{
+        id: "tax",
+        propertyId: "plot",
+        title: "Tax paid",
+        detail: "The tax payment was recorded.",
+        date: "2026-09-24",
+        createdAt: "2026-09-24T10:00:00.000Z",
+        href: "/property/plot",
+      }],
+      askSubjectIds: new Set(),
+      askTitles: [],
+      shortageTokens: [],
+    });
+    expect(newer?.title).toBe("Tax paid");
+    expect(newer?.sentence).toBe("The tax payment was recorded.");
+  });
+
+  it("shows a visit name and keeps a date-only reason as meta", () => {
+    expect(primaryAskLines(
+      { title: "Nikhil Jain", reason: "26 Sep.", meta: "26 Sep" },
+      "Nikhil Jain ₹83.00L · Priya Shah ₹81.00L",
+    )).toEqual({ title: "Nikhil Jain", reason: null, meta: "26 Sep" });
+    const shown = primaryAskLines({ title: "Nikhil Jain", reason: "26 Sep.", meta: "26 Sep" }, null);
+    expect(JSON.stringify(shown)).not.toContain("Nothing was sent");
+    expect(primaryAskLines(
+      { title: "Nikhil Jain", reason: "26 Sep. Nothing was sent.", meta: "26 Sep" },
+      "Nikhil Jain ₹83.00L · Priya Shah ₹81.00L",
+    ).reason).toBe("26 Sep. Nothing was sent.");
+    expect(primaryAskLines(
+      { title: "Electrical Check", reason: "Reported 21 Sep.", meta: null },
+      "Electrical check is still open.",
+    )).toEqual({ title: null, reason: "Reported 21 Sep.", meta: null });
+  });
+
   it("uses the open repair before a bill due this week, and leaves planned work out", () => {
     const life = composeHomeLives(input({
       properties: [{ id: "house", name: "Vijay Nagar House", city: "Indore", area: "Vijay Nagar" }],
@@ -250,7 +344,7 @@ describe("Home V2 lives ranking", () => {
     expect(life.summary.headline).toBe("Nikhil Jain ₹83.00L · Priya Shah ₹81.00L");
     expect(life.summary.caption).toBe("Priya cannot see Nikhil's offer.");
     expect(life.asks).toHaveLength(1);
-    expect(life.asks[0]).toMatchObject({ title: "Nikhil Jain", eyebrow: "Visit", actionLabel: "See the visit", href: "/buy-sell/sales/sale-palm" });
+    expect(life.asks[0]).toMatchObject({ title: "Nikhil Jain", eyebrow: "Visit", actionLabel: "See the visit", href: "/buy-sell/sales/sale-palm", meta: formatStoredDate("2026-09-26") });
     expect(life.asks[0]?.reason).toContain("Nothing was sent.");
     expect(life.status).toBe("Selling · Nikhil Jain ₹83.00L");
     expect(life.destinationHref).toBe("/property/palm");

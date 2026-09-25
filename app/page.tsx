@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ChevronDown, Search, UserRound } from "lucide-react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { HOME_LIFE_SESSION_KEY, resolveSelectedLifeId, shortLabel } from "@/lib/home-life-session";
+import { HOME_LIFE_SESSION_KEY, primaryAskLines, resolveSelectedLifeId, shortLabel } from "@/lib/home-life-session";
 import type { HomeLife } from "@/lib/home-lives";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 
@@ -162,7 +162,7 @@ export default function HomePage() {
   const calm = !ask && life.summary.headline === "Nothing needs you.";
   const shared = life.summary.headline === "Shared with you.";
   const showSecondaries = secondaries.length > 0 || life.moreCount > 0;
-  const hideAskTitle = Boolean(ask && life.summary.headline?.toLowerCase().includes(ask.title.toLowerCase()));
+  const askLines = ask ? primaryAskLines(ask, life.summary.headline) : null;
 
   return (
     <div className={`hv2${showSecondaries ? "" : " is-single"}${calm ? " is-calm" : ""}`} aria-busy="false">
@@ -205,8 +205,9 @@ export default function HomePage() {
         {ask ? (
           <article className={`hv2-ask${ask.tier <= 1 ? " is-urgent" : ""}`}>
             <p className="hv2-eyebrow">{ask.eyebrow}</p>
-            {hideAskTitle ? null : <h2>{ask.title}</h2>}
-            <p>{ask.reason}</p>
+            {askLines?.title ? <h2>{askLines.title}</h2> : null}
+            {askLines?.reason ? <p>{askLines.reason}</p> : null}
+            {askLines?.meta ? <p className="hv2-ask-meta">{askLines.meta}</p> : null}
             <Link href={ask.href} className="hv2-button">{ask.actionLabel}</Link>
           </article>
         ) : null}

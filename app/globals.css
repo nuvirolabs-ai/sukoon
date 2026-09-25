@@ -701,7 +701,8 @@ html.is-android-webview .motion-sheet__panel {
 .hv2-ask.is-urgent { background: #fbdeda; }
 .hv2-eyebrow { margin: 0; font-size: 11px; font-weight: 560; letter-spacing: 0.06em; text-transform: uppercase; color: #6b706d; }
 .hv2-ask h2 { margin: 6px 0; font-size: 22px; font-weight: 560; line-height: 1.25; color: #202521; }
-.hv2-ask > p:last-of-type { margin: 0 0 16px; font-size: 13px; font-weight: 460; color: #6b706d; }
+.hv2-ask > p:last-of-type, .hv2-ask-meta { margin: 0 0 16px; font-size: 13px; font-weight: 460; color: #6b706d; }
+.app-shell:has(.is-home) .bottom-navigation { display: none; }
 .hv2-button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; border: 0; border-radius: 999px; background: #1b3d2f; color: #fff; font-size: 16px; font-weight: 560; }
 .hv2-open { margin-top: 28px; }
 .hv2-secondary, .hv2-more { min-height: 56px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #e8e9e5; color: #202521; font-size: 16px; font-weight: 460; }
@@ -752,10 +753,14 @@ html.is-android-webview .motion-sheet__panel {
   .hv2-layout { grid-template-columns: minmax(0, 60%) minmax(0, 1fr); column-gap: 24px; grid-template-areas: "summary summary" "ask change" "also also"; }
   .hv2.is-calm .hv2-layout { grid-template-areas: "summary change" "also also"; }
   .hv2-change { margin-top: 28px; }
+}
+@media (min-width: 768px) and (max-width: 999px) {
   .home-nav { left: 50%; right: auto; width: min(680px, calc(100% - 24px)); transform: translateX(-50%); }
 }
 @media (min-width: 1000px) {
-  .app-workspace.is-home { margin-left: auto; margin-right: auto; max-width: none; padding: 32px 32px 48px; }
+  .app-workspace.is-home { margin-left: 224px; margin-right: 0; max-width: none; padding: 32px 32px 48px; }
+  .home-nav { inset: 0 auto 0 0; width: 224px; display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 80px 20px; border: 0; border-right: 1px solid #e8e9e5; border-radius: 0; background: rgba(255, 255, 255, 0.96); box-shadow: none; transform: none; backdrop-filter: none; }
+  .home-nav a { justify-content: flex-start; height: 48px; min-height: 48px; padding: 0 14px; font-size: 15px; }
 }
 @media (min-width: 1440px) {
   .app-workspace.is-home { margin-left: 224px; margin-right: 0; padding: 32px; }
