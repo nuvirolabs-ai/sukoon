@@ -582,6 +582,27 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
       notify((e as Error).message, "error");
     }
   };
+  // One-tap action: a single state transition with no typing. Carries the
+  // version + idempotency key the mutation API requires and toasts the result.
+  const runAction = async (
+    action: string,
+    extra: Record<string, unknown>,
+    successMsg = "Updated",
+  ) => {
+    if (!p) return;
+    try {
+      const updated = await api<ConstructionView>(`/api/construction/${id}`, {
+        action,
+        ...extra,
+        version: p.version,
+        idempotencyKey: crypto.randomUUID(),
+      });
+      setProject(updated);
+      notify(successMsg);
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
+  };
   // Construction OS surfaces five concepts. Legacy section links keep
   // working by redirecting to their new home.
   const LEGACY_TABS: Record<string, string> = {
@@ -1591,87 +1612,87 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             <p className="text-[14px] text-ink-muted">Owner-entered quantities and rates. Not a live market feed.</p>
             {p.materials.map((m) => {
               const history = p.prices.filter((r) => r.materialId === m.id);
+              const steps: Array<{ status: string; label: string }> = [
+                { status: "PLANNED", label: "Planned" },
+                { status: "ORDERED_EXTERNALLY", label: "Ordered" },
+                { status: "RECEIVED", label: "Received" },
+              ];
+              const isOn = (status: string) =>
+                m.status === status ||
+                (status === "ORDERED_EXTERNALLY" && m.status === "ORDERED");
               return (
                 <section key={m.id} className="border-b border-line py-4 min-w-0">
                   <h2 className="text-[18px] font-medium">{m.name}</h2>
-                  <p className="text-[13px] text-ink-muted">{m.quantity} {m.unit} · {displayLabel(m.status)}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
+                  <p className="text-[13px] text-ink-muted">{m.quantity} {m.unit}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
                   {history[0] ? (
                     <p className="mt-2 text-[15px]">
                       <FlashOnChange value={history[0].pricePaise}>{inr(Number(history[0].pricePaise) / 100)}</FlashOnChange> / {m.unit}
                       {history[1] ? <span className="text-ink-muted"> · previous {inr(Number(history[1].pricePaise) / 100)}</span> : null}
                     </p>
                   ) : null}
-                  {history.map((h) => (
-                    <p key={h.id} className="text-[13px] text-ink-muted">
-                      {presentDate(h.recordedDate)} · {h.brand} {h.grade} · {h.dealer} ·{" "}
-                      {h.location} · {rupees(h.pricePaise)}/{h.unit}
-                    </p>
-                  ))}
-                  {actionForm(
-                    "Update requirement",
-                    "MATERIAL_UPDATE",
-                    [
-                      field("quantity", "Quantity", "number", true, m.quantity),
-                      field(
-                        "requiredByDate",
-                        "Required by",
-                        "date",
-                        false,
-                        m.requiredByDate ?? "",
-                      ),
-                      moneyField(
-                        "estimatedUnitRatePaise",
-                        "Estimated unit rate",
-                        m.estimatedUnitRatePaise,
-                      ),
-                      moneyField(
-                        "actualUnitRatePaise",
-                        "Actual unit rate",
-                        m.actualUnitRatePaise,
-                      ),
-                      contact,
-                    ],
-                    { materialId: m.id },
+                  {write ? (
+                    <div className="status-ticks mt-3" role="group" aria-label={`${m.name} status`}>
+                      {steps.map((step) => {
+                        const on = isOn(step.status);
+                        return (
+                          <button
+                            key={step.status}
+                            type="button"
+                            aria-pressed={on}
+                            className={`status-tick${on ? " is-on" : ""}`}
+                            onClick={() => {
+                              if (!on)
+                                void runAction(
+                                  "PROCUREMENT_SET",
+                                  { materialId: m.id, status: step.status },
+                                  `Marked ${step.label.toLowerCase()}`,
+                                );
+                            }}
+                          >
+                            {on ? "✓ " : ""}{step.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-[13px] text-ink-muted">{displayLabel(m.status)}</p>
                   )}
-                  {actionForm(
-                    "Record a price",
-                    "PRICE_RECORD",
-                    [
-                      field("brand", "Brand"),
-                      field("grade", "Grade"),
-                      field("dealer", "Dealer"),
-                      field("location", "Location", "text", true),
-                      field("recordedDate", "Recorded date", "date", true),
-                      moneyField("pricePaise", "Price per unit"),
-                    ],
-                    { materialId: m.id, unit: m.unit },
-                  )}
-                  {actionForm(
-                    "Procurement status",
-                    "PROCUREMENT_SET",
-                    [
-                      {
-                        name: "status",
-                        label: "Status",
-                        options: options([
-                          "PLANNED",
-                          "QUOTE_REQUIRED",
-                          "ORDERED_EXTERNALLY",
-                          "RECEIVED",
-                          "CANCELLED",
-                        ]),
-                        required: true,
-                        value: m.status,
-                      },
-                      contact,
-                      field(
-                        "notes",
-                        "External order / receipt notes",
-                        "textarea",
-                      ),
-                    ],
-                    { materialId: m.id },
-                  )}
+                  {write ? (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer py-1 text-[13px] text-ink-muted">Adjust or add price</summary>
+                      {history.map((h) => (
+                        <p key={h.id} className="text-[13px] text-ink-muted">
+                          {presentDate(h.recordedDate)} · {h.brand} {h.grade} · {h.dealer} ·{" "}
+                          {h.location} · {rupees(h.pricePaise)}/{h.unit}
+                        </p>
+                      ))}
+                      {actionForm(
+                        "Update requirement",
+                        "MATERIAL_UPDATE",
+                        [
+                          field("quantity", "Quantity", "number", true, m.quantity),
+                          field("requiredByDate", "Required by", "date", false, m.requiredByDate ?? ""),
+                          moneyField("estimatedUnitRatePaise", "Estimated unit rate", m.estimatedUnitRatePaise),
+                          moneyField("actualUnitRatePaise", "Actual unit rate", m.actualUnitRatePaise),
+                          contact,
+                        ],
+                        { materialId: m.id },
+                      )}
+                      {actionForm(
+                        "Record a price",
+                        "PRICE_RECORD",
+                        [
+                          field("brand", "Brand"),
+                          field("grade", "Grade"),
+                          field("dealer", "Dealer"),
+                          field("location", "Location", "text", true),
+                          field("recordedDate", "Recorded date", "date", true),
+                          moneyField("pricePaise", "Price per unit"),
+                        ],
+                        { materialId: m.id, unit: m.unit },
+                      )}
+                    </details>
+                  ) : null}
                 </section>
               );
             })}
@@ -1720,12 +1741,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                   moneyField("unitRatePaise", "Unit rate"),
                   field("deliveryDate", "Delivery date", "date"),
                 ])}
-                {p.supplierQuotes.filter((q) => q.status === "RECEIVED").map((q) => actionForm(
-                  `Select quote from ${q.supplierName}`,
-                  "QUOTE_SELECT",
-                  [field("confirmed", "I confirm this selection; other received quotes are rejected", "checkbox", true)],
-                  { quoteId: q.id },
-                ))}
+                {write ? p.supplierQuotes.filter((q) => q.status === "RECEIVED").map((q) => (
+                  <button
+                    key={q.id}
+                    type="button"
+                    className="list-row motion-pressable"
+                    onClick={() => void runAction("QUOTE_SELECT", { quoteId: q.id }, "Quote selected")}
+                  >
+                    <span className="row-copy"><span className="row-title">Select quote from {q.supplierName}</span></span>
+                    <span className="row-value">Select →</span>
+                  </button>
+                )) : null}
                 {actionForm("Place an order", "ORDER_PLACE", [
                   {
                     name: "materialRequirementId",
@@ -1738,12 +1764,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                   moneyField("totalPaise", "Order total"),
                   field("expectedDelivery", "Expected delivery", "date"),
                 ])}
-                {p.orders.filter((o) => ["PLACED", "PARTIALLY_DELIVERED"].includes(o.status)).map((o) => actionForm(
-                  `Cancel order from ${o.supplierName}`,
-                  "ORDER_CANCEL",
-                  [field("confirmed", "I confirm cancellation", "checkbox", true)],
-                  { orderId: o.id },
-                ))}
+                {write ? p.orders.filter((o) => ["PLACED", "PARTIALLY_DELIVERED"].includes(o.status)).map((o) => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    className="list-row motion-pressable"
+                    onClick={() => void runAction("ORDER_CANCEL", { orderId: o.id }, "Order cancelled")}
+                  >
+                    <span className="row-copy"><span className="row-title">Cancel order from {o.supplierName}</span></span>
+                    <span className="row-value">Cancel →</span>
+                  </button>
+                )) : null}
               </section>
             ) : null}
           </>

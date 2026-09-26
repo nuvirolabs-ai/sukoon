@@ -408,6 +408,12 @@ button.task-check--tick:hover { border-color: #2f9e63; background: #eef7f0; }
 button.task-check--tick:active { transform: scale(0.9); }
 button.task-check--tick::after { content: "✓"; color: #8a908a; font-size: 14px; opacity: 0; transition: opacity var(--motion-fast) var(--motion-ease-out); }
 button.task-check--tick:hover::after { opacity: 1; }
+/* ---- One-tap status ticks (procurement, etc.) ---- */
+.status-ticks { display: flex; flex-wrap: wrap; gap: 8px; }
+.status-tick { border: 1.5px solid #d5d9d2; background: #fff; border-radius: 999px; padding: 7px 15px; font-size: 13px; font-weight: 600; color: #4b514a; min-height: 40px; cursor: pointer; transition: background-color var(--motion-fast) var(--motion-ease-out), border-color var(--motion-fast) var(--motion-ease-out), transform var(--motion-fast) var(--motion-ease-spring); }
+.status-tick.is-on { background: #1b3d2f; border-color: #1b3d2f; color: #fff; }
+.status-tick:not(.is-on):hover { border-color: #2f9e63; }
+.status-tick:active { transform: scale(0.97); }
 
 /* ---- Purchase journey: sequential progress ---- */
 .journey { display: flex; align-items: center; gap: 0; padding: 12px 4px; overflow-x: auto; }
