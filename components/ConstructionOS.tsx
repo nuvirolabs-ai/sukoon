@@ -70,6 +70,19 @@ async function api<T>(url: string, body?: unknown): Promise<T> {
     );
   return data.data as T;
 }
+// Macro phases group the fixed 17-stage template into a handful of tappable
+// sections, so the plan reads as five phases instead of a flat stage wall.
+const CONSTRUCTION_PHASES: Array<{ key: string; title: string; through: number }> = [
+  { key: "prepare", title: "Prepare", through: 4 },
+  { key: "structure", title: "Structure", through: 7 },
+  { key: "services", title: "Services & shell", through: 10 },
+  { key: "interiors", title: "Interiors", through: 14 },
+  { key: "closeout", title: "Close-out", through: Number.POSITIVE_INFINITY },
+];
+function phaseKeyForSequence(sequence: number): string {
+  const phase = CONSTRUCTION_PHASES.find((p) => sequence <= p.through);
+  return (phase ?? CONSTRUCTION_PHASES[CONSTRUCTION_PHASES.length - 1]).key;
+}
 function EntryForm({
   title,
   fields,
@@ -498,6 +511,8 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
   >([]);
   const [vaultLoaded, setVaultLoaded] = useState(false);
   const [openStageId, setOpenStageId] = useState<string | null>(null);
+  const [openPhaseKey, setOpenPhaseKey] = useState<string | null>(null);
+  const { notify } = useToast();
   const load = useCallback(async () => {
     try {
       setProject(await api(`/api/construction/${id}`));
@@ -539,6 +554,55 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
     );
   const write =
     p.owner && !p.archivedAt && !["COMPLETED", "CANCELLED"].includes(p.status);
+  // One-tap task completion. Tasks can only be completed once their stage is
+  // underway, so a not-started stage is started first, then the task is ticked.
+  const completeTask = async (taskId: string, stageId: string, stageStatus: string) => {
+    try {
+      let current = p;
+      if (!["IN_PROGRESS", "BLOCKED"].includes(stageStatus)) {
+        current = await api<ConstructionView>(`/api/construction/${id}`, {
+          action: "STAGE_UPDATE",
+          stageId,
+          status: "IN_PROGRESS",
+          version: current.version,
+          idempotencyKey: crypto.randomUUID(),
+        });
+      }
+      const updated = await api<ConstructionView>(`/api/construction/${id}`, {
+        action: "TASK_UPDATE",
+        taskId,
+        stageId,
+        status: "DONE",
+        version: current.version,
+        idempotencyKey: crypto.randomUUID(),
+      });
+      setProject(updated);
+      notify("Task marked done");
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
+  };
+  // One-tap action: a single state transition with no typing. Carries the
+  // version + idempotency key the mutation API requires and toasts the result.
+  const runAction = async (
+    action: string,
+    extra: Record<string, unknown>,
+    successMsg = "Updated",
+  ) => {
+    if (!p) return;
+    try {
+      const updated = await api<ConstructionView>(`/api/construction/${id}`, {
+        action,
+        ...extra,
+        version: p.version,
+        idempotencyKey: crypto.randomUUID(),
+      });
+      setProject(updated);
+      notify(successMsg);
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
+  };
   // Construction OS surfaces five concepts. Legacy section links keep
   // working by redirecting to their new home.
   const LEGACY_TABS: Record<string, string> = {
@@ -633,6 +697,16 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
       })}
     </ol>
   );
+  // Group the ordered stages into the macro phases used by the Journey plan.
+  const phaseGroups = CONSTRUCTION_PHASES.map((phase) => ({
+    ...phase,
+    stages: p.stages.filter((s) => phaseKeyForSequence(s.sequence) === phase.key),
+  })).filter((phase) => phase.stages.length > 0);
+  const focusStage =
+    p.currentStage ??
+    p.stages.find((s) => !["COMPLETED", "SKIPPED"].includes(s.status)) ??
+    p.stages[0];
+  const currentPhaseKey = phaseKeyForSequence(focusStage?.sequence ?? 1);
   const stage: Field = {
     name: "stageId",
     label: "Stage",
@@ -894,19 +968,6 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           <p className="mt-3 text-[14px]"><Link className="underline" href={`/construction/${id}?tab=more#history`}>View all activity →</Link></p>
           </div>
           <aside className="story-aside" aria-label="Supporting context">
-            <div className="aside-card">
-              <h3>Journey</h3>
-              {stageRail}
-              <p className="mt-2 text-[13px]"><Link className="underline" href={`/construction/${id}?tab=journey`}>Open plan →</Link></p>
-            </div>
-            {(p.capabilities.budget || p.capabilities.cost) && p.money ? (
-              <div className="aside-card">
-                <h3>Money</h3>
-                <p className="text-[22px] font-semibold">{inr(Number(p.money.recordedSpendPaise) / 100)} <span className="text-[13px] font-normal text-ink-muted">of {inr(Number(p.money.basePlannedPaise) / 100)}</span></p>
-                <p className="mt-1 text-[13px] text-ink-muted">Approved {inr(Number(p.money.currentApprovedPaise) / 100)} · committed {inr(Number(p.money.committedPaise) / 100)}</p>
-                <p className="mt-2 text-[13px]"><Link className="underline" href={`/construction/${id}?tab=money`}>Open money →</Link></p>
-              </div>
-            ) : null}
             {p.capabilities.documents && p.documents.length ? (
               <div className="aside-card">
                 <h3>Papers</h3>
@@ -959,10 +1020,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 </Surface>
               );
             })()}
-            <details className="mt-4">
-              <summary className="cursor-pointer py-2 text-[15px] font-semibold">Full plan →</summary>
-            <p className="text-[13px] text-ink-muted">Tap a stage to see its tasks.</p>
-            <div className="roadmap">
+            <section className="mt-4">
+              <h2 className="section-heading">The plan</h2>
+            <p className="text-[13px] text-ink-muted">Five phases. Tap a phase to open its stages, and a stage to see its tasks.</p>
+            <div className="roadmap-phases">
             {(() => {
             const renderStage = (s: (typeof p.stages)[number]) => {
               const done = ["COMPLETED", "SKIPPED"].includes(s.status);
@@ -996,74 +1057,27 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                     const taskDone = ["DONE", "CANCELLED"].includes(t.status);
                     return (
                     <div key={t.id} className={`task-row mt-3 flex gap-2 border-l border-line pl-3${taskDone ? " is-done" : ""}`}>
-                      <span aria-hidden="true" className="task-check mt-0.5">{taskDone ? "✓" : ""}</span>
+                      {write && !taskDone ? (
+                        <button
+                          type="button"
+                          className="task-check task-check--tick mt-0.5 motion-pressable"
+                          aria-label={`Mark ${t.title} done`}
+                          title="Mark done"
+                          onClick={() => void completeTask(t.id, s.id, s.status)}
+                        />
+                      ) : (
+                        <span aria-hidden="true" className="task-check mt-0.5">{taskDone ? "✓" : ""}</span>
+                      )}
                       <div className="min-w-0 flex-1">
                       <p className="text-[13px]">
-                        {t.title}{" "}
-                        <span className="text-[12px] text-ink-muted">
-                          <StatusTransition statusKey={t.status}>{displayLabel(t.status)}</StatusTransition>
-                        </span>
+                        {t.title}
+                        {["IN_PROGRESS", "BLOCKED"].includes(t.status) ? (
+                          <span className="ml-1.5 text-[12px] text-ink-muted">
+                            <StatusTransition statusKey={t.status}>{displayLabel(t.status)}</StatusTransition>
+                          </span>
+                        ) : null}
                       </p>
-                      <p className="text-[13px] text-ink-muted">
-                        {presentName(displayLabel(t.source))}
-                        {t.dueDate ? ` · ${dueCopy(t.dueDate)}` : ""}
-                      </p>
-                      {write && !["DONE", "CANCELLED"].includes(t.status)
-                        ? actionForm(
-                            "Edit task",
-                            "TASK_UPDATE",
-                            [
-                              field("title", "Title", "text", true, t.title),
-                              {
-                                name: "status",
-                                label: "Status",
-                                options: options([
-                                  "TODO",
-                                  "IN_PROGRESS",
-                                  "BLOCKED",
-                                  "DONE",
-                                  "CANCELLED",
-                                ]),
-                                value: t.status,
-                                required: true,
-                              },
-                              field(
-                                "dueDate",
-                                "Due date",
-                                "date",
-                                false,
-                                t.dueDate ?? "",
-                              ),
-                              { ...contact, value: t.assignedContactId ?? "" },
-                              {
-                                name: "dependsOnId",
-                                label: "Depends on task",
-                                options: p.tasks
-                                  .filter((x) => x.id !== t.id)
-                                  .map((x) => ({
-                                    value: x.id,
-                                    label: x.title,
-                                  })),
-                                value: t.dependsOnId ?? "",
-                              },
-                              field(
-                                "description",
-                                "Description",
-                                "textarea",
-                                false,
-                                t.description,
-                              ),
-                              field(
-                                "notes",
-                                "Notes",
-                                "textarea",
-                                false,
-                                t.notes,
-                              ),
-                            ],
-                            { taskId: t.id, stageId: s.id },
-                          )
-                        : null}
+                      {t.dueDate ? <p className="text-[13px] text-ink-muted">{dueCopy(t.dueDate)}</p> : null}
                       </div>
                     </div>
                     );
@@ -1116,24 +1130,41 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
               </section>
               );
             };
-            const openStages = p.stages.filter((s) => !["COMPLETED", "SKIPPED"].includes(s.status));
-            const doneStages = p.stages.filter((s) => ["COMPLETED", "SKIPPED"].includes(s.status));
-            return (
-              <>
-                {openStages.map((s) => renderStage(s))}
-                {doneStages.length ? (
-                  <details className="border-t border-line pt-2">
-                    <summary className="cursor-pointer py-2 text-[13px] font-semibold">
-                      Completed stages ({doneStages.length})
-                    </summary>
-                    {doneStages.map((s) => renderStage(s))}
-                  </details>
-                ) : null}
-              </>
-            );
+            const renderPhase = (group: (typeof phaseGroups)[number]) => {
+              const total = group.stages.length;
+              const doneCount = group.stages.filter((s) => ["COMPLETED", "SKIPPED"].includes(s.status)).length;
+              const hasCurrent = group.stages.some((s) => p.currentStage?.id === s.id || s.status === "IN_PROGRESS");
+              const phaseOpen = openPhaseKey ? openPhaseKey === group.key : group.key === currentPhaseKey;
+              const phaseDone = total > 0 && doneCount === total;
+              return (
+                <section key={group.key} className={`roadmap-phase${hasCurrent ? " is-current" : ""}${phaseDone ? " is-done" : ""}${phaseOpen ? " is-open" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenPhaseKey(phaseOpen ? `closed-${group.key}` : group.key)}
+                    aria-expanded={phaseOpen}
+                    className="roadmap-phase-head motion-pressable"
+                  >
+                    <span className="roadmap-phase-node" aria-hidden="true">{phaseDone ? "✓" : `${doneCount}/${total}`}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-baseline justify-between gap-2">
+                        <span className="text-[15px] font-semibold">{group.title}</span>
+                        <span className="text-[13px] text-ink-muted">{phaseDone ? "Done" : hasCurrent ? "In progress" : doneCount ? `${doneCount}/${total} stages` : "Not started"}</span>
+                      </span>
+                      <span className="mt-1 block truncate text-[13px] text-ink-muted">{group.stages.map((s) => s.name).join(" · ")}</span>
+                    </span>
+                  </button>
+                  <div className="roadmap-phase-body">
+                    <div className="roadmap-phase-body__inner">
+                      <div className="roadmap">{group.stages.map((s) => renderStage(s))}</div>
+                    </div>
+                  </div>
+                </section>
+              );
+            };
+            return <>{phaseGroups.map((group) => renderPhase(group))}</>;
             })()}
             </div>
-            </details>
+            </section>
             {actionForm("Add a milestone", "STAGE_CREATE", [
               field("name", "Milestone name", "text", true),
               field("description", "Description", "textarea"),
@@ -1581,87 +1612,87 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             <p className="text-[14px] text-ink-muted">Owner-entered quantities and rates. Not a live market feed.</p>
             {p.materials.map((m) => {
               const history = p.prices.filter((r) => r.materialId === m.id);
+              const steps: Array<{ status: string; label: string }> = [
+                { status: "PLANNED", label: "Planned" },
+                { status: "ORDERED_EXTERNALLY", label: "Ordered" },
+                { status: "RECEIVED", label: "Received" },
+              ];
+              const isOn = (status: string) =>
+                m.status === status ||
+                (status === "ORDERED_EXTERNALLY" && m.status === "ORDERED");
               return (
                 <section key={m.id} className="border-b border-line py-4 min-w-0">
                   <h2 className="text-[18px] font-medium">{m.name}</h2>
-                  <p className="text-[13px] text-ink-muted">{m.quantity} {m.unit} · {displayLabel(m.status)}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
+                  <p className="text-[13px] text-ink-muted">{m.quantity} {m.unit}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
                   {history[0] ? (
                     <p className="mt-2 text-[15px]">
                       <FlashOnChange value={history[0].pricePaise}>{inr(Number(history[0].pricePaise) / 100)}</FlashOnChange> / {m.unit}
                       {history[1] ? <span className="text-ink-muted"> · previous {inr(Number(history[1].pricePaise) / 100)}</span> : null}
                     </p>
                   ) : null}
-                  {history.map((h) => (
-                    <p key={h.id} className="text-[13px] text-ink-muted">
-                      {presentDate(h.recordedDate)} · {h.brand} {h.grade} · {h.dealer} ·{" "}
-                      {h.location} · {rupees(h.pricePaise)}/{h.unit}
-                    </p>
-                  ))}
-                  {actionForm(
-                    "Update requirement",
-                    "MATERIAL_UPDATE",
-                    [
-                      field("quantity", "Quantity", "number", true, m.quantity),
-                      field(
-                        "requiredByDate",
-                        "Required by",
-                        "date",
-                        false,
-                        m.requiredByDate ?? "",
-                      ),
-                      moneyField(
-                        "estimatedUnitRatePaise",
-                        "Estimated unit rate",
-                        m.estimatedUnitRatePaise,
-                      ),
-                      moneyField(
-                        "actualUnitRatePaise",
-                        "Actual unit rate",
-                        m.actualUnitRatePaise,
-                      ),
-                      contact,
-                    ],
-                    { materialId: m.id },
+                  {write ? (
+                    <div className="status-ticks mt-3" role="group" aria-label={`${m.name} status`}>
+                      {steps.map((step) => {
+                        const on = isOn(step.status);
+                        return (
+                          <button
+                            key={step.status}
+                            type="button"
+                            aria-pressed={on}
+                            className={`status-tick${on ? " is-on" : ""}`}
+                            onClick={() => {
+                              if (!on)
+                                void runAction(
+                                  "PROCUREMENT_SET",
+                                  { materialId: m.id, status: step.status },
+                                  `Marked ${step.label.toLowerCase()}`,
+                                );
+                            }}
+                          >
+                            {on ? "✓ " : ""}{step.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-[13px] text-ink-muted">{displayLabel(m.status)}</p>
                   )}
-                  {actionForm(
-                    "Record a price",
-                    "PRICE_RECORD",
-                    [
-                      field("brand", "Brand"),
-                      field("grade", "Grade"),
-                      field("dealer", "Dealer"),
-                      field("location", "Location", "text", true),
-                      field("recordedDate", "Recorded date", "date", true),
-                      moneyField("pricePaise", "Price per unit"),
-                    ],
-                    { materialId: m.id, unit: m.unit },
-                  )}
-                  {actionForm(
-                    "Procurement status",
-                    "PROCUREMENT_SET",
-                    [
-                      {
-                        name: "status",
-                        label: "Status",
-                        options: options([
-                          "PLANNED",
-                          "QUOTE_REQUIRED",
-                          "ORDERED_EXTERNALLY",
-                          "RECEIVED",
-                          "CANCELLED",
-                        ]),
-                        required: true,
-                        value: m.status,
-                      },
-                      contact,
-                      field(
-                        "notes",
-                        "External order / receipt notes",
-                        "textarea",
-                      ),
-                    ],
-                    { materialId: m.id },
-                  )}
+                  {write ? (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer py-1 text-[13px] text-ink-muted">Adjust or add price</summary>
+                      {history.map((h) => (
+                        <p key={h.id} className="text-[13px] text-ink-muted">
+                          {presentDate(h.recordedDate)} · {h.brand} {h.grade} · {h.dealer} ·{" "}
+                          {h.location} · {rupees(h.pricePaise)}/{h.unit}
+                        </p>
+                      ))}
+                      {actionForm(
+                        "Update requirement",
+                        "MATERIAL_UPDATE",
+                        [
+                          field("quantity", "Quantity", "number", true, m.quantity),
+                          field("requiredByDate", "Required by", "date", false, m.requiredByDate ?? ""),
+                          moneyField("estimatedUnitRatePaise", "Estimated unit rate", m.estimatedUnitRatePaise),
+                          moneyField("actualUnitRatePaise", "Actual unit rate", m.actualUnitRatePaise),
+                          contact,
+                        ],
+                        { materialId: m.id },
+                      )}
+                      {actionForm(
+                        "Record a price",
+                        "PRICE_RECORD",
+                        [
+                          field("brand", "Brand"),
+                          field("grade", "Grade"),
+                          field("dealer", "Dealer"),
+                          field("location", "Location", "text", true),
+                          field("recordedDate", "Recorded date", "date", true),
+                          moneyField("pricePaise", "Price per unit"),
+                        ],
+                        { materialId: m.id, unit: m.unit },
+                      )}
+                    </details>
+                  ) : null}
                 </section>
               );
             })}
@@ -1710,12 +1741,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                   moneyField("unitRatePaise", "Unit rate"),
                   field("deliveryDate", "Delivery date", "date"),
                 ])}
-                {p.supplierQuotes.filter((q) => q.status === "RECEIVED").map((q) => actionForm(
-                  `Select quote from ${q.supplierName}`,
-                  "QUOTE_SELECT",
-                  [field("confirmed", "I confirm this selection; other received quotes are rejected", "checkbox", true)],
-                  { quoteId: q.id },
-                ))}
+                {write ? p.supplierQuotes.filter((q) => q.status === "RECEIVED").map((q) => (
+                  <button
+                    key={q.id}
+                    type="button"
+                    className="list-row motion-pressable"
+                    onClick={() => void runAction("QUOTE_SELECT", { quoteId: q.id }, "Quote selected")}
+                  >
+                    <span className="row-copy"><span className="row-title">Select quote from {q.supplierName}</span></span>
+                    <span className="row-value">Select →</span>
+                  </button>
+                )) : null}
                 {actionForm("Place an order", "ORDER_PLACE", [
                   {
                     name: "materialRequirementId",
@@ -1728,12 +1764,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                   moneyField("totalPaise", "Order total"),
                   field("expectedDelivery", "Expected delivery", "date"),
                 ])}
-                {p.orders.filter((o) => ["PLACED", "PARTIALLY_DELIVERED"].includes(o.status)).map((o) => actionForm(
-                  `Cancel order from ${o.supplierName}`,
-                  "ORDER_CANCEL",
-                  [field("confirmed", "I confirm cancellation", "checkbox", true)],
-                  { orderId: o.id },
-                ))}
+                {write ? p.orders.filter((o) => ["PLACED", "PARTIALLY_DELIVERED"].includes(o.status)).map((o) => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    className="list-row motion-pressable"
+                    onClick={() => void runAction("ORDER_CANCEL", { orderId: o.id }, "Order cancelled")}
+                  >
+                    <span className="row-copy"><span className="row-title">Cancel order from {o.supplierName}</span></span>
+                    <span className="row-value">Cancel →</span>
+                  </button>
+                )) : null}
               </section>
             ) : null}
           </>
