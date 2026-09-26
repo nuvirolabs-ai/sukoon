@@ -403,6 +403,11 @@ button.roadmap-card:active { transform: scale(0.98); }
 .task-row.is-done { opacity: 0.62; }
 .task-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #cfd4cc; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background-color var(--motion-fast) var(--motion-ease-out), border-color var(--motion-fast) var(--motion-ease-out), transform var(--motion-fast) var(--motion-ease-spring); }
 .task-row.is-done .task-check { background: #2f9e63; border-color: #2f9e63; color: white; transform: scale(1.05); }
+button.task-check--tick { background: #fff; cursor: pointer; padding: 0; }
+button.task-check--tick:hover { border-color: #2f9e63; background: #eef7f0; }
+button.task-check--tick:active { transform: scale(0.9); }
+button.task-check--tick::after { content: "✓"; color: #8a908a; font-size: 14px; opacity: 0; transition: opacity var(--motion-fast) var(--motion-ease-out); }
+button.task-check--tick:hover::after { opacity: 1; }
 
 /* ---- Purchase journey: sequential progress ---- */
 .journey { display: flex; align-items: center; gap: 0; padding: 12px 4px; overflow-x: auto; }

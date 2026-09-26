@@ -512,6 +512,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
   const [vaultLoaded, setVaultLoaded] = useState(false);
   const [openStageId, setOpenStageId] = useState<string | null>(null);
   const [openPhaseKey, setOpenPhaseKey] = useState<string | null>(null);
+  const { notify } = useToast();
   const load = useCallback(async () => {
     try {
       setProject(await api(`/api/construction/${id}`));
@@ -553,6 +554,32 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
     );
   const write =
     p.owner && !p.archivedAt && !["COMPLETED", "CANCELLED"].includes(p.status);
+  // One-tap task completion. Tasks can only be completed once their stage is
+  // underway, so a not-started stage is started first, then the task is ticked.
+  const completeTask = async (taskId: string, stageId: string, stageStatus: string) => {
+    try {
+      let current = p;
+      if (!["IN_PROGRESS", "BLOCKED"].includes(stageStatus)) {
+        current = await api<ConstructionView>(`/api/construction/${id}`, {
+          action: "STAGE_UPDATE",
+          stageId,
+          status: "IN_PROGRESS",
+          version: current.version,
+        });
+      }
+      const updated = await api<ConstructionView>(`/api/construction/${id}`, {
+        action: "TASK_UPDATE",
+        taskId,
+        stageId,
+        status: "DONE",
+        version: current.version,
+      });
+      setProject(updated);
+      notify("Task marked done");
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
+  };
   // Construction OS surfaces five concepts. Legacy section links keep
   // working by redirecting to their new home.
   const LEGACY_TABS: Record<string, string> = {
@@ -1007,74 +1034,27 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                     const taskDone = ["DONE", "CANCELLED"].includes(t.status);
                     return (
                     <div key={t.id} className={`task-row mt-3 flex gap-2 border-l border-line pl-3${taskDone ? " is-done" : ""}`}>
-                      <span aria-hidden="true" className="task-check mt-0.5">{taskDone ? "✓" : ""}</span>
+                      {write && !taskDone ? (
+                        <button
+                          type="button"
+                          className="task-check task-check--tick mt-0.5 motion-pressable"
+                          aria-label={`Mark ${t.title} done`}
+                          title="Mark done"
+                          onClick={() => void completeTask(t.id, s.id, s.status)}
+                        />
+                      ) : (
+                        <span aria-hidden="true" className="task-check mt-0.5">{taskDone ? "✓" : ""}</span>
+                      )}
                       <div className="min-w-0 flex-1">
                       <p className="text-[13px]">
-                        {t.title}{" "}
-                        <span className="text-[12px] text-ink-muted">
-                          <StatusTransition statusKey={t.status}>{displayLabel(t.status)}</StatusTransition>
-                        </span>
+                        {t.title}
+                        {["IN_PROGRESS", "BLOCKED"].includes(t.status) ? (
+                          <span className="ml-1.5 text-[12px] text-ink-muted">
+                            <StatusTransition statusKey={t.status}>{displayLabel(t.status)}</StatusTransition>
+                          </span>
+                        ) : null}
                       </p>
-                      <p className="text-[13px] text-ink-muted">
-                        {presentName(displayLabel(t.source))}
-                        {t.dueDate ? ` · ${dueCopy(t.dueDate)}` : ""}
-                      </p>
-                      {write && !["DONE", "CANCELLED"].includes(t.status)
-                        ? actionForm(
-                            "Edit task",
-                            "TASK_UPDATE",
-                            [
-                              field("title", "Title", "text", true, t.title),
-                              {
-                                name: "status",
-                                label: "Status",
-                                options: options([
-                                  "TODO",
-                                  "IN_PROGRESS",
-                                  "BLOCKED",
-                                  "DONE",
-                                  "CANCELLED",
-                                ]),
-                                value: t.status,
-                                required: true,
-                              },
-                              field(
-                                "dueDate",
-                                "Due date",
-                                "date",
-                                false,
-                                t.dueDate ?? "",
-                              ),
-                              { ...contact, value: t.assignedContactId ?? "" },
-                              {
-                                name: "dependsOnId",
-                                label: "Depends on task",
-                                options: p.tasks
-                                  .filter((x) => x.id !== t.id)
-                                  .map((x) => ({
-                                    value: x.id,
-                                    label: x.title,
-                                  })),
-                                value: t.dependsOnId ?? "",
-                              },
-                              field(
-                                "description",
-                                "Description",
-                                "textarea",
-                                false,
-                                t.description,
-                              ),
-                              field(
-                                "notes",
-                                "Notes",
-                                "textarea",
-                                false,
-                                t.notes,
-                              ),
-                            ],
-                            { taskId: t.id, stageId: s.id },
-                          )
-                        : null}
+                      {t.dueDate ? <p className="text-[13px] text-ink-muted">{dueCopy(t.dueDate)}</p> : null}
                       </div>
                     </div>
                     );
