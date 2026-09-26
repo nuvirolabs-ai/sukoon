@@ -385,6 +385,18 @@ button.roadmap-card:active { transform: scale(0.98); }
 .roadmap-detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--motion-standard) var(--motion-ease-spring); }
 .roadmap-stage.is-open .roadmap-detail { grid-template-rows: 1fr; }
 .roadmap-detail__inner { overflow: hidden; }
+/* ---- Construction plan: macro phases wrapping the stage timeline ---- */
+.roadmap-phases { margin-top: 8px; display: flex; flex-direction: column; gap: 10px; }
+.roadmap-phase { background: #fff; border-radius: 18px; overflow: hidden; }
+.roadmap-phase-head { width: 100%; text-align: left; display: flex; align-items: flex-start; gap: 12px; padding: 15px 16px; transition: transform var(--motion-fast) var(--motion-ease-out); }
+.roadmap-phase-head:active { transform: scale(0.99); }
+.roadmap-phase-node { flex: 0 0 auto; min-width: 46px; height: 26px; padding: 0 9px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: #eef1ec; color: #6b716a; margin-top: 1px; }
+.roadmap-phase.is-current .roadmap-phase-node { background: #1b3d2f; color: #fff; }
+.roadmap-phase.is-done .roadmap-phase-node { background: #2f9e63; color: #fff; }
+.roadmap-phase-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--motion-standard) var(--motion-ease-spring); }
+.roadmap-phase.is-open .roadmap-phase-body { grid-template-rows: 1fr; }
+.roadmap-phase-body__inner { overflow: hidden; }
+.roadmap-phase-body .roadmap { margin: 2px 8px 6px; }
 .progress-reveal { transform-origin: left center; animation: motion-progress var(--motion-slow) var(--motion-ease-spring); }
 @keyframes motion-progress { from { transform: scaleX(0.2); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
 .task-row { transition: background-color var(--motion-fast) var(--motion-ease-out), opacity var(--motion-fast) var(--motion-ease-out); border-radius: 12px; }

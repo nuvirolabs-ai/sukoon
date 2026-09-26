@@ -70,6 +70,19 @@ async function api<T>(url: string, body?: unknown): Promise<T> {
     );
   return data.data as T;
 }
+// Macro phases group the fixed 17-stage template into a handful of tappable
+// sections, so the plan reads as five phases instead of a flat stage wall.
+const CONSTRUCTION_PHASES: Array<{ key: string; title: string; through: number }> = [
+  { key: "prepare", title: "Prepare", through: 4 },
+  { key: "structure", title: "Structure", through: 7 },
+  { key: "services", title: "Services & shell", through: 10 },
+  { key: "interiors", title: "Interiors", through: 14 },
+  { key: "closeout", title: "Close-out", through: Number.POSITIVE_INFINITY },
+];
+function phaseKeyForSequence(sequence: number): string {
+  const phase = CONSTRUCTION_PHASES.find((p) => sequence <= p.through);
+  return (phase ?? CONSTRUCTION_PHASES[CONSTRUCTION_PHASES.length - 1]).key;
+}
 function EntryForm({
   title,
   fields,
@@ -498,6 +511,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
   >([]);
   const [vaultLoaded, setVaultLoaded] = useState(false);
   const [openStageId, setOpenStageId] = useState<string | null>(null);
+  const [openPhaseKey, setOpenPhaseKey] = useState<string | null>(null);
   const load = useCallback(async () => {
     try {
       setProject(await api(`/api/construction/${id}`));
@@ -633,6 +647,16 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
       })}
     </ol>
   );
+  // Group the ordered stages into the macro phases used by the Journey plan.
+  const phaseGroups = CONSTRUCTION_PHASES.map((phase) => ({
+    ...phase,
+    stages: p.stages.filter((s) => phaseKeyForSequence(s.sequence) === phase.key),
+  })).filter((phase) => phase.stages.length > 0);
+  const focusStage =
+    p.currentStage ??
+    p.stages.find((s) => !["COMPLETED", "SKIPPED"].includes(s.status)) ??
+    p.stages[0];
+  const currentPhaseKey = phaseKeyForSequence(focusStage?.sequence ?? 1);
   const stage: Field = {
     name: "stageId",
     label: "Stage",
@@ -894,19 +918,6 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           <p className="mt-3 text-[14px]"><Link className="underline" href={`/construction/${id}?tab=more#history`}>View all activity →</Link></p>
           </div>
           <aside className="story-aside" aria-label="Supporting context">
-            <div className="aside-card">
-              <h3>Journey</h3>
-              {stageRail}
-              <p className="mt-2 text-[13px]"><Link className="underline" href={`/construction/${id}?tab=journey`}>Open plan →</Link></p>
-            </div>
-            {(p.capabilities.budget || p.capabilities.cost) && p.money ? (
-              <div className="aside-card">
-                <h3>Money</h3>
-                <p className="text-[22px] font-semibold">{inr(Number(p.money.recordedSpendPaise) / 100)} <span className="text-[13px] font-normal text-ink-muted">of {inr(Number(p.money.basePlannedPaise) / 100)}</span></p>
-                <p className="mt-1 text-[13px] text-ink-muted">Approved {inr(Number(p.money.currentApprovedPaise) / 100)} · committed {inr(Number(p.money.committedPaise) / 100)}</p>
-                <p className="mt-2 text-[13px]"><Link className="underline" href={`/construction/${id}?tab=money`}>Open money →</Link></p>
-              </div>
-            ) : null}
             {p.capabilities.documents && p.documents.length ? (
               <div className="aside-card">
                 <h3>Papers</h3>
@@ -959,10 +970,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 </Surface>
               );
             })()}
-            <details className="mt-4">
-              <summary className="cursor-pointer py-2 text-[15px] font-semibold">Full plan →</summary>
-            <p className="text-[13px] text-ink-muted">Tap a stage to see its tasks.</p>
-            <div className="roadmap">
+            <section className="mt-4">
+              <h2 className="section-heading">The plan</h2>
+            <p className="text-[13px] text-ink-muted">Five phases. Tap a phase to open its stages, and a stage to see its tasks.</p>
+            <div className="roadmap-phases">
             {(() => {
             const renderStage = (s: (typeof p.stages)[number]) => {
               const done = ["COMPLETED", "SKIPPED"].includes(s.status);
@@ -1116,24 +1127,41 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
               </section>
               );
             };
-            const openStages = p.stages.filter((s) => !["COMPLETED", "SKIPPED"].includes(s.status));
-            const doneStages = p.stages.filter((s) => ["COMPLETED", "SKIPPED"].includes(s.status));
-            return (
-              <>
-                {openStages.map((s) => renderStage(s))}
-                {doneStages.length ? (
-                  <details className="border-t border-line pt-2">
-                    <summary className="cursor-pointer py-2 text-[13px] font-semibold">
-                      Completed stages ({doneStages.length})
-                    </summary>
-                    {doneStages.map((s) => renderStage(s))}
-                  </details>
-                ) : null}
-              </>
-            );
+            const renderPhase = (group: (typeof phaseGroups)[number]) => {
+              const total = group.stages.length;
+              const doneCount = group.stages.filter((s) => ["COMPLETED", "SKIPPED"].includes(s.status)).length;
+              const hasCurrent = group.stages.some((s) => p.currentStage?.id === s.id || s.status === "IN_PROGRESS");
+              const phaseOpen = openPhaseKey ? openPhaseKey === group.key : group.key === currentPhaseKey;
+              const phaseDone = total > 0 && doneCount === total;
+              return (
+                <section key={group.key} className={`roadmap-phase${hasCurrent ? " is-current" : ""}${phaseDone ? " is-done" : ""}${phaseOpen ? " is-open" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenPhaseKey(phaseOpen ? `closed-${group.key}` : group.key)}
+                    aria-expanded={phaseOpen}
+                    className="roadmap-phase-head motion-pressable"
+                  >
+                    <span className="roadmap-phase-node" aria-hidden="true">{phaseDone ? "✓" : `${doneCount}/${total}`}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="flex items-baseline justify-between gap-2">
+                        <span className="text-[15px] font-semibold">{group.title}</span>
+                        <span className="text-[13px] text-ink-muted">{phaseDone ? "Done" : hasCurrent ? "In progress" : doneCount ? `${doneCount}/${total} stages` : "Not started"}</span>
+                      </span>
+                      <span className="mt-1 block truncate text-[13px] text-ink-muted">{group.stages.map((s) => s.name).join(" · ")}</span>
+                    </span>
+                  </button>
+                  <div className="roadmap-phase-body">
+                    <div className="roadmap-phase-body__inner">
+                      <div className="roadmap">{group.stages.map((s) => renderStage(s))}</div>
+                    </div>
+                  </div>
+                </section>
+              );
+            };
+            return <>{phaseGroups.map((group) => renderPhase(group))}</>;
             })()}
             </div>
-            </details>
+            </section>
             {actionForm("Add a milestone", "STAGE_CREATE", [
               field("name", "Milestone name", "text", true),
               field("description", "Description", "textarea"),
