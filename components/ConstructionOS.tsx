@@ -565,6 +565,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           stageId,
           status: "IN_PROGRESS",
           version: current.version,
+          idempotencyKey: crypto.randomUUID(),
         });
       }
       const updated = await api<ConstructionView>(`/api/construction/${id}`, {
@@ -573,6 +574,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
         stageId,
         status: "DONE",
         version: current.version,
+        idempotencyKey: crypto.randomUUID(),
       });
       setProject(updated);
       notify("Task marked done");
