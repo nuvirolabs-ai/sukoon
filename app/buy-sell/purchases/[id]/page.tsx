@@ -75,15 +75,6 @@ export default function PurchaseOverviewPage() {
           <Metric label="Your target" value={candidate.budgetPaise ? inr(Number(candidate.budgetPaise) / 100) : "Not entered"} />
         </div>
         <p className="text-[15px]">{displayLabel(candidate.stage)}</p>
-        <section>
-          <h2 className="section-heading">Progress</h2>
-          <GroupedList>
-            <ListRow title="Details" detail={detailsComplete ? "Complete" : "Needs details"} href={`${base}/details`} />
-            <ListRow title="Documents" detail={`${received} / ${docs.length}`} href={`${base}/documents`} />
-            <ListRow title="Questions" detail={`${openQuestions.length} open`} href={`${base}/questions`} />
-            <ListRow title="Decision" detail={candidate.stage === "NOT_PROCEEDING" ? displayLabel(candidate.stage) : "Pending"} href={`${base}/details`} />
-          </GroupedList>
-        </section>
         {(nextDoc || nextQuestion) ? (
           <section>
             <h2 className="section-heading">Next</h2>
@@ -94,12 +85,15 @@ export default function PurchaseOverviewPage() {
           </section>
         ) : null}
         <a className="primary-disclosure motion-pressable" href={`${base}/documents`}>Continue due diligence <span aria-hidden="true">→</span></a>
-        <GroupedList>
-          <ListRow title="Documents" href={`${base}/documents`} />
-          <ListRow title="Questions" href={`${base}/questions`} />
-          <ListRow title="Activity" href={`${base}/activity`} />
-          <ListRow title="Property details" href={`${base}/details`} />
-        </GroupedList>
+        <section>
+          <h2 className="section-heading">Workspace</h2>
+          <GroupedList>
+            <ListRow title="Property details" detail={detailsComplete ? "Complete" : "Needs details"} href={`${base}/details`} />
+            <ListRow title="Documents" detail={`${received} / ${docs.length}`} href={`${base}/documents`} />
+            <ListRow title="Questions" detail={`${openQuestions.length} open`} href={`${base}/questions`} />
+            <ListRow title="Activity" href={`${base}/activity`} />
+          </GroupedList>
+        </section>
         <details>
           <summary>Workspace options</summary>
           <Disclosure title="Add another property" detail="Same private workspace">
