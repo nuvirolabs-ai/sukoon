@@ -1123,6 +1123,15 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                     </div>
                     );
                   })}
+                {write && !["COMPLETED", "SKIPPED"].includes(s.status) ? (
+                  <div className="status-ticks mt-3">
+                    {["IN_PROGRESS", "BLOCKED"].includes(s.status) ? (
+                      <button type="button" className="status-tick is-on" onClick={() => void runAction("STAGE_UPDATE", { stageId: s.id, status: "COMPLETED" }, "Stage completed")}>✓ Mark stage complete</button>
+                    ) : (
+                      <button type="button" className="status-tick" onClick={() => void runAction("STAGE_UPDATE", { stageId: s.id, status: "IN_PROGRESS" }, "Stage started")}>Start stage</button>
+                    )}
+                  </div>
+                ) : null}
                 {!["COMPLETED", "SKIPPED"].includes(s.status)
                   ? actionForm(
                       "Stage dates and status",
@@ -1336,12 +1345,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                     if (type === "INSPECTION") return p.inspections.find((x) => x.id === refId)?.title ?? "an inspection";
                     return "a record";
                   };
-                  return actionForm(
-                    `Remove link: ${depName(d.predecessorType, d.predecessorId)} → ${depName(d.successorType, d.successorId)}`,
-                    "DEPENDENCY_DELETE",
-                    [field("confirmed", "I understand the second record is no longer blocked by this link", "checkbox", true)],
-                    { dependencyId: d.id },
-                  );
+                  return write ? (
+                    <button
+                      key={d.id}
+                      type="button"
+                      className="list-row motion-pressable"
+                      onClick={() => void runAction("DEPENDENCY_DELETE", { dependencyId: d.id }, "Link removed")}
+                    >
+                      <span className="row-copy"><span className="row-title">Remove link: {depName(d.predecessorType, d.predecessorId)} → {depName(d.successorType, d.successorId)}</span></span>
+                      <span className="row-value">Remove →</span>
+                    </button>
+                  ) : null;
                 })}
               </section>
             ) : null}
@@ -1357,12 +1371,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                   field("label", "Version label", "text", true),
                   field("notes", "What changed", "textarea"),
                 ])}
-                {p.planVersions.filter((v) => v.status === "DRAFT").map((v) => actionForm(
-                  `Activate version ${v.versionNumber}`,
-                  "PLAN_VERSION_ACTIVATE",
-                  [field("confirmed", "I understand the current active version is superseded", "checkbox", true)],
-                  { planVersionId: v.id },
-                ))}
+                {write ? p.planVersions.filter((v) => v.status === "DRAFT").map((v) => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    className="list-row motion-pressable"
+                    onClick={() => void runAction("PLAN_VERSION_ACTIVATE", { planVersionId: v.id }, "Version activated")}
+                  >
+                    <span className="row-copy"><span className="row-title">Activate version {v.versionNumber}</span></span>
+                    <span className="row-value">Activate →</span>
+                  </button>
+                )) : null}
               </section>
             ) : null}
           </>
@@ -2034,21 +2053,16 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                         {d.title}
                       </Link>
                     ))}
-                  {u.issueStatus === "OPEN"
-                    ? actionForm(
-                        "Resolve site issue",
-                        "ISSUE_RESOLVE",
-                        [
-                          field(
-                            "confirmed",
-                            "I have reviewed this issue",
-                            "checkbox",
-                            true,
-                          ),
-                        ],
-                        { updateId: u.id },
-                      )
-                    : null}
+                  {write && u.issueStatus === "OPEN" ? (
+                    <button
+                      type="button"
+                      className="list-row motion-pressable"
+                      onClick={() => void runAction("ISSUE_RESOLVE", { updateId: u.id }, "Issue resolved")}
+                    >
+                      <span className="row-copy"><span className="row-title">Resolve site issue</span></span>
+                      <span className="row-value">Resolve →</span>
+                    </button>
+                  ) : null}
                 </section>
               ))}
               </AnimatedList>
@@ -2558,19 +2572,14 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 },
               ])}
               {p.owner && !p.archivedAt ? (
-                <EntryForm
-                  title="Archive project"
-                  fields={[
-                    field(
-                      "confirm",
-                      "I understand the project moves to archived history",
-                      "checkbox",
-                      true,
-                    ),
-                  ]}
-                  label="Archive"
-                  submit={(v) => save("ARCHIVE", v)}
-                />
+                <button
+                  type="button"
+                  className="list-row motion-pressable"
+                  onClick={() => void runAction("ARCHIVE", {}, "Project archived")}
+                >
+                  <span className="row-copy"><span className="row-title">Archive project</span></span>
+                  <span className="row-value">Archive →</span>
+                </button>
               ) : null}
             </Disclosure>
           </MoreSection>
