@@ -8,7 +8,6 @@ import { t } from "@/lib/i18n";
 import { MotionSheet } from "./motion/MotionSheet";
 import { CollapsingHeader } from "./motion/CollapsingHeader";
 import { StatusTransition } from "./motion/StatusTransition";
-import { useScrollState } from "./motion/useScrollState";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +20,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
 function BottomNav() {
   const path = usePathname();
-  const { compact, direction } = useScrollState(48);
   let lang: "en" | "hi" = "en";
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -44,7 +42,7 @@ function BottomNav() {
     </Link>
   );
   return (
-    <nav aria-label="Main navigation" className={cx("bottom-navigation", compact && direction === "down" && "is-compact")}>
+    <nav aria-label="Main navigation" className="bottom-navigation">
       <div className="nav-items">
         {tabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
         <div className="nav-fab">

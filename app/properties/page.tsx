@@ -23,7 +23,8 @@ function ListInner() {
   const [error, setError] = useState("");
   const [restoring, setRestoring] = useState<string | null>(null);
   const type = sp.get("type");
-  const props = type ? s.properties.filter((p) => p.type === type) : s.properties;
+  const city = sp.get("city");
+  const props = s.properties.filter((p) => (!type || p.type === type) && (!city || p.city.toLowerCase() === city.toLowerCase()));
   useEffect(() => {
     if (!showArchived) return;
     let cancelled = false;
@@ -76,7 +77,7 @@ function ListInner() {
           );
         })}
         </AnimatedList>
-        {!props.length && <EmptyState title="No properties yet" detail="Add a property passport. Nothing is created until you do." action={!type ? <Button onClick={() => router.push("/property/new")}>Add property</Button> : undefined} />}
+        {!props.length && <EmptyState title={type || city ? "No matching properties" : "No properties yet"} detail={type || city ? "Nothing in your records matches this filter." : "Add a property passport. Nothing is created until you do."} action={!type && !city ? <Button onClick={() => router.push("/property/new")}>Add property</Button> : undefined} />}
         {error ? <ErrorState message={error} /> : null}
         <button type="button" onClick={() => setShowArchived((value) => !value)} className="min-h-11 text-sm text-ink-muted">{showArchived ? "Hide archived" : "Show archived"}</button>
         {showArchived && <div className="space-y-2"><p className="text-[12px] text-ink-muted">Archived</p>{archived.map((property) => <div key={property.id} className="surface bg-white p-4"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-[17px] font-medium">{property.name}</p><p className="text-[13px] text-ink-muted">{property.area}, {property.city}</p></div><Button variant="secondary" busy={restoring === property.id} onClick={() => void restore(property)}>Restore</Button></div></div>)}{!archived.length ? <p className="text-[14px] text-ink-muted">None archived.</p> : null}</div>}
