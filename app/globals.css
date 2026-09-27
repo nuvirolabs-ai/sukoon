@@ -414,6 +414,17 @@ button.task-check--tick:hover::after { opacity: 1; }
 .status-tick.is-on { background: #1b3d2f; border-color: #1b3d2f; color: #fff; }
 .status-tick:not(.is-on):hover { border-color: #2f9e63; }
 .status-tick:active { transform: scale(0.97); }
+/* ---- More tab: calm iOS-style grouped menu (details on tap) ---- */
+.more-intro { margin: 4px 2px 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #9aa09a; }
+.more-group { background: #fff; border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+.more-group__head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 16px; text-align: left; transition: transform var(--motion-fast) var(--motion-ease-out); }
+.more-group__head:active { transform: scale(0.99); }
+.more-group__text { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+.more-group__title { font-size: 16px; font-weight: 600; color: #1c1f1c; }
+.more-group__summary { font-size: 13px; color: #9aa09a; margin-top: 2px; }
+.more-group__chev { flex: 0 0 auto; color: #c2c7c0; transition: transform var(--motion-standard) var(--motion-ease-spring); }
+.more-group__chev.is-open { transform: rotate(90deg); }
+.more-group__body { padding: 4px 16px 16px; }
 
 /* ---- Purchase journey: sequential progress ---- */
 .journey { display: flex; align-items: center; gap: 0; padding: 12px 4px; overflow-x: auto; }

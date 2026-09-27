@@ -1,8 +1,8 @@
 "use client";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Camera } from "lucide-react";
+import { Camera, ChevronRight } from "lucide-react";
 import {
   Button,
   Input,
@@ -82,6 +82,47 @@ const CONSTRUCTION_PHASES: Array<{ key: string; title: string; through: number }
 function phaseKeyForSequence(sequence: number): string {
   const phase = CONSTRUCTION_PHASES.find((p) => sequence <= p.through);
   return (phase ?? CONSTRUCTION_PHASES[CONSTRUCTION_PHASES.length - 1]).key;
+}
+// A calm, iOS-Settings-style group: a titled row with a one-line summary that
+// reveals its detail only on tap. Deep links (?tab=more#papers) auto-open it.
+function MoreSection({
+  id,
+  title,
+  summary,
+  children,
+}: {
+  id: string;
+  title: string;
+  summary?: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => {
+      if (window.location.hash === `#${id}`) setOpen(true);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, [id]);
+  return (
+    <section id={id} className="more-group">
+      <button
+        type="button"
+        className="more-group__head motion-pressable"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="more-group__text">
+          <span className="more-group__title">{title}</span>
+          {summary ? <span className="more-group__summary">{summary}</span> : null}
+        </span>
+        <ChevronRight size={18} aria-hidden="true" className={`more-group__chev${open ? " is-open" : ""}`} />
+      </button>
+      {open ? <div className="more-group__body">{children}</div> : null}
+    </section>
+  );
 }
 function EntryForm({
   title,
@@ -1606,9 +1647,9 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             </Link>
           </>
         ) : null}
+        {tab === "more" ? <p className="more-intro">Project details</p> : null}
         {tab === "more" && p.capabilities.materials ? (
-          <>
-            <span id="materials" />
+          <MoreSection id="materials" title="Materials" summary={p.materials.length ? `${p.materials.length} ${p.materials.length === 1 ? "item" : "items"}` : "None yet"}>
             <p className="text-[14px] text-ink-muted">Owner-entered quantities and rates. Not a live market feed.</p>
             {p.materials.map((m) => {
               const history = p.prices.filter((r) => r.materialId === m.id);
@@ -1777,11 +1818,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 )) : null}
               </section>
             ) : null}
-          </>
+          </MoreSection>
         ) : null}
         {tab === "more" && p.capabilities.documents ? (
-          <>
-            <span id="papers" />
+          <MoreSection id="papers" title="Papers" summary={p.documents.length ? `${p.documents.length} linked` : "None linked"}>
             <p className="text-[14px] leading-5 text-ink-muted">
               Documents stay in your existing Vault. Construction links a
               specific clean version. Legal requirements remain unknown until an
@@ -1932,7 +1972,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 ))}
               </>
             ) : null}
-          </>
+          </MoreSection>
         ) : null}
         {tab === "site" && (p.capabilities.updates || p.capabilities.materials) ? (
           <>
@@ -2146,8 +2186,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           </>
         ) : null}
         {tab === "more" ? (
-          <section id="decisions">
-            <h2 className="section-heading">Decisions</h2>
+          <MoreSection id="decisions" title="Decisions" summary={p.decisions.filter((d) => d.status === "OPEN").length ? `${p.decisions.filter((d) => d.status === "OPEN").length} open` : "None open"}>
             <p className="text-[13px] text-ink-muted">Choices waiting on the right person. Blocking decisions hold dependent work.</p>
             <GroupedList>
               {p.decisions.map((d) => (
@@ -2252,11 +2291,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 )}
               </div>
             ))}
-          </section>
+          </MoreSection>
         ) : null}
         {tab === "more" && p.capabilities.contacts ? (
-          <>
-            <span id="people" />
+          <MoreSection id="people" title="People" summary={p.contacts.length ? `${p.contacts.length} ${p.contacts.length === 1 ? "contact" : "contacts"}` : "None yet"}>
             {p.contacts.map((c) => (
               <section key={c.id} className="border-b border-line py-4">
                 <h2 className="font-serif text-lg">{c.name}</h2>
@@ -2339,12 +2377,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 Manage shared access
               </Link>
             ) : null}
-          </>
+          </MoreSection>
         ) : null}
         {tab === "more" ? (
-          <>
-            <span id="history" />
-            <h2 className="section-heading">Full history</h2>
+          <MoreSection id="history" title="History & reminders" summary={p.events.length ? `${p.events.length} ${p.events.length === 1 ? "event" : "events"}` : "No activity yet"}>
             {(() => {
               const groups = new Map<string, typeof p.events>();
               for (const e of p.events) {
@@ -2390,11 +2426,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             <Link href="/reminders" className="block text-[14px] underline">
               Open reminders
             </Link>
-          </>
+          </MoreSection>
         ) : null}
         {tab === "more" && p.owner ? (
-          <>
-            <span id="handover" />
+          <MoreSection id="handover" title="Handover" summary={["COMPLETED", "CANCELLED"].includes(p.status) ? displayLabel(p.status) : "Open"}>
             <Surface>
               <h2 className="font-serif text-lg">Owner handover</h2>
               <p className="mt-2 text-[14px] leading-5">
@@ -2538,7 +2573,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 />
               ) : null}
             </Disclosure>
-          </>
+          </MoreSection>
         ) : null}
       </div>
     </>
