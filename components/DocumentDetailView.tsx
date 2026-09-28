@@ -151,7 +151,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
         ) : null}
         {mode === "owner" ? (
           <>
-            <Disclosure title="Security & provenance" detail="Scan evidence on request">
+            <Disclosure title="About this copy" detail="What this file is">
               <p className="text-sm text-ink-muted mb-3">A scan does not establish authenticity or government verification.</p>
               <DocumentEvidenceDetails documentId={document.id} />
             </Disclosure>

@@ -1,15 +1,17 @@
 "use client";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Search as SearchIcon, X } from "lucide-react";
-import { Disclosure, GroupedList, ListRow, SectionHeader } from "@/components/consumer";
+import { GroupedList, ListRow, SectionHeader, dueCopy, displayLabel } from "@/components/consumer";
 import { AnimatedList } from "@/components/motion/AnimatedList";
 import { useSearchParams } from "next/navigation";
 import { PageHead } from "@/components/ui";
+import { useStore } from "@/components/StoreProvider";
 
 type Result = { kind: string; id: string; title: string; subtitle?: string; category?: string | null; sourceType?: string; snippet?: string; href: string; propertyName?: string };
 type SearchResponse = { mode: "owner" | "shared"; counts: { properties: number; documents: number; records: number }; properties: Result[]; documents: Result[]; records: Result[] };
 
 function Inner() {
+  const { s } = useStore();
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") || "");
   const [propertyId, setPropertyId] = useState(params.get("propertyId") || "");
@@ -18,7 +20,17 @@ function Inner() {
   const [error, setError] = useState("");
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const papers = s.docs.filter((doc) => !doc.deletedAt && !doc.archivedAt);
+  const categories = [...new Set(papers.map((doc) => doc.type))].sort((a, b) => a.localeCompare(b));
+  const ideas = [...s.properties.map((property) => property.area), ...categories].filter((value, index, list) => value && list.indexOf(value) === index).slice(0, 6);
+  const browsing = !q.trim();
+
   useEffect(() => {
+    if (!q.trim()) {
+      setData(null);
+      setError("");
+      return;
+    }
     const timer = window.setTimeout(() => {
       setError("");
       void fetch(`/api/search?q=${encodeURIComponent(q)}${propertyId ? `&propertyId=${encodeURIComponent(propertyId)}` : ""}${documentType ? `&documentType=${encodeURIComponent(documentType)}` : ""}`, { cache: "no-store" }).then(async (response) => {
@@ -29,21 +41,61 @@ function Inner() {
     }, 180);
     return () => window.clearTimeout(timer);
   }, [q, propertyId, documentType]);
+
+  const scopedProperties = s.properties.filter((property) => !propertyId || property.id === propertyId);
+  const scopedPapers = papers
+    .filter((doc) => (!propertyId || doc.propertyId === propertyId) && (!documentType || doc.type === documentType))
+    .slice()
+    .sort((a, b) => (b.uploadDate || "").localeCompare(a.uploadDate || ""));
+  const comingUp = s.bills
+    .filter((bill) => bill.status !== "paid" && (!propertyId || bill.propertyId === propertyId))
+    .slice()
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+    .slice(0, 3);
   const all = [...(data?.properties || []), ...(data?.documents || []), ...(data?.records || [])];
-  return <div><PageHead title="Search" /><div className="space-y-3 pb-6">
+
+  return <div><PageHead title="Explore" /><div className="space-y-3 pb-6">
     <div className="motion-search">
       <div className="motion-search__field shadow-pill">
         <SearchIcon size={18} aria-hidden="true" className="shrink-0 text-ink-muted" />
-        <input ref={inputRef} aria-label="Search your records" value={q} onChange={(e) => setQ(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} placeholder="Search a property, document, obligation, maintenance…" />
+        <input ref={inputRef} aria-label="Search your records" value={q} onChange={(e) => setQ(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} placeholder="Search a property, location, document..." />
         {q ? <button type="button" aria-label="Clear search" className="icon-button motion-pressable !h-9 !w-9" onMouseDown={(e) => e.preventDefault()} onClick={() => { setQ(""); inputRef.current?.focus(); }}><X size={16} /></button> : null}
       </div>
       <button type="button" className={`motion-search__cancel motion-pressable${focused || q ? " is-visible" : ""}`} onClick={() => { setQ(""); inputRef.current?.blur(); }} tabIndex={focused || q ? 0 : -1}>Cancel</button>
     </div>
-    <Disclosure title="Search filters"><div className="grid grid-cols-2 gap-2"><input value={propertyId} onChange={(e) => setPropertyId(e.target.value)} placeholder="Property ID filter" aria-label="Property ID filter" className="h-10 rounded-xl border border-line px-3 text-[14px]" /><input value={documentType} onChange={(e) => setDocumentType(e.target.value)} placeholder="Document type filter" aria-label="Document type filter" className="h-10 rounded-xl border border-line px-3 text-[14px]" /></div></Disclosure>
+    <div className="explore-filters">
+      <label>Property
+        <select aria-label="Property" value={propertyId} onChange={(event) => setPropertyId(event.target.value)}>
+          <option value="">All properties</option>
+          {s.properties.map((property) => <option key={property.id} value={property.id}>{property.name}</option>)}
+        </select>
+      </label>
+      <label>Paper
+        <select aria-label="Paper category" value={documentType} onChange={(event) => setDocumentType(event.target.value)}>
+          <option value="">All papers</option>
+          {categories.map((type) => <option key={type} value={type}>{type}</option>)}
+        </select>
+      </label>
+    </div>
     {error ? <p className="rounded-2xl bg-[#fff5f5] p-3 text-[14px] text-red-700">{error}</p> : null}
-    {!q.trim() && !error ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">Find a property, document, bill or maintenance record. Only records you can access appear here.</p> : null}
-    {q.trim() && !error && data && !all.length ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">No matching records. Try a different name or adjust your filters.</p> : null}
-    {([['Properties', data?.properties || []], ['Documents', data?.documents || []], ['Bills', (data?.records || []).filter((item) => item.kind === "obligation")], ['Maintenance', (data?.records || []).filter((item) => item.kind === "maintenance")]] as Array<[string, Result[]]>).map(([heading, rows]) => rows.length ? <section key={heading} className="space-y-2 motion-results"><SectionHeader title={heading} detail={String(rows.length)}/><GroupedList><AnimatedList stagger={false}>{rows.map(item=><ListRow key={`${item.kind}-${item.id}`} href={item.href} title={item.title} detail={item.propertyName || item.category || undefined}/>)}</AnimatedList></GroupedList></section> : null)}
+    {browsing && !error ? (
+      <>
+        {ideas.length ? <div className="explore-ideas" aria-label="Try searching">{ideas.map((idea) => <button key={idea} type="button" onClick={() => setQ(idea)}>{idea}</button>)}</div> : null}
+        {scopedProperties.length ? <section className="space-y-2"><SectionHeader title="Properties" detail={String(scopedProperties.length)} /><GroupedList><AnimatedList stagger={false}>{scopedProperties.map((property) => <ListRow key={property.id} href={`/property/${property.id}`} title={property.name} detail={`${displayLabel(property.type)} · ${property.area}${property.city ? `, ${property.city}` : ""}`} />)}</AnimatedList></GroupedList></section> : null}
+        {scopedPapers.length ? <section className="space-y-2"><SectionHeader title="Papers" detail={String(scopedPapers.length)} /><GroupedList><AnimatedList stagger={false}>{scopedPapers.slice(0, 6).map((doc) => {
+          const property = s.properties.find((item) => item.id === doc.propertyId);
+          return <ListRow key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} title={doc.displayName || doc.name} detail={`${doc.type}${property ? ` · ${property.name}` : ""}`} />;
+        })}{scopedPapers.length > 6 ? <ListRow href="/vault" title="All papers" detail={`${scopedPapers.length} in the vault`} /> : null}</AnimatedList></GroupedList></section> : null}
+        {comingUp.length && !documentType ? <section className="space-y-2"><SectionHeader title="Coming up" /><GroupedList><AnimatedList stagger={false}>{comingUp.map((bill) => {
+          const property = s.properties.find((item) => item.id === bill.propertyId);
+          return <ListRow key={bill.id} href={`/property/${bill.propertyId}?tab=bills`} title={bill.title} detail={`${property?.name || "Property"} · ${dueCopy(bill.dueDate)}`} />;
+        })}</AnimatedList></GroupedList></section> : null}
+        {!scopedProperties.length && !scopedPapers.length ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">Nothing in this view yet.</p> : null}
+      </>
+    ) : null}
+    {q.trim() && !error && data && !all.length ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">Nothing matches that. Try a property, a locality, or a paper such as insurance.</p> : null}
+    {q.trim() ? ([[ "Properties", data?.properties || [] ], [ "Papers", data?.documents || [] ], [ "Bills", (data?.records || []).filter((item) => item.kind === "obligation") ], [ "Build", (data?.records || []).filter((item) => item.kind.startsWith("construction")) ], [ "Maintenance", (data?.records || []).filter((item) => item.kind === "maintenance") ]] as Array<[string, Result[]]>).map(([heading, rows]) => rows.length ? <section key={heading} className="space-y-2 motion-results"><SectionHeader title={heading} detail={String(rows.length)} /><GroupedList><AnimatedList stagger={false}>{rows.map((item) => <ListRow key={`${item.kind}-${item.id}`} href={item.href} title={item.title} detail={item.propertyName || item.subtitle || item.category || undefined} />)}</AnimatedList></GroupedList></section> : null) : null}
   </div></div>;
 }
+
 export default function SearchPage() { return <Suspense><Inner /></Suspense>; }

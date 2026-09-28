@@ -31,7 +31,7 @@ export default function BillsPage() {
       rows.push(`"${b.title}","${b.type}",${b.amount},${b.status},${b.dueDate},${b.paidDate ?? ""},"${p}"`);
     }
     const blob = new Blob([rows.join("\n")], { type: "text/csv" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `ca-pack-${todayISO()}.csv`; a.click();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `sukoon-bills-${todayISO()}.csv`; a.click();
   };
   const upcoming = items.reduce((sum, item) => sum + (item.amount ?? 0), 0);
   return (
@@ -60,7 +60,7 @@ export default function BillsPage() {
           );
         })}
         {!items.length && !list.length ? <p className="text-[14px] text-ink-muted">No bills yet.</p> : null}
-        <Disclosure title="CA pack" detail="CSV of recorded bills"><button type="button" onClick={caExport} className="h-11 w-full rounded-full border border-line">Download CSV</button></Disclosure>
+        <Disclosure title="Spreadsheet" detail="Bills you recorded"><button type="button" onClick={caExport} className="h-11 w-full rounded-full border border-line">Download spreadsheet</button></Disclosure>
       </div>
     </div>
   );

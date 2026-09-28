@@ -264,9 +264,9 @@ export function ConstructionHome() {
             className="rounded-full bg-forest px-4 py-3 text-white"
             href={`/construction/new${params.get("propertyId") ? `?propertyId=${params.get("propertyId")}` : ""}`}
           >
-            Start a Construction Project
+            New build
           </Link>
-          <button onClick={() => setArchived(!archived)} className="underline">
+          <button onClick={() => setArchived(!archived)} className="rounded-full border border-line px-4 py-3 text-[14px]">
             {archived ? "Active projects" : "Archived"}
           </button>
         </div>
@@ -328,10 +328,9 @@ export function ConstructionHome() {
                   {rupees(p.estimatedBudgetPaise)} planned
                 </p>
               ) : null}
-              <p className="mt-2 text-[13px] text-ink-muted">
-                {p.attention.length} attention item
-                {p.attention.length === 1 ? "" : "s"}
-              </p>
+              {p.attention[0] ? (
+                <p className="mt-2 text-[13px] text-ink-muted">Waiting on {p.attention[0].title}</p>
+              ) : null}
             </Link>
           ))}
           </AnimatedList>

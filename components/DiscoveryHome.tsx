@@ -124,17 +124,21 @@ export function DiscoveryHomeView({ mark, today }: { mark: string; today?: Disco
 export function DiscoveryHome() {
   const { s, email } = useStore();
   const ownerName = presentName(s.properties.find((property) => property.ownerName)?.ownerName || "");
-  const papers = s.docs.filter((doc) => !doc.deletedAt && !doc.archivedAt);
+  const papers = s.docs
+    .filter((doc) => !doc.deletedAt && !doc.archivedAt)
+    .slice()
+    .sort((a, b) => (b.uploadDate || "").localeCompare(a.uploadDate || ""));
+  const featured = papers.find((doc) => /registry|sale deed|deed/i.test(`${doc.type} ${doc.displayName || ""} ${doc.name}`)) ?? papers[0];
   const nextBill = s.bills.filter((bill) => bill.status !== "paid").slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0];
   const project = s.projects[0];
   const first = ownerName.split(/\s+/).filter(Boolean)[0];
   const today = {
     greeting: dayGreeting(first),
-    summary: [`${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"}`, `${papers.length} ${papers.length === 1 ? "paper" : "papers"} in the vault`, project?.name].filter(Boolean).join(" · "),
+    summary: `${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"} · ${papers.length} ${papers.length === 1 ? "paper" : "papers"} filed`,
     actions: [
-      { href: "/bills", label: nextBill ? `Bills · ${dueCopy(nextBill.dueDate)}` : "Bills" },
-      { href: "/vault", label: papers.length ? "Open vault" : "Add a paper" },
-      project ? { href: "/construction", label: project.name } : { href: "/reminders", label: "Reminders" },
+      { href: nextBill ? `/property/${nextBill.propertyId}?tab=bills` : "/vault", label: nextBill ? `${nextBill.title} · ${dueCopy(nextBill.dueDate)}` : papers.length ? "Open your papers" : "Add a paper" },
+      featured ? { href: `/property/${featured.propertyId}/documents/${featured.id}`, label: featured.displayName || featured.name } : { href: "/vault", label: "Vault" },
+      project ? { href: `/construction/${project.id}`, label: project.name } : { href: "/reminders", label: "Reminders" },
     ],
   };
   return <DiscoveryHomeView mark={profileMark(email, ownerName)} today={today} />;

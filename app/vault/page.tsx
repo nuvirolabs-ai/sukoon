@@ -7,7 +7,11 @@ import { StatusTransition } from "@/components/motion/StatusTransition";
 
 export default function VaultPage() {
   const { s } = useStore();
-  const docs = s.docs.filter((d) => !d.deletedAt && !d.archivedAt);
+  const docs = s.docs.filter((d) => !d.deletedAt && !d.archivedAt).slice().sort((a, b) => {
+    const left = s.properties.find((property) => property.id === a.propertyId)?.name || "";
+    const right = s.properties.find((property) => property.id === b.propertyId)?.name || "";
+    return left.localeCompare(right) || (a.displayName || a.name).localeCompare(b.displayName || b.name);
+  });
   const needsReview = docs.filter((d) => d.scanStatus !== "owner_copy" && (d.reviewStatus !== "confirmed" || d.scanStatus !== "clean")).length;
   return (
     <div>
@@ -19,7 +23,18 @@ export default function VaultPage() {
         </div>
         {needsReview > 0 ? <p className="text-[13px] text-forest" role="status"><StatusTransition statusKey={`review-${needsReview}`}>{needsReview} need review</StatusTransition></p> : null}
         <section>
-          <SectionHeader title="Collections" />
+          <SectionHeader title="Papers" />
+          <GroupedList>
+            <AnimatedList>
+              {docs.map((doc) => {
+                const property = s.properties.find((item) => item.id === doc.propertyId);
+                return <ListRow key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} title={doc.displayName || doc.name} detail={`${doc.type}${property ? ` · ${property.name}` : ""}`} />;
+              })}
+            </AnimatedList>
+          </GroupedList>
+        </section>
+        <section>
+          <SectionHeader title="By property" />
           <GroupedList>
             <AnimatedList>
               {s.properties.map((p) => { const count = s.docs.filter((d) => d.propertyId === p.id && !d.deletedAt && !d.archivedAt).length; return <ListRow key={p.id} title={p.name} detail={`${count} ${count === 1 ? "document" : "documents"}`} href={`/property/${p.id}?tab=vault`} />; })}

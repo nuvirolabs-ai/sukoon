@@ -702,9 +702,15 @@ html.is-android-webview .motion-sheet__panel {
 .discovery-today { margin: 14px 16px 0; padding: 14px 16px 12px; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(48, 36, 24, .06); }
 .discovery-today strong { display: block; font-size: 16px; font-weight: 600; letter-spacing: -.2px; }
 .discovery-today p { margin-top: 4px; color: #5e6762; font-size: 13px; line-height: 1.4; }
-.discovery-today__actions { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
-.discovery-today__actions::-webkit-scrollbar { display: none; }
-.discovery-today__actions a { flex: 0 0 auto; height: 32px; padding: 0 12px; border-radius: 999px; background: #e7f6ee; color: #1b3d2f; font-size: 13px; font-weight: 600; line-height: 32px; }
+.discovery-today__actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.discovery-today__actions a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 8px 12px; border-radius: 14px; background: #f3faf6; color: #1b3d2f; font-size: 14px; font-weight: 600; line-height: 1.3; overflow-wrap: break-word; }
+.discovery-today__actions a::after { content: "→"; flex: 0 0 auto; color: #2f9d62; font-weight: 500; }
+.explore-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.explore-filters label { display: block; color: #69736c; font-size: 12px; font-weight: 600; }
+.explore-filters select { display: block; width: 100%; margin-top: 4px; min-height: 44px; border: 1px solid #e0e4de; border-radius: 14px; background: #fff; padding: 0 10px; color: #1b3d2f; font-size: 14px; }
+.explore-ideas { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.explore-ideas::-webkit-scrollbar { display: none; }
+.explore-ideas button { flex: 0 0 auto; height: 36px; padding: 0 12px; border: 1px solid #eceae4; border-radius: 999px; background: #fff; color: #1c1c1c; font-size: 14px; font-weight: 500; }
 .discovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px 8px; }
 .discovery-card { position: relative; display: flex; min-height: 178px; flex-direction: column; overflow: hidden; border-radius: 22px; padding: 16px 14px 12px; color: #1c1c1c; }
 .discovery-card strong { position: relative; z-index: 1; font-family: Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif; font-size: 22px; font-weight: 500; letter-spacing: -.3px; line-height: 1.15; }

@@ -92,8 +92,8 @@ function PassportContent() {
             </div>
             <section className="guided-home-next surface" aria-labelledby="property-next-title">
               <p className="guided-eyebrow">Next for this property</p>
-              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers are filed" : "Add your first paper"}</h2>
-              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Open a copy you added. Malware scanning is not connected on this preview." : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
+              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers are ready to open" : "Add your first paper"}</h2>
+              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt).slice().sort((a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name)).slice(0, 2).map((document) => document.displayName || document.name).join(" · ") : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
               <Link href={`/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">Open documents <span aria-hidden="true">→</span></Link>
             </section>
             <GroupedList><AnimatedList>{[["vault","Documents",`${s.docs.filter(d=>d.propertyId===p.id).length}`],["bills","Bills & payments","Due, paid, reminders"],["maint","Maintenance",`${h.maint.open} active`],["timeline","Timeline",`${timeline.length}`],["share","Sharing","Who can see what"],["rent","Rent","Tenancies"],["export","Exports","Download records"]].map(([key,label,detail])=><ListRow key={key} title={label} detail={detail} href={`/property/${p.id}?tab=${key}`}/>)}</AnimatedList></GroupedList>
@@ -202,8 +202,15 @@ function VaultTab({ propertyId }: { propertyId: string }) {
   const [filter,setFilter]=useState("All");
   const [query, setQuery] = useState("");
   const docs = s.docs.filter((d)=>d.propertyId===propertyId && !d.deletedAt && !d.archivedAt);
+  const needsAttention = (document: (typeof docs)[number]) => document.scanStatus !== "owner_copy" && (document.reviewStatus !== "confirmed" || document.scanStatus !== "clean");
+  const attentionCount = docs.filter(needsAttention).length;
+  const reviewedCount = docs.filter((document) => document.reviewStatus === "confirmed" && document.scanStatus === "clean").length;
+  const categories = [...new Set(docs.map((document) => document.type))];
+  const statusFilters = attentionCount > 0 || reviewedCount > 0;
+  const filterOptions = statusFilters ? ["All", "Needs attention", "Reviewed"] : ["All", ...categories];
+  const activeFilter = filterOptions.includes(filter) ? filter : "All";
   const visibleDocs = docs.filter((document) => {
-    const matchesFilter = filter === "All" || (filter === "Reviewed" ? document.reviewStatus === "confirmed" && document.scanStatus === "clean" : document.reviewStatus !== "confirmed" || document.scanStatus !== "clean");
+    const matchesFilter = activeFilter === "All" || (statusFilters ? (activeFilter === "Reviewed" ? document.reviewStatus === "confirmed" && document.scanStatus === "clean" : needsAttention(document)) : document.type === activeFilter);
     const haystack = `${document.displayName || document.name} ${document.type}`.toLowerCase();
     return matchesFilter && (!query.trim() || haystack.includes(query.trim().toLowerCase()));
   });
@@ -215,7 +222,7 @@ function VaultTab({ propertyId }: { propertyId: string }) {
       <label className="guided-search-field">Search papers
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or category" />
       </label>
-      <AnimatedSegment label="Document filters" value={filter} onChange={setFilter} options={["All","Needs attention","Reviewed"].map((f)=>({ value: f, label: f }))} />
+      <AnimatedSegment label="Document filters" value={activeFilter} onChange={setFilter} options={filterOptions.map((f)=>({ value: f, label: f }))} />
       <GroupedList><AnimatedList stagger={false}>{visibleDocs.map((d)=>(
         <ListRow key={d.id} href={`/property/${propertyId}/documents/${d.id}`} title={d.displayName || d.name} detail={`${d.type} · ${documentStatusLabel(d)} · ${presentDate(d.uploadDate)}`} />
       ))}</AnimatedList></GroupedList>
