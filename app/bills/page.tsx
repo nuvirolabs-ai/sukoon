@@ -14,6 +14,7 @@ export default function BillsPage() {
   const { s } = useStore();
   const [items, setItems] = useState<Array<Obligation & { propertyName: string }>>([]);
   const list = [...s.bills].sort((a, b) => a.dueDate < b.dueDate ? -1 : 1);
+  const nextBill = list.find((bill) => bill.status !== "paid");
   const due = list.filter((b) => b.status !== "paid").reduce((a, b) => a + b.amount, 0);
   const spent = s.bills.filter((b) => b.type !== "Rent" && b.status === "paid").reduce((a, b) => a + b.amount, 0)
     + s.maintenance.reduce((a, m) => a + (m.finalCost ?? m.quote ?? 0), 0);
@@ -42,9 +43,9 @@ export default function BillsPage() {
       <div className="space-y-4 pb-6">
         <Scene src={SCENE.dates}>
           <p>Bills you recorded</p>
-          <strong>{items[0] ? items[0].label : list[0] ? list[0].title : "Nothing due yet"}</strong>
+          <strong>{nextBill ? nextBill.title : "Nothing due yet"}</strong>
         </Scene>
-        {items[0] ? <Link href={`/property/${items[0].propertyId}?tab=bills`} className="guided-home-next scene-next block"><p className="guided-eyebrow">Next date</p><h2>{items[0].label}</h2><p>{items[0].propertyName} · {dueCopy(items[0].dueDate)}</p><span className="primary-disclosure">Open this bill <span aria-hidden="true">→</span></span></Link> : null}
+        {nextBill ? <Link href={`/property/${nextBill.propertyId}?tab=bills`} className="guided-home-next scene-next block"><p className="guided-eyebrow">Next date</p><h2>{nextBill.title}</h2><p>{dueCopy(nextBill.dueDate)}</p><span className="primary-disclosure">Open this bill <span aria-hidden="true">→</span></span></Link> : null}
         <div className="surface metric-group">
           <Metric label="Upcoming" value={inr(upcoming || due)} />
           <Metric label="Paid" value={inr(spent)} />

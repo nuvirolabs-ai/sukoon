@@ -4,11 +4,9 @@ import { useSearchParams } from "next/navigation";
 import { useStore } from "@/components/StoreProvider";
 import { Button, EmptyState, ErrorState, PageHead } from "@/components/ui";
 import { AnimatedList } from "@/components/motion/AnimatedList";
-import { StatusTransition } from "@/components/motion/StatusTransition";
-import { healthFor } from "@/lib/health";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { displayLabel, presentName, recordReadinessLabel } from "@/components/consumer";
+import { displayLabel, presentName } from "@/components/consumer";
 import { inr } from "@/lib/utils";
 import type { Property } from "@/lib/types";
 import { usePropertyComposition } from "@/components/PropertyComposition";
@@ -56,11 +54,9 @@ function ListInner() {
       <div className="space-y-3">
         <AnimatedList className="space-y-3">
         {props.map((p) => {
-          const h = healthFor(p.id, s);
           const summary = composition.properties.find((x) => x.id === p.id);
           const docs = s.docs.filter((d) => d.propertyId === p.id).length;
           const due = s.bills.filter((b) => b.propertyId === p.id && b.status !== "paid").length;
-          const readiness = recordReadinessLabel(summary?.readiness.assessment ?? h.assessment, summary?.readiness.score ?? h.score, docs);
           const project = summary?.projects[0];
           return (
             <Link key={p.id} href={`/property/${p.id}`} className="place-card motion-pressable route-continuity">
@@ -71,7 +67,7 @@ function ListInner() {
               <div className="place-card__body">
                 <strong>{p.name}</strong>
                 <p className="place-card__meta">{presentName(p.area)}{p.city ? `, ${p.city}` : ""}{p.purchaseValue ? ` · ${inr(p.purchaseValue)}` : ""}</p>
-                <p className="place-card__meta">{docs} {docs === 1 ? "paper" : "papers"}{summary ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""} · <StatusTransition statusKey={readiness}>{readiness}</StatusTransition></p>
+                <p className="place-card__meta">{docs} {docs === 1 ? "paper" : "papers"}{summary?.upcoming.length ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""}{project ? ` · ${project.name}` : ""}</p>
                 <span className="place-card__next">{project ? `Open · ${project.name}` : "Open this property"}</span>
               </div>
             </Link>
