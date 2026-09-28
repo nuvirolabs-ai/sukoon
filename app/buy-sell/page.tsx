@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { GroupedList, ListRow, SectionHeader } from "@/components/consumer";
 import { EmptyState, PageHead } from "@/components/ui";
+import { Scene } from "@/components/PlaceCover";
 
 type Content = { slug: string; title: string; summary: string; sourceName: string; reviewedAt: string };
 export default function BuySell() {
@@ -11,6 +12,7 @@ export default function BuySell() {
     <div>
       <PageHead title="Buy / Sell" />
       <div className="space-y-6 pb-6">
+        <Scene src="/places/place-flat.png"><p>Private buying</p><strong>A purchase stays with you</strong></Scene>
         <GroupedList>
           <ListRow href="/buy-sell/purchases" title="Purchase workspaces" detail="Private buying journeys" />
         </GroupedList>

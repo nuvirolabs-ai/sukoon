@@ -3,6 +3,7 @@ import { OwnershipRecords } from "@/components/OwnershipRecords";
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useStore } from "@/components/StoreProvider";
 import { Button, ErrorState, Input, PageHead, Sheet, Surface } from "@/components/ui";
 import { Assistant } from "@/components/Assistant";
@@ -14,14 +15,15 @@ import { ExportPanel } from "@/components/ExportPanel";
 import { healthFor } from "@/lib/health";
 import { type Property, type TimelineEvent } from "@/lib/types";
 import { randomId, todayISO, inr } from "@/lib/utils";
-import { Disclosure, GroupedList, ListRow, SectionHeader, displayLabel, documentStatusLabel, activityTitle, groupByActivity, presentDate, shortDate } from "@/components/consumer";
+import { Disclosure, GroupedList, ListRow, SectionHeader, displayLabel, documentStatusLabel, activityTitle, groupByActivity, presentDate, presentName, shortDate } from "@/components/consumer";
 import { AnimatedList } from "@/components/motion/AnimatedList";
 import { AnimatedSegment } from "@/components/motion/AnimatedSegment";
-import { StatusTransition } from "@/components/motion/StatusTransition";
 import { useToast } from "@/components/motion/Toast";
 import { propertyTab } from "@/lib/navigation";
 import { PropertyComposition, usePropertyComposition } from "@/components/PropertyComposition";
 import { GuidedPaperFlow } from "@/components/GuidedPaperFlow";
+import { Scene, placeImage } from "@/components/PlaceCover";
+import { dueCopy } from "@/lib/ui-content";
 
 export default function PassportPage() {
   return <Suspense fallback={<p className="p-6">Loading Property Passport…</p>}><PassportContent /></Suspense>;
@@ -58,6 +60,10 @@ function PassportContent() {
   if (!p) return <div className="p-6 text-sm">Property not found. <Link href="/properties" className="underline">Back</Link></div>;
   const h = healthFor(p.id, s);
   const timeline = s.timeline.filter((t) => t.propertyId === p.id).sort((a,b)=>a.date<b.date?1:-1);
+  const papersOnFile = s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt);
+  const leadPaper = papersOnFile.slice().sort((a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name))[0];
+  const propertyBill = s.bills.filter((bill) => bill.propertyId === p.id && bill.status !== "paid").slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0];
+  const propertyBuild = s.projects.find((project) => project.propertyId === p.id);
 
   const addTimeline = (title: string, kind: TimelineEvent["kind"], detail?: string) =>
     update((st) => { st.timeline.push({ id: randomId(), propertyId: p.id, date: todayISO(), title, detail, kind }); return st; });
@@ -84,21 +90,31 @@ function PassportContent() {
       <div className="pb-6 space-y-3">
         {tab==="overview" && (
           <>
-            <p className="text-[13px] text-ink-muted">Your record</p>
-            <div className="surface p-5">
-              <p className="text-[13px] text-ink-muted">{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? "Record readiness" : s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Papers on file" : "Record readiness"}</p>
-              <p className="text-[32px] tracking-tight mt-1"><StatusTransition statusKey={(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? `score-${summary?.readiness.score??h.score}` : "papers"}>{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? `${summary?.readiness.score??h.score}%` : String(s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt).length || "Not assessed")}</StatusTransition></p>
-              <Disclosure title="View readiness"><HealthAssessmentPanel propertyId={p.id}/></Disclosure>
-            </div>
-            <section className="guided-home-next surface" aria-labelledby="property-next-title">
-              <p className="guided-eyebrow">Next for this property</p>
-              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers are ready to open" : "Add your first paper"}</h2>
-              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt).slice().sort((a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name)).slice(0, 2).map((document) => document.displayName || document.name).join(" · ") : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
-              <Link href={`/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">Open documents <span aria-hidden="true">→</span></Link>
+            <Scene src={placeImage(p)}>
+              <p>{displayLabel(p.type)} · {presentName(p.area)}{p.city ? `, ${p.city}` : ""}</p>
+              <strong>{papersOnFile.length ? `${papersOnFile.length} ${papersOnFile.length === 1 ? "paper" : "papers"} on file` : "Add the first paper"}</strong>
+            </Scene>
+            <section className="guided-home-next scene-next" aria-labelledby="property-next-title">
+              <p className="guided-eyebrow">{propertyBill ? "Coming up" : leadPaper ? "Open a paper" : "Start here"}</p>
+              <h2 id="property-next-title">{propertyBill ? propertyBill.title : leadPaper ? (leadPaper.displayName || leadPaper.name) : "Add your first paper"}</h2>
+              <p>{propertyBill ? dueCopy(propertyBill.dueDate) : leadPaper ? `${leadPaper.type} · ready to preview` : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
+              <Link href={propertyBill ? `/property/${p.id}?tab=bills` : leadPaper ? `/property/${p.id}/documents/${leadPaper.id}` : `/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">{propertyBill ? "See this bill" : leadPaper ? "Open this paper" : "Add a paper"} <span aria-hidden="true">→</span></Link>
             </section>
-            <GroupedList><AnimatedList>{[["vault","Documents",`${s.docs.filter(d=>d.propertyId===p.id).length}`],["bills","Bills & payments","Due, paid, reminders"],["maint","Maintenance",`${h.maint.open} active`],["timeline","Timeline",`${timeline.length}`],["share","Sharing","Who can see what"],["rent","Rent","Tenancies"],["export","Exports","Download records"]].map(([key,label,detail])=><ListRow key={key} title={label} detail={detail} href={`/property/${p.id}?tab=${key}`}/>)}</AnimatedList></GroupedList>
+            <div className="action-grid">
+              <Link className="action-tile" href={`/property/${p.id}?tab=vault`}><span>Papers</span><strong>{papersOnFile.length}</strong><em>Open the vault</em></Link>
+              <Link className="action-tile" href={`/property/${p.id}?tab=bills`}><span>Bills</span><strong>{s.bills.filter((bill) => bill.propertyId === p.id && bill.status !== "paid").length}</strong><em>See dates</em></Link>
+              {propertyBuild ? <Link className="action-tile" href={`/construction/${propertyBuild.id}`}><span>Build</span><strong>{propertyBuild.name.split(" ")[0]}</strong><em>Continue</em></Link> : <Link className="action-tile" href={`/property/${p.id}?tab=maint`}><span>Maintenance</span><strong>{h.maint.open}</strong><em>Open jobs</em></Link>}
+              <Link className="action-tile" href={`/property/${p.id}?tab=share`}><span>Sharing</span><strong>{s.shares.filter((share) => share.propertyId === p.id).length || "Private"}</strong><em>Who can see</em></Link>
+            </div>
+            <nav className="quiet-links" aria-label="More property sections">
+              <Link href={`/property/${p.id}?tab=timeline`}>Timeline · {timeline.length}</Link>
+              <Link href={`/property/${p.id}?tab=maint`}>Maintenance</Link>
+              <Link href={`/property/${p.id}?tab=rent`}>Rent</Link>
+              <Link href={`/property/${p.id}?tab=export`}>Exports</Link>
+            </nav>
             {summary&&<PropertyComposition summary={summary}/>} {composition.error&&<p role="alert">{composition.error}</p>}
-            <Disclosure title="Property details" detail="Ownership, area, loan">
+            <Disclosure title="Property details" detail="Ownership, area, papers">
+            <HealthAssessmentPanel propertyId={p.id} />
             <Link href={`/construction?propertyId=${p.id}`} className="block rounded-2xl p-4 text-[15px]">Construction <span className="float-right text-ink-muted">→</span></Link>
             <div className="surface p-4 bg-white">
               <p className="text-[16px] font-medium">Signals</p>
@@ -223,9 +239,13 @@ function VaultTab({ propertyId }: { propertyId: string }) {
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or category" />
       </label>
       <AnimatedSegment label="Document filters" value={activeFilter} onChange={setFilter} options={filterOptions.map((f)=>({ value: f, label: f }))} />
-      <GroupedList><AnimatedList stagger={false}>{visibleDocs.map((d)=>(
-        <ListRow key={d.id} href={`/property/${propertyId}/documents/${d.id}`} title={d.displayName || d.name} detail={`${d.type} · ${documentStatusLabel(d)} · ${presentDate(d.uploadDate)}`} />
-      ))}</AnimatedList></GroupedList>
+      <div className="paper-stack">{visibleDocs.map((d)=>(
+        <Link key={d.id} href={`/property/${propertyId}/documents/${d.id}`} className="paper-card motion-pressable">
+          <span className="paper-card__thumb"><Image src="/places/place-papers.png" alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span>
+          <span className="paper-card__body"><strong>{d.displayName || d.name}</strong><span>{d.type} · {documentStatusLabel(d)} · {presentDate(d.uploadDate)}</span></span>
+          <span className="paper-card__go" aria-hidden="true">→</span>
+        </Link>
+      ))}</div>
       {!visibleDocs.length ? <p className="p-5 text-[14px] text-ink-muted">No papers match this view.</p> : null}
     </div>
   );

@@ -6,6 +6,9 @@ import { AnimatedList } from "@/components/motion/AnimatedList";
 import { useSearchParams } from "next/navigation";
 import { PageHead } from "@/components/ui";
 import { useStore } from "@/components/StoreProvider";
+import Image from "next/image";
+import Link from "next/link";
+import { Scene, SCENE, placeImage } from "@/components/PlaceCover";
 
 type Result = { kind: string; id: string; title: string; subtitle?: string; category?: string | null; sourceType?: string; snippet?: string; href: string; propertyName?: string };
 type SearchResponse = { mode: "owner" | "shared"; counts: { properties: number; documents: number; records: number }; properties: Result[]; documents: Result[]; records: Result[] };
@@ -96,12 +99,13 @@ function Inner() {
     {error ? <p className="rounded-2xl bg-[#fff5f5] p-3 text-[14px] text-red-700">{error}</p> : null}
     {browsing && !error ? (
       <>
+        {browsing && !propertyId && !documentType ? <Scene src={SCENE.papers}><p>Explore</p><strong>Find a property, a paper, or a date</strong></Scene> : null}
         {ideas.length ? <div className="explore-ideas" aria-label="Try searching">{ideas.map((idea) => <button key={idea} type="button" onClick={() => setQ(idea)}>{idea}</button>)}</div> : null}
-        {scopedProperties.length ? <section className="space-y-2"><SectionHeader title="Properties" detail={String(scopedProperties.length)} /><GroupedList><AnimatedList stagger={false}>{scopedProperties.map((property) => <ListRow key={property.id} href={`/property/${property.id}`} title={property.name} detail={`${displayLabel(property.type)} · ${property.area}${property.city ? `, ${property.city}` : ""}`} />)}</AnimatedList></GroupedList></section> : null}
-        {scopedPapers.length ? <section className="space-y-2"><SectionHeader title="Papers" detail={String(scopedPapers.length)} /><GroupedList><AnimatedList stagger={false}>{scopedPapers.slice(0, 6).map((doc) => {
+        {scopedProperties.length ? <section className="space-y-2"><SectionHeader title="Properties" detail={String(scopedProperties.length)} /><div className="paper-stack">{scopedProperties.map((property) => <Link key={property.id} href={`/property/${property.id}`} className="explore-place motion-pressable"><span className="explore-place__photo"><Image src={placeImage(property)} alt="" fill sizes="92px" style={{ objectFit: "cover" }} /></span><span><strong>{property.name}</strong><span>{displayLabel(property.type)} · {property.area}{property.city ? `, ${property.city}` : ""}</span></span></Link>)}</div></section> : null}
+        {scopedPapers.length ? <section className="space-y-2"><SectionHeader title="Papers" detail={String(scopedPapers.length)} /><div className="paper-stack">{scopedPapers.slice(0, 6).map((doc) => {
           const property = s.properties.find((item) => item.id === doc.propertyId);
-          return <ListRow key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} title={doc.displayName || doc.name} detail={`${doc.type}${property ? ` · ${property.name}` : ""}`} />;
-        })}{scopedPapers.length > 6 ? <ListRow href="/vault" title="All papers" detail={`${scopedPapers.length} in the vault`} /> : null}</AnimatedList></GroupedList></section> : null}
+          return <Link key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} className="paper-card motion-pressable"><span className="paper-card__thumb"><Image src={SCENE.papers} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span><span className="paper-card__body"><strong>{doc.displayName || doc.name}</strong><span>{doc.type}{property ? ` · ${property.name}` : ""}</span></span><span className="paper-card__go" aria-hidden="true">→</span></Link>;
+        })}{scopedPapers.length > 6 ? <ListRow href="/vault" title="All papers" detail={`${scopedPapers.length} in the vault`} /> : null}</div></section> : null}
         {comingUp.length && !documentType ? <section className="space-y-2"><SectionHeader title="Coming up" /><GroupedList><AnimatedList stagger={false}>{comingUp.map((bill) => {
           const property = s.properties.find((item) => item.id === bill.propertyId);
           return <ListRow key={bill.id} href={`/property/${bill.propertyId}?tab=bills`} title={bill.title} detail={`${property?.name || "Property"} · ${dueCopy(bill.dueDate)}`} />;

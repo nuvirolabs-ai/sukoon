@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Camera } from "lucide-react";
 import {
@@ -298,13 +299,17 @@ export function ConstructionHome() {
             </div>
           </Surface>
         ) : (
-          <AnimatedList className="divide-y divide-line" stagger={false}>
+          <AnimatedList className="space-y-4" stagger={false}>
           {projects.map((p) => (
             <Link
               key={p.id}
               href={`/construction/${p.id}`}
-              className="block py-4 motion-pressable route-continuity"
+              className="build-card motion-pressable route-continuity"
             >
+              <div className="build-card__photo">
+                <Image src="/places/place-build.png" alt="" fill sizes="390px" style={{ objectFit: "cover" }} />
+              </div>
+              <div className="build-card__body">
               <div className="flex items-start justify-between gap-2">
                 <h2 className="text-xl font-medium">{p.name}</h2>
                 <StatusTransition statusKey={p.status}><StatusPill>{displayLabel(p.status)}</StatusPill></StatusTransition>
@@ -331,6 +336,8 @@ export function ConstructionHome() {
               {p.attention[0] ? (
                 <p className="mt-2 text-[13px] text-ink-muted">Waiting on {p.attention[0].title}</p>
               ) : null}
+              <span className="place-card__next">Continue this build</span>
+              </div>
             </Link>
           ))}
           </AnimatedList>
@@ -731,6 +738,14 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           <p>This section is not available under your current permissions.</p>
         ) : null}
         {tab === "now" ? <>
+          <section className="scene">
+            <Image src="/places/place-build.png" alt="" fill sizes="430px" style={{ objectFit: "cover" }} />
+            <div className="scene__shade" />
+            <div className="scene__copy">
+              <p>{p.currentStage?.name ?? "Build"} · {p.progressPercent}%</p>
+              <strong>{p.nextSteps[0]?.title ?? "Review the build plan"}</strong>
+            </div>
+          </section>
           <div className="story-grid">
           <div className="story-main">
           <p className="story-stage">{p.currentStage?.name ?? "Stages closed"}</p>
@@ -818,7 +833,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 <h2 className="story-h">At the site</h2>
                 <Link href={`/construction/${id}?tab=site`} className="block">
                   <span className="evidence-lead">
-                    <span className="ev-tag">Synthetic site photo · {p.currentStage?.name ?? "site"}</span>
+                    <span className="ev-tag">{p.currentStage?.name ?? "On site"}</span>
                     <span className="ev-cap">{latest.title}</span>
                     <span className="ev-meta">{presentDate(String(latest.occurredAt))}{photos ? ` · ${photos} photos` : ""}</span>
                   </span>

@@ -9,6 +9,7 @@ import { ScanRetry } from "@/components/ScanRetry";
 import { useStore } from "@/components/StoreProvider";
 import { useToast } from "@/components/motion/Toast";
 import { ListSkeleton } from "@/components/motion/Skeleton";
+import { Scene, SCENE } from "@/components/PlaceCover";
 
 type OwnerDocument = {
   id: string;
@@ -114,9 +115,16 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
       <PageHead title={title} backHref={backHref} backLabel={backLabel} />
       <div className="space-y-6 pb-8">
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
-        <p className="text-[15px]">{status}</p>
-        <p className="text-[15px] text-ink-muted">{ownerCopy ? "Added by you. Malware scanning is not connected on this preview." : `Security scan · ${document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}`}</p>
-        {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Preview <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview blocked until this version is clean.</p>}
+        <Scene src={SCENE.papers}>
+          <p>{document.type}</p>
+          <strong>{status}</strong>
+        </Scene>
+        <section className="guided-home-next scene-next">
+          <p className="guided-eyebrow">This file</p>
+          <h2>{ownerCopy ? "Your copy is ready to open" : status}</h2>
+          <p>{ownerCopy ? "Added by you. Malware scanning is not connected on this preview." : `Security scan · ${document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}`}</p>
+          {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Open the PDF <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview blocked until this version is clean.</p>}
+        </section>
         {mode === "owner" && document.scanStatus === "unavailable" ? <ScanRetry documentId={document.id} /> : null}
         <section>
           <SectionHeader title="Details" />

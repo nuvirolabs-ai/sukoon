@@ -12,6 +12,8 @@ import { displayLabel, presentName, recordReadinessLabel } from "@/components/co
 import { inr } from "@/lib/utils";
 import type { Property } from "@/lib/types";
 import { usePropertyComposition } from "@/components/PropertyComposition";
+import { placeImage } from "@/components/PlaceCover";
+import Image from "next/image";
 
 function ListInner() {
   const { s, replace } = useStore();
@@ -61,17 +63,16 @@ function ListInner() {
           const readiness = recordReadinessLabel(summary?.readiness.assessment ?? h.assessment, summary?.readiness.score ?? h.score, docs);
           const project = summary?.projects[0];
           return (
-            <Link key={p.id} href={`/property/${p.id}`} className="block surface property-card p-5 motion-pressable route-continuity">
-              <div className="flex gap-3 items-start">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[18px] font-medium leading-snug min-w-0">{p.name}</p>
-                  <p className="mt-1 text-[13px] text-ink-muted">{displayLabel(p.type)} · {presentName(p.area)}</p>
-                  {p.purchaseValue ? <p className="mt-3 text-[17px] tracking-tight">{inr(p.purchaseValue)} <span className="text-[13px] text-ink-muted font-normal">purchase value</span></p> : null}
-                  <p className="mt-2 text-[13px] text-ink-muted">{docs} {docs === 1 ? "document" : "documents"}{summary ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""}{summary?.records.openMaintenance ? ` · ${summary.records.openMaintenance} maintenance` : ""}</p>
-                  <p className="mt-2 text-[13px] text-forest"><StatusTransition statusKey={readiness}>{readiness}</StatusTransition></p>
-                  {project ? <p className="mt-3 rounded-xl bg-mint/40 px-3 py-2 text-[13px] text-forest">Active build · {project.name}</p> : null}
-                </div>
-                <span aria-hidden="true" className="text-ink-muted text-xl leading-none mt-1">›</span>
+            <Link key={p.id} href={`/property/${p.id}`} className="place-card motion-pressable route-continuity">
+              <div className="place-card__photo">
+                <Image src={placeImage(p)} alt="" fill sizes="390px" style={{ objectFit: "cover" }} />
+                <span className="place-card__chip">{displayLabel(p.type)}</span>
+              </div>
+              <div className="place-card__body">
+                <strong>{p.name}</strong>
+                <p className="place-card__meta">{presentName(p.area)}{p.city ? `, ${p.city}` : ""}{p.purchaseValue ? ` · ${inr(p.purchaseValue)}` : ""}</p>
+                <p className="place-card__meta">{docs} {docs === 1 ? "paper" : "papers"}{summary ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""} · <StatusTransition statusKey={readiness}>{readiness}</StatusTransition></p>
+                <span className="place-card__next">{project ? `Open · ${project.name}` : "Open this property"}</span>
               </div>
             </Link>
           );

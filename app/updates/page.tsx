@@ -6,6 +6,7 @@ import { AnimatedList } from "@/components/motion/AnimatedList";
 import { UpdatesSkeleton } from "@/components/motion/Skeleton";
 
 import { useStore } from "@/components/StoreProvider";
+import { Scene, SCENE } from "@/components/PlaceCover";
 import { useSearchParams } from "next/navigation";
 type Item = { id: string; type: string; title: string; detail?: string | null; date: string; href: string; read?: boolean };
 type Education = { slug: string; title: string; summary: string; sourceName: string };
@@ -30,6 +31,7 @@ function UpdatesContent() {
   ];
   return <div><PageHead title={attentionOnly?"Needs attention":"Updates"} sub={mode==="shared"?"Shared with you":undefined} />
     <div className="space-y-6 pb-6">
+      <Scene src={SCENE.dates}><p>{attentionOnly ? "Needs attention" : "Updates"}</p><strong>{attentionOnly ? "Open the next step" : "See what changed, then open the record"}</strong></Scene>
       {error&&<p role="alert" className="text-red-700">{error}</p>}
       {!loaded&&!error ? <UpdatesSkeleton /> : null}
       {loaded&&!items.length&&!error ? <p className="text-ink-muted p-5">You’re all caught up. New activity will appear here.</p> : null}

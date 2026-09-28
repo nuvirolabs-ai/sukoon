@@ -5,6 +5,8 @@ import { useStore } from "@/components/StoreProvider";
 import { PageHead } from "@/components/ui";
 import { inr, todayISO } from "@/lib/utils";
 import { AnimatedList } from "@/components/motion/AnimatedList";
+import { Scene, SCENE } from "@/components/PlaceCover";
+import Link from "next/link";
 
 type Obligation = { id: string; propertyId: string; label: string; type: string; amount: number | null; dueDate: string; direction: string };
 
@@ -38,6 +40,11 @@ export default function BillsPage() {
     <div>
       <PageHead title="Bills & payments" sub="Recorded by you" />
       <div className="space-y-4 pb-6">
+        <Scene src={SCENE.dates}>
+          <p>Bills you recorded</p>
+          <strong>{items[0] ? items[0].label : list[0] ? list[0].title : "Nothing due yet"}</strong>
+        </Scene>
+        {items[0] ? <Link href={`/property/${items[0].propertyId}?tab=bills`} className="guided-home-next scene-next block"><p className="guided-eyebrow">Next date</p><h2>{items[0].label}</h2><p>{items[0].propertyName} · {dueCopy(items[0].dueDate)}</p><span className="primary-disclosure">Open this bill <span aria-hidden="true">→</span></span></Link> : null}
         <div className="surface metric-group">
           <Metric label="Upcoming" value={inr(upcoming || due)} />
           <Metric label="Paid" value={inr(spent)} />

@@ -6,6 +6,7 @@ import { Disclosure, displayLabel, shortDate } from "@/components/consumer";
 import { EmptyState, ErrorState, PageHead, StatusPill } from "@/components/ui";
 import { AnimatedSegment } from "@/components/motion/AnimatedSegment";
 import { ListSkeleton } from "@/components/motion/Skeleton";
+import { Scene, SCENE } from "@/components/PlaceCover";
 
 type DurableReminder = {
   id: string;
@@ -70,6 +71,7 @@ export default function RemindersPage() {
   return <div>
     <PageHead title="Reminders" sub="Your upcoming reminders and follow-ups" />
     <div className="space-y-3 pb-6">
+      <Scene src={SCENE.dates}><p>Dates you set</p><strong>Open one when you are ready</strong></Scene>
       <div className="surface p-4 text-[13px] text-ink-muted">Reminders are based on records you entered. They are not official deadlines.</div>
       <div className="flex gap-2 items-center"><AnimatedSegment label="Reminder filter" value={unreadOnly ? "unread" : "all"} onChange={(v) => setUnreadOnly(v === "unread")} options={[{ value: "all", label: "All" }, { value: "unread", label: "Unread" }]} /><button onClick={() => void markAllRead()} className="motion-pressable ml-auto min-h-11 rounded-full border border-line bg-white px-3 text-[13px]">Mark all read</button></div>
       {loading ? <ListSkeleton rows={3} /> : null}
