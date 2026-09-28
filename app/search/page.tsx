@@ -13,11 +13,13 @@ type SearchResponse = { mode: "owner" | "shared"; counts: { properties: number; 
 function resultDetail(item: Result) {
   const raw = item.propertyName || item.subtitle || item.category || "";
   if (!raw) return undefined;
-  return raw.split(" · ").flatMap((part) => {
+  const parts = raw.split(" · ").flatMap((part) => {
     if (/financial/i.test(part)) return [];
     const due = /^due\s+(\d{4}-\d{2}-\d{2})/i.exec(part);
-    return [due ? dueCopy(due[1]) : displayLabel(part)];
-  }).join(" · ");
+    return [due ? dueCopy(due[1]) : part];
+  });
+  if (parts.length && /^(villa|flat|plot|commercial|agri)$/i.test(parts[0])) parts[0] = displayLabel(parts[0]);
+  return parts.join(" · ");
 }
 
 function Inner() {
