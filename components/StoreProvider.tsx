@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { createContext, useContext, useState, useSyncExternalStore, type ReactNode } from "react";
 import { getServerSnapshot, getSnapshot, persistState, replaceState, requestOtp, retrySession, reviewCodeClient, signInClientReview, signInStagingReview, signOut, stagingReviewClient, startClientStore, subscribe, verifyOtp } from "@/lib/client-store";
 import type { AppState } from "@/lib/types";
@@ -16,9 +17,11 @@ type StoreContextValue = {
 const Ctx = createContext<StoreContextValue | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const path = usePathname();
   startClientStore();
   const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
+  if (path === "/home-reference") return <>{children}</>;
   if (snapshot.status === "loading") return <div className="mx-auto max-w-[430px] bg-white min-h-dvh p-6 text-sm native-safe-screen">Loading Sukoon…</div>;
   if (snapshot.status === "unreachable") return <UnreachableState />;
   if (snapshot.status === "signed-out") return <SignInForm />;
