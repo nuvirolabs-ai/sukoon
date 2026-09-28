@@ -132,7 +132,7 @@ async function main() {
     textTables.push(prisma.maintenance.update({ where: { id: row.id }, data: { notes: row.notes ? tidy(row.notes) : row.notes, provider: row.provider ? tidy(row.provider) : row.provider } }));
   }
   for (const row of await prisma.timelineEvent.findMany({ where: { workspaceId: workspace.id } })) {
-    textTables.push(prisma.timelineEvent.update({ where: { id: row.id }, data: { title: tidy(row.title), detail: tidy(row.detail) } }));
+    textTables.push(prisma.timelineEvent.update({ where: { id: row.id }, data: { title: tidy(row.title), detail: row.detail ? tidy(row.detail) : row.detail } }));
   }
   for (const row of await prisma.constructionTask.findMany({ where: { workspaceId: workspace.id } })) {
     if (row.notes) textTables.push(prisma.constructionTask.update({ where: { id: row.id }, data: { notes: tidy(row.notes) } }));
