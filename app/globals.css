@@ -699,6 +699,12 @@ html.is-android-webview .motion-sheet__panel {
 .discovery-chips::-webkit-scrollbar { display: none; }
 .discovery-chip { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid #eceae4; border-radius: 999px; background: #fff; color: #2a2a2a; font-size: 14px; font-weight: 500; box-shadow: 0 1px 2px rgba(20, 20, 20, .04); }
 .discovery-chip.is-selected { border-color: #2f9d62; background: #2f9d62; color: #fff; }
+.discovery-today { margin: 14px 16px 0; padding: 14px 16px 12px; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(48, 36, 24, .06); }
+.discovery-today strong { display: block; font-size: 16px; font-weight: 600; letter-spacing: -.2px; }
+.discovery-today p { margin-top: 4px; color: #5e6762; font-size: 13px; line-height: 1.4; }
+.discovery-today__actions { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
+.discovery-today__actions::-webkit-scrollbar { display: none; }
+.discovery-today__actions a { flex: 0 0 auto; height: 32px; padding: 0 12px; border-radius: 999px; background: #e7f6ee; color: #1b3d2f; font-size: 13px; font-weight: 600; line-height: 32px; }
 .discovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 16px 8px; }
 .discovery-card { position: relative; display: flex; min-height: 178px; flex-direction: column; overflow: hidden; border-radius: 22px; padding: 16px 14px 12px; color: #1c1c1c; }
 .discovery-card strong { position: relative; z-index: 1; font-family: Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif; font-size: 22px; font-weight: 500; letter-spacing: -.3px; line-height: 1.15; }

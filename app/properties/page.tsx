@@ -8,7 +8,7 @@ import { StatusTransition } from "@/components/motion/StatusTransition";
 import { healthFor } from "@/lib/health";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { displayLabel, presentName } from "@/components/consumer";
+import { displayLabel, presentName, recordReadinessLabel } from "@/components/consumer";
 import { inr } from "@/lib/utils";
 import type { Property } from "@/lib/types";
 import { usePropertyComposition } from "@/components/PropertyComposition";
@@ -58,7 +58,7 @@ function ListInner() {
           const summary = composition.properties.find((x) => x.id === p.id);
           const docs = s.docs.filter((d) => d.propertyId === p.id).length;
           const due = s.bills.filter((b) => b.propertyId === p.id && b.status !== "paid").length;
-          const readiness = (summary?.readiness.assessment ?? h.assessment) === "NOT_ASSESSED" ? "Not assessed" : `${summary?.readiness.score ?? h.score}% ready`;
+          const readiness = recordReadinessLabel(summary?.readiness.assessment ?? h.assessment, summary?.readiness.score ?? h.score, docs);
           const project = summary?.projects[0];
           return (
             <Link key={p.id} href={`/property/${p.id}`} className="block surface property-card p-5 motion-pressable route-continuity">

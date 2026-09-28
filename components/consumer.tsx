@@ -5,7 +5,7 @@ import { Sheet } from "./ui";
 import { useState } from "react";
 import { displayLabel, presentName } from "@/lib/ui-content";
 
-export { displayLabel, presentName, shortDate, presentDate, documentStatusLabel, formatMoneyCompact as amountText, formatMoneyExact, formatPaiseCompact, dayGreeting, dueCopy, presentStoredText, groupByActivity, attentionTitle } from "@/lib/ui-content";
+export { displayLabel, presentName, shortDate, presentDate, documentStatusLabel, recordReadinessLabel, formatMoneyCompact as amountText, formatMoneyExact, formatPaiseCompact, dayGreeting, dueCopy, presentStoredText, groupByActivity, attentionTitle } from "@/lib/ui-content";
 
 export function SectionHeader({ title, detail, href }: { title: string; detail?: string; href?: string }) {
   return (

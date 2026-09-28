@@ -24,7 +24,7 @@ export default function BuySell() {
             <EmptyState title="No current guides" detail="Reviewed buyer education will appear here when published." />
           )}
         </section>
-        <EmptyState title="Marketplace not connected" detail="Sukoon does not publish listings or process a sale. Private workspaces stay separate from any public listing." />
+        <p className="text-[13px] leading-5 text-ink-muted">Public listings are off. A purchase workspace stays private, and Sukoon does not publish a listing or take a payment.</p>
       </div>
     </div>
   );

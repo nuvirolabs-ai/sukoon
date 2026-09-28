@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { displayLabel, documentStatusLabel, formatMoneyCompact, formatMoneyExact, layoutStressFixtures, presentDate, presentName } from "@/lib/ui-content";
+import { displayLabel, documentStatusLabel, formatMoneyCompact, formatMoneyExact, layoutStressFixtures, presentDate, presentName, recordReadinessLabel } from "@/lib/ui-content";
 
 describe("consumer money and status presentation", () => {
   it("formats compact Indian summary values", () => {
@@ -40,5 +40,8 @@ describe("consumer money and status presentation", () => {
   it("labels document status without exposing scan internals", () => {
     expect(documentStatusLabel({ scanStatus: "clean", reviewStatus: "confirmed" })).toBe("Reviewed");
     expect(documentStatusLabel({ scanStatus: "pending" })).toBe("Scanning");
+    expect(documentStatusLabel({ scanStatus: "owner_copy" })).toBe("In your vault");
+    expect(recordReadinessLabel("RECORD_READINESS", 0, 4)).toBe("4 papers on file");
+    expect(recordReadinessLabel("RECORD_READINESS", 80, 4)).toBe("80% ready");
   });
 });

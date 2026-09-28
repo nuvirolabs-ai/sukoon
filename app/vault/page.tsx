@@ -8,7 +8,7 @@ import { StatusTransition } from "@/components/motion/StatusTransition";
 export default function VaultPage() {
   const { s } = useStore();
   const docs = s.docs.filter((d) => !d.deletedAt && !d.archivedAt);
-  const needsReview = docs.filter((d) => d.reviewStatus !== "confirmed" || d.scanStatus !== "clean").length;
+  const needsReview = docs.filter((d) => d.scanStatus !== "owner_copy" && (d.reviewStatus !== "confirmed" || d.scanStatus !== "clean")).length;
   return (
     <div>
       <PageHead title="Vault" sub={`${docs.length} documents`} />
@@ -27,7 +27,7 @@ export default function VaultPage() {
           </GroupedList>
         </section>
         {!s.properties.length ? <GroupedList><ListRow title="Add a property" detail="Keep documents together." href="/property/new" /></GroupedList> : null}
-        <Disclosure title="What this means"><p className="text-[14px] leading-relaxed text-ink-muted">A security scan does not establish authenticity or government approval. Review is separate.</p></Disclosure>
+        <Disclosure title="What this means"><p className="text-[14px] leading-relaxed text-ink-muted">Papers you add stay in your vault. Malware scanning is not connected on this preview, so a file here is your copy, not a scan result or a government approval.</p></Disclosure>
       </div>
     </div>
   );

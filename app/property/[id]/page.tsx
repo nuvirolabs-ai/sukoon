@@ -84,16 +84,16 @@ function PassportContent() {
       <div className="pb-6 space-y-3">
         {tab==="overview" && (
           <>
-            <p className="text-[13px] text-ink-muted">Owner asserted</p>
+            <p className="text-[13px] text-ink-muted">Your record</p>
             <div className="surface p-5">
-              <p className="text-[13px] text-ink-muted">Record readiness</p>
-              <p className="text-[32px] tracking-tight mt-1"><StatusTransition statusKey={(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" ? `score-${summary?.readiness.score??h.score}` : "not-assessed"}>{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" ? `${summary?.readiness.score??h.score}%` : "Not assessed"}</StatusTransition></p>
+              <p className="text-[13px] text-ink-muted">{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? "Record readiness" : s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Papers on file" : "Record readiness"}</p>
+              <p className="text-[32px] tracking-tight mt-1"><StatusTransition statusKey={(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? `score-${summary?.readiness.score??h.score}` : "papers"}>{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" && (summary?.readiness.score??h.score) > 0 ? `${summary?.readiness.score??h.score}%` : String(s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt).length || "Not assessed")}</StatusTransition></p>
               <Disclosure title="View readiness"><HealthAssessmentPanel propertyId={p.id}/></Disclosure>
             </div>
             <section className="guided-home-next surface" aria-labelledby="property-next-title">
               <p className="guided-eyebrow">Next for this property</p>
-              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Keep reviewing your papers" : "Add your first paper"}</h2>
-              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers, scan details and manual review live together here." : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
+              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers are filed" : "Add your first paper"}</h2>
+              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Open a copy you added. Malware scanning is not connected on this preview." : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
               <Link href={`/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">Open documents <span aria-hidden="true">→</span></Link>
             </section>
             <GroupedList><AnimatedList>{[["vault","Documents",`${s.docs.filter(d=>d.propertyId===p.id).length}`],["bills","Bills & payments","Due, paid, reminders"],["maint","Maintenance",`${h.maint.open} active`],["timeline","Timeline",`${timeline.length}`],["share","Sharing","Who can see what"],["rent","Rent","Tenancies"],["export","Exports","Download records"]].map(([key,label,detail])=><ListRow key={key} title={label} detail={detail} href={`/property/${p.id}?tab=${key}`}/>)}</AnimatedList></GroupedList>

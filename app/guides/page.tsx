@@ -10,7 +10,7 @@ export default function Guides() {
   useEffect(() => { void fetch("/api/education", { cache: "no-store" }).then(async (response) => { const body = await response.json() as { data?: { education: Content[] }; error?: { message?: string } }; if (!response.ok || !body.data) throw new Error(body.error?.message || "Education could not be loaded."); setRows(body.data.education); }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Education could not be loaded.")); }, []);
   return (
     <div>
-      <PageHead title="Guides" sub="Reviewed information only" />
+      <PageHead title="Guides" sub="How Sukoon works" />
       <div className="space-y-4 pb-6">
         {error ? <p className="text-[14px] text-red-700">{error}</p> : null}
         {rows.length ? (

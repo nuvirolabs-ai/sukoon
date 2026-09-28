@@ -67,7 +67,8 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
   const status = documentStatusLabel(current);
   const previewHref = mode === "shared" ? `/api/shared/documents/${current.id}` : `/api/documents/${current.id}`;
   const downloadHref = mode === "shared" ? null : `/api/documents/${current.id}?download=true`;
-  const canPreview = mode === "shared" || current.scanStatus === "clean";
+  const ownerCopy = current.scanStatus === "owner_copy";
+  const canPreview = mode === "shared" || current.scanStatus === "clean" || ownerCopy;
   const uploaded = current.uploadDate || current.uploadedAt;
   const confirmed = current.extracted && typeof current.extracted === "object" ? Object.entries(current.extracted).filter(([, value]) => value) : [];
 
@@ -84,7 +85,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
       const body = await response.json();
       if (!response.ok) throw new Error(body.error?.message || "Replace failed.");
       if (body.data?.state) replace(body.data.state, body.data.version);
-      notify("Replacement uploaded — scanning");
+      notify(body.data?.document?.scanStatus === "owner_copy" ? "Added to your vault" : "Replacement uploaded — scanning");
       router.refresh();
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : "Replace failed.";
@@ -114,7 +115,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
       <div className="space-y-6 pb-8">
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
         <p className="text-[15px]">{status}</p>
-        <p className="text-[15px] text-ink-muted">Security scan · {document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}</p>
+        <p className="text-[15px] text-ink-muted">{ownerCopy ? "Added by you. Malware scanning is not connected on this preview." : `Security scan · ${document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}`}</p>
         {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Preview <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview blocked until this version is clean.</p>}
         {mode === "owner" && document.scanStatus === "unavailable" ? <ScanRetry documentId={document.id} /> : null}
         <section>

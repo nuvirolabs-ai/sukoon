@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Building2, House, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import { useStore } from "@/components/StoreProvider";
+import { dayGreeting, dueCopy, presentName } from "@/lib/ui-content";
 
 const CARDS = [
   {
@@ -54,7 +55,13 @@ function PlotIcon() {
   );
 }
 
-export function DiscoveryHomeView({ mark }: { mark: string }) {
+export type DiscoveryToday = {
+  greeting: string;
+  summary: string;
+  actions: { href: string; label: string }[];
+};
+
+export function DiscoveryHomeView({ mark, today }: { mark: string; today?: DiscoveryToday | null }) {
   return (
     <div className="discovery-home">
       <section className="discovery-hero" aria-label="Sukoon">
@@ -88,6 +95,18 @@ export function DiscoveryHomeView({ mark }: { mark: string }) {
         </Link>
       </div>
 
+      {today ? (
+        <section className="discovery-today" aria-label="Today">
+          <strong>{today.greeting}</strong>
+          <p>{today.summary}</p>
+          {today.actions.length ? (
+            <div className="discovery-today__actions">
+              {today.actions.map((action) => <Link key={action.href + action.label} href={action.href}>{action.label}</Link>)}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
       <div className="discovery-grid">
         {CARDS.map((card) => (
           <Link key={card.title} href={card.href} className={`discovery-card is-${card.tone}`}>
@@ -104,6 +123,19 @@ export function DiscoveryHomeView({ mark }: { mark: string }) {
 
 export function DiscoveryHome() {
   const { s, email } = useStore();
-  const ownerName = s.properties.find((property) => property.ownerName)?.ownerName;
-  return <DiscoveryHomeView mark={profileMark(email, ownerName)} />;
+  const ownerName = presentName(s.properties.find((property) => property.ownerName)?.ownerName || "");
+  const papers = s.docs.filter((doc) => !doc.deletedAt && !doc.archivedAt);
+  const nextBill = s.bills.filter((bill) => bill.status !== "paid").slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0];
+  const project = s.projects[0];
+  const first = ownerName.split(/\s+/).filter(Boolean)[0];
+  const today = {
+    greeting: dayGreeting(first),
+    summary: [`${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"}`, `${papers.length} ${papers.length === 1 ? "paper" : "papers"} in the vault`, project?.name].filter(Boolean).join(" · "),
+    actions: [
+      { href: "/bills", label: nextBill ? `Bills · ${dueCopy(nextBill.dueDate)}` : "Bills" },
+      { href: "/vault", label: papers.length ? "Open vault" : "Add a paper" },
+      project ? { href: "/construction", label: project.name } : { href: "/reminders", label: "Reminders" },
+    ],
+  };
+  return <DiscoveryHomeView mark={profileMark(email, ownerName)} today={today} />;
 }
