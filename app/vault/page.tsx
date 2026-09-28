@@ -22,7 +22,7 @@ export default function VaultPage() {
           <SectionHeader title="Collections" />
           <GroupedList>
             <AnimatedList>
-              {s.properties.map((p) => <ListRow key={p.id} title={p.name} detail={`${s.docs.filter((d) => d.propertyId === p.id).length} documents`} href={`/property/${p.id}?tab=vault`} />)}
+              {s.properties.map((p) => { const count = s.docs.filter((d) => d.propertyId === p.id && !d.deletedAt && !d.archivedAt).length; return <ListRow key={p.id} title={p.name} detail={`${count} ${count === 1 ? "document" : "documents"}`} href={`/property/${p.id}?tab=vault`} />; })}
             </AnimatedList>
           </GroupedList>
         </section>

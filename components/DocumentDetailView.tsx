@@ -123,7 +123,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
           <GroupedList>
             <div className="list-row"><span className="row-copy"><span className="row-title">Category</span><span className="row-detail">{document.type}</span></span></div>
             {uploaded ? <div className="list-row"><span className="row-copy"><span className="row-title">Uploaded</span><span className="row-detail">{presentDate(uploaded, "long")}</span></span></div> : null}
-            <div className="list-row"><span className="row-copy"><span className="row-title">Source</span><span className="row-detail">{document.provenance ? displayLabel(document.provenance) : "Added by you"}</span></span></div>
+            <div className="list-row"><span className="row-copy"><span className="row-title">Source</span><span className="row-detail">{document.provenance === "user_uploaded" || document.provenance === "user_replaced" || !document.provenance ? "Added by you" : displayLabel(document.provenance)}</span></span></div>
           </GroupedList>
         </section>
         {confirmed.length ? (
@@ -142,7 +142,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
                 <div className="list-row" key={version.id}>
                   <span className="row-copy">
                     <span className="row-title">v{version.version}</span>
-                    <span className="row-detail">{version.version === document.version ? "Current" : "Previous"} · {displayLabel(version.reviewStatus)}</span>
+                    <span className="row-detail">{version.version === document.version ? "Current" : "Previous"} · {version.scanStatus === "owner_copy" ? "In your vault" : displayLabel(version.reviewStatus)}</span>
                   </span>
                 </div>
               ))}
@@ -158,7 +158,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
             {stored && document.scanStatus === "clean" ? <>{status !== "Reviewed" ? <ManualDocumentReview document={stored} onConfirmed={() => setData((current) => current ? { ...current, reviewStatus: "confirmed" } : current)} /> : null}<DocumentReview document={stored} propertyId={propertyId} /></> : null}
             <Disclosure title="More actions">
               <div className="space-y-3">
-                {downloadHref && document.scanStatus === "clean" ? <a className="block underline" href={downloadHref}>Download</a> : null}
+                {downloadHref && (document.scanStatus === "clean" || document.scanStatus === "owner_copy") ? <a className="block underline" href={downloadHref}>Download</a> : null}
                 <label className="block text-sm">Replace
                   <input type="file" accept="application/pdf,image/jpeg,image/png" disabled={busy} className="block mt-1" onChange={(event) => { const file = event.target.files?.[0]; if (file) void replaceFile(file); event.target.value = ""; }} />
                 </label>

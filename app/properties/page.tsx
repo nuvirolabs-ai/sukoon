@@ -67,7 +67,7 @@ function ListInner() {
                   <p className="text-[18px] font-medium leading-snug min-w-0">{p.name}</p>
                   <p className="mt-1 text-[13px] text-ink-muted">{displayLabel(p.type)} · {presentName(p.area)}</p>
                   {p.purchaseValue ? <p className="mt-3 text-[17px] tracking-tight">{inr(p.purchaseValue)} <span className="text-[13px] text-ink-muted font-normal">purchase value</span></p> : null}
-                  <p className="mt-2 text-[13px] text-ink-muted">{docs} documents{summary ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""}{summary?.records.openMaintenance ? ` · ${summary.records.openMaintenance} maintenance` : ""}</p>
+                  <p className="mt-2 text-[13px] text-ink-muted">{docs} {docs === 1 ? "document" : "documents"}{summary ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""}{summary?.records.openMaintenance ? ` · ${summary.records.openMaintenance} maintenance` : ""}</p>
                   <p className="mt-2 text-[13px] text-forest"><StatusTransition statusKey={readiness}>{readiness}</StatusTransition></p>
                   {project ? <p className="mt-3 rounded-xl bg-mint/40 px-3 py-2 text-[13px] text-forest">Active build · {project.name}</p> : null}
                 </div>
