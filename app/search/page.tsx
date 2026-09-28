@@ -10,6 +10,16 @@ import { useStore } from "@/components/StoreProvider";
 type Result = { kind: string; id: string; title: string; subtitle?: string; category?: string | null; sourceType?: string; snippet?: string; href: string; propertyName?: string };
 type SearchResponse = { mode: "owner" | "shared"; counts: { properties: number; documents: number; records: number }; properties: Result[]; documents: Result[]; records: Result[] };
 
+function resultDetail(item: Result) {
+  const raw = item.propertyName || item.subtitle || item.category || "";
+  if (!raw) return undefined;
+  return raw.split(" · ").flatMap((part) => {
+    if (/financial/i.test(part)) return [];
+    const due = /^due\s+(\d{4}-\d{2}-\d{2})/i.exec(part);
+    return [due ? dueCopy(due[1]) : displayLabel(part)];
+  }).join(" · ");
+}
+
 function Inner() {
   const { s } = useStore();
   const params = useSearchParams();
@@ -17,6 +27,7 @@ function Inner() {
   const [propertyId, setPropertyId] = useState(params.get("propertyId") || "");
   const [documentType, setDocumentType] = useState(params.get("documentType") || "");
   const [data, setData] = useState<SearchResponse | null>(null);
+  const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,17 +40,20 @@ function Inner() {
     if (!q.trim()) {
       setData(null);
       setError("");
+      setPending(false);
       return;
     }
+    let cancelled = false;
+    setPending(true);
     const timer = window.setTimeout(() => {
       setError("");
       void fetch(`/api/search?q=${encodeURIComponent(q)}${propertyId ? `&propertyId=${encodeURIComponent(propertyId)}` : ""}${documentType ? `&documentType=${encodeURIComponent(documentType)}` : ""}`, { cache: "no-store" }).then(async (response) => {
         const body = await response.json() as { data?: SearchResponse; error?: { message?: string } };
         if (!response.ok || !body.data) throw new Error(body.error?.message || "Search could not be loaded.");
-        setData(body.data);
-      }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Search could not be loaded."));
+        if (!cancelled) setData(body.data);
+      }).catch((reason: unknown) => { if (!cancelled) setError(reason instanceof Error ? reason.message : "Search could not be loaded."); }).finally(() => { if (!cancelled) setPending(false); });
     }, 180);
-    return () => window.clearTimeout(timer);
+    return () => { cancelled = true; window.clearTimeout(timer); };
   }, [q, propertyId, documentType]);
 
   const scopedProperties = s.properties.filter((property) => !propertyId || property.id === propertyId);
@@ -93,8 +107,9 @@ function Inner() {
         {!scopedProperties.length && !scopedPapers.length ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">Nothing in this view yet.</p> : null}
       </>
     ) : null}
+    {q.trim() && pending && !data && !error ? <p className="px-1 text-[14px] text-ink-muted">Looking through your records…</p> : null}
     {q.trim() && !error && data && !all.length ? <p className="surface bg-white p-4 text-[14px] text-ink-muted">Nothing matches that. Try a property, a locality, or a paper such as insurance.</p> : null}
-    {q.trim() ? ([[ "Properties", data?.properties || [] ], [ "Papers", data?.documents || [] ], [ "Bills", (data?.records || []).filter((item) => item.kind === "obligation") ], [ "Build", (data?.records || []).filter((item) => item.kind.startsWith("construction")) ], [ "Maintenance", (data?.records || []).filter((item) => item.kind === "maintenance") ]] as Array<[string, Result[]]>).map(([heading, rows]) => rows.length ? <section key={heading} className="space-y-2 motion-results"><SectionHeader title={heading} detail={String(rows.length)} /><GroupedList><AnimatedList stagger={false}>{rows.map((item) => <ListRow key={`${item.kind}-${item.id}`} href={item.href} title={item.title} detail={item.propertyName || item.subtitle || item.category || undefined} />)}</AnimatedList></GroupedList></section> : null) : null}
+    {q.trim() ? ([[ "Properties", data?.properties || [] ], [ "Papers", data?.documents || [] ], [ "Bills", (data?.records || []).filter((item) => item.kind === "obligation") ], [ "Build", (data?.records || []).filter((item) => item.kind.startsWith("construction")) ], [ "Maintenance", (data?.records || []).filter((item) => item.kind === "maintenance") ]] as Array<[string, Result[]]>).map(([heading, rows]) => rows.length ? <section key={heading} className="space-y-2 motion-results"><SectionHeader title={heading} detail={String(rows.length)} /><GroupedList><AnimatedList stagger={false}>{rows.map((item) => <ListRow key={`${item.kind}-${item.id}`} href={item.href} title={item.title} detail={resultDetail(item)} />)}</AnimatedList></GroupedList></section> : null) : null}
   </div></div>;
 }
 
