@@ -8,7 +8,7 @@ import { PageHead } from "@/components/ui";
 import { useStore } from "@/components/StoreProvider";
 import Image from "next/image";
 import Link from "next/link";
-import { Scene, SCENE, placeImage } from "@/components/PlaceCover";
+import { Scene, SCENE, paperImage, placeImage } from "@/components/PlaceCover";
 
 type Result = { kind: string; id: string; title: string; subtitle?: string; category?: string | null; sourceType?: string; snippet?: string; href: string; propertyName?: string };
 type SearchResponse = { mode: "owner" | "shared"; counts: { properties: number; documents: number; records: number }; properties: Result[]; documents: Result[]; records: Result[] };
@@ -104,7 +104,7 @@ function Inner() {
         {scopedProperties.length ? <section className="space-y-2"><SectionHeader title="Properties" detail={String(scopedProperties.length)} /><div className="paper-stack">{scopedProperties.map((property) => <Link key={property.id} href={`/property/${property.id}`} className="explore-place motion-pressable"><span className="explore-place__photo"><Image src={placeImage(property)} alt="" fill sizes="92px" style={{ objectFit: "cover" }} /></span><span><strong>{property.name}</strong><span>{displayLabel(property.type)} · {property.area}{property.city ? `, ${property.city}` : ""}</span></span></Link>)}</div></section> : null}
         {scopedPapers.length ? <section className="space-y-2"><SectionHeader title="Papers" detail={String(scopedPapers.length)} /><div className="paper-stack">{scopedPapers.slice(0, 6).map((doc) => {
           const property = s.properties.find((item) => item.id === doc.propertyId);
-          return <Link key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} className="paper-card motion-pressable"><span className="paper-card__thumb"><Image src={SCENE.papers} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span><span className="paper-card__body"><strong>{doc.displayName || doc.name}</strong><span>{doc.type}{property ? ` · ${property.name}` : ""}</span></span><span className="paper-card__go" aria-hidden="true">→</span></Link>;
+          return <Link key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} className="paper-card motion-pressable"><span className="paper-card__thumb"><Image src={paperImage(doc.type)} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span><span className="paper-card__body"><strong>{doc.displayName || doc.name}</strong><span>{doc.type}{property ? ` · ${property.name}` : ""}</span></span><span className="paper-card__go" aria-hidden="true">→</span></Link>;
         })}{scopedPapers.length > 6 ? <ListRow href="/vault" title="All papers" detail={`${scopedPapers.length} in the vault`} /> : null}</div></section> : null}
         {comingUp.length && !documentType ? <section className="space-y-2"><SectionHeader title="Coming up" /><GroupedList><AnimatedList stagger={false}>{comingUp.map((bill) => {
           const property = s.properties.find((item) => item.id === bill.propertyId);

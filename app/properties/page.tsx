@@ -6,11 +6,11 @@ import { Button, EmptyState, ErrorState, PageHead } from "@/components/ui";
 import { AnimatedList } from "@/components/motion/AnimatedList";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { displayLabel, presentName } from "@/components/consumer";
+import { displayLabel, dueCopy, presentName } from "@/components/consumer";
 import { inr } from "@/lib/utils";
 import type { Property } from "@/lib/types";
 import { usePropertyComposition } from "@/components/PropertyComposition";
-import { placeImage } from "@/components/PlaceCover";
+import { NextBar, Scene, placeImage } from "@/components/PlaceCover";
 import Image from "next/image";
 
 function ListInner() {
@@ -56,7 +56,7 @@ function ListInner() {
         {props.map((p) => {
           const summary = composition.properties.find((x) => x.id === p.id);
           const docs = s.docs.filter((d) => d.propertyId === p.id).length;
-          const due = s.bills.filter((b) => b.propertyId === p.id && b.status !== "paid").length;
+          const nextBill = s.bills.filter((b) => b.propertyId === p.id && b.status !== "paid").slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0];
           const project = summary?.projects[0];
           return (
             <Link key={p.id} href={`/property/${p.id}`} className="place-card motion-pressable route-continuity">
@@ -67,14 +67,14 @@ function ListInner() {
               <div className="place-card__body">
                 <strong>{p.name}</strong>
                 <p className="place-card__meta">{presentName(p.area)}{p.city ? `, ${p.city}` : ""}{p.purchaseValue ? ` · ${inr(p.purchaseValue)}` : ""}</p>
-                <p className="place-card__meta">{docs} {docs === 1 ? "paper" : "papers"}{summary?.upcoming.length ? ` · ${summary.upcoming.length} upcoming` : due ? ` · ${due} upcoming` : ""}{project ? ` · ${project.name}` : ""}</p>
+                <p className="place-card__meta">{docs} {docs === 1 ? "paper" : "papers"}{nextBill ? ` · ${nextBill.title} · ${dueCopy(nextBill.dueDate)}` : ""}{project ? ` · ${project.name}` : ""}</p>
                 <span className="place-card__next">{project ? `Open · ${project.name}` : "Open this property"}</span>
               </div>
             </Link>
           );
         })}
         </AnimatedList>
-        {!props.length && <EmptyState title={type === "commercial" ? "No commercial property yet" : type || city ? "No matching properties" : "No properties yet"} detail={type === "commercial" ? "This account has a house, a flat, and a plot in Indore." : type || city ? "Nothing in your records matches this filter." : "Add a property passport. Nothing is created until you do."} action={!type && !city ? <Button onClick={() => router.push("/property/new")}>Add property</Button> : <Link href="/properties" className="inline-flex min-h-11 items-center text-[15px] underline">All properties</Link>} />}
+        {!props.length && type === "commercial" ? <div className="space-y-3 pb-next"><Scene src="/places/place-house.png"><p>Commercial</p><strong>No commercial property yet</strong></Scene><NextBar kicker="On this account" title="A house, a flat, and a plot in Indore" href="/properties" action="See them" /></div> : !props.length ? <EmptyState title={type || city ? "No matching properties" : "No properties yet"} detail={type || city ? "Nothing in your records matches this filter." : "Add a property passport. Nothing is created until you do."} action={!type && !city ? <Button onClick={() => router.push("/property/new")}>Add property</Button> : <Link href="/properties" className="inline-flex min-h-11 items-center text-[15px] underline">All properties</Link>} /> : null}
         {error ? <ErrorState message={error} /> : null}
         <button type="button" onClick={() => setShowArchived((value) => !value)} className="min-h-11 text-sm text-ink-muted">{showArchived ? "Hide archived" : "Show archived"}</button>
         {showArchived && <div className="space-y-2"><p className="text-[12px] text-ink-muted">Archived</p>{archived.map((property) => <div key={property.id} className="surface bg-white p-4"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-[17px] font-medium">{property.name}</p><p className="text-[13px] text-ink-muted">{property.area}, {property.city}</p></div><Button variant="secondary" busy={restoring === property.id} onClick={() => void restore(property)}>Restore</Button></div></div>)}{!archived.length ? <p className="text-[14px] text-ink-muted">None archived.</p> : null}</div>}

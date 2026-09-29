@@ -9,7 +9,7 @@ import { ScanRetry } from "@/components/ScanRetry";
 import { useStore } from "@/components/StoreProvider";
 import { useToast } from "@/components/motion/Toast";
 import { ListSkeleton } from "@/components/motion/Skeleton";
-import { Scene, SCENE } from "@/components/PlaceCover";
+import { NextBar, Scene, otherPaper, paperImage } from "@/components/PlaceCover";
 
 type OwnerDocument = {
   id: string;
@@ -113,17 +113,18 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
   return (
     <div>
       <PageHead title={title} backHref={backHref} backLabel={backLabel} />
-      <div className="space-y-6 pb-8">
+      <div className="space-y-6 pb-8 pb-next">
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
-        <Scene src={SCENE.papers}>
+        <Scene src={paperImage(current.type)}>
           <p>{document.type}</p>
           <strong>{status}</strong>
         </Scene>
         <section className="guided-home-next scene-next">
           <p className="guided-eyebrow">This file</p>
           <h2>{ownerCopy ? "Your copy is ready to open" : status}</h2>
-          <p>{ownerCopy ? "Added by you. Malware scanning is not connected on this preview." : `Security scan · ${document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}`}</p>
-          {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Open the PDF <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview blocked until this version is clean.</p>}
+          <p>{current.type}</p>
+          {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Open the PDF <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview stays closed until this version can be opened.</p>}
+          {ownerCopy ? <p className="next-quiet">Malware scanning is not connected on this preview.</p> : <p className="next-quiet">Security scan · {displayLabel(document.scanStatus || "pending")}</p>}
         </section>
         {mode === "owner" && document.scanStatus === "unavailable" ? <ScanRetry documentId={document.id} /> : null}
         <section>
@@ -175,6 +176,12 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
             </Disclosure>
           </>
         ) : null}
+        {(() => {
+          const paper = otherPaper(s.docs, propertyId, current.id);
+          const propertyName = s.properties.find((property) => property.id === propertyId)?.name || "this property";
+          if (paper) return <NextBar kicker={/tax receipt/i.test(paper.type) ? `Other paper on ${propertyName}` : `Also on ${propertyName}`} title={paper.displayName || paper.name} href={`/property/${propertyId}/documents/${paper.id}`} action="Open" />;
+          return <NextBar kicker="Back to the property" title={propertyName} href={`/property/${propertyId}`} action="Open" />;
+        })()}
       </div>
     </div>
   );

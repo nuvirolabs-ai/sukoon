@@ -20,6 +20,7 @@ import { useToast } from "@/components/motion/Toast";
 import { Disclosure, GroupedList, ListRow, Metric, ProgressBar, displayLabel, dueCopy, presentDate, presentName } from "@/components/consumer";
 import type { ConstructionView } from "@/lib/construction";
 import { inr } from "@/lib/utils";
+import { NextBar } from "@/components/PlaceCover";
 
 type Choice = { value: string; label: string };
 type Field = {
@@ -686,20 +687,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
         backHref="/construction"
         backLabel="All projects"
       />
-      <div className="pb-8 space-y-5">
-        <div className="flex justify-between text-[14px]">
-          <button className="motion-pressable underline" onClick={() => void load()}>
-            Refresh records
-          </button>
-          <Link
-            href={
-              p.owner ? `/property/${p.propertyId}` : `/shared/${p.propertyId}`
-            }
-            className="motion-pressable underline"
-          >
-            Property Passport
-          </Link>
-        </div>
+      <div className="space-y-5 pb-8 pb-next">
         {p.owner && tab === "now" ? null : (
         <AnimatedSegment
           label="Project sections"
@@ -780,7 +768,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             };
             return (
               <>
-                <h2 className="story-h">Needs you{primary.length ? ` (${primary.length})` : ""}</h2>
+                <h2 className="story-h">{primary.length ? `${primary.length} ${primary.length === 1 ? "thing needs" : "things need"} you` : "Needs you"}</h2>
                 {primary.length ? (
                   <GroupedList>
                     {primary.map((g) => {
@@ -790,7 +778,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                         <span className="row-copy">
                           <span className="need-eyebrow">{kind.eyebrow}</span>
                           <span className="row-title">{shortTitle(g.title)}</span>
-                          <span className="need-sub">{g.reason.split(". ")[0]}.</span>
+                          <span className="need-sub">{g.reason}</span>
                         </span>
                         <span className="need-action">{kind.action} →</span>
                       </Link>
@@ -895,6 +883,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           ) : null}
           <h2 className="story-h">Explore</h2>
           <nav className="explore-grid" aria-label="Deeper construction areas">
+            <Link href={p.owner ? `/property/${p.propertyId}` : `/shared/${p.propertyId}`}>Property <span aria-hidden="true">→</span></Link>
             <Link href={`/construction/${id}?tab=journey`}>Plan <span aria-hidden="true">→</span></Link>
             <Link href={`/construction/${id}?tab=more#materials`}>Materials <span aria-hidden="true">→</span></Link>
             <Link href={`/construction/${id}?tab=more#papers`}>Papers <span aria-hidden="true">→</span></Link>
@@ -941,6 +930,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             ) : null}
           </aside>
           </div>
+          <NextBar kicker="Next on this build" title={p.nextSteps[0]?.title ?? weekItems[0]?.title?.replace(" · due", "") ?? "Review the build plan"} href={weekItems[0]?.href ?? `/construction/${id}?tab=journey`} action="Continue" />
         </> : null}
         {tab === "journey" ? (
           <>

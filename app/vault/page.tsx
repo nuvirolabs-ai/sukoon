@@ -5,7 +5,7 @@ import { useStore } from "@/components/StoreProvider";
 import { PageHead } from "@/components/ui";
 import { Disclosure, GroupedList, ListRow, SectionHeader } from "@/components/consumer";
 import { StatusTransition } from "@/components/motion/StatusTransition";
-import { Scene, SCENE, placeImage } from "@/components/PlaceCover";
+import { NextBar, Scene, SCENE, paperImage, placeImage } from "@/components/PlaceCover";
 
 export default function VaultPage() {
   const { s } = useStore();
@@ -18,7 +18,7 @@ export default function VaultPage() {
   return (
     <div>
       <PageHead title="Vault" sub={`${docs.length} documents`} />
-      <div className="space-y-6 pb-6">
+      <div className="space-y-6 pb-6 pb-next">
         <Scene src={SCENE.papers}>
           <p>Your vault</p>
           <strong>{docs.length ? "Open a paper to preview it" : "Add the first paper"}</strong>
@@ -29,7 +29,7 @@ export default function VaultPage() {
             const property = s.properties.find((item) => item.id === doc.propertyId);
             return (
               <Link key={doc.id} href={`/property/${doc.propertyId}/documents/${doc.id}`} className="paper-card motion-pressable">
-                <span className="paper-card__thumb"><Image src={SCENE.papers} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span>
+                <span className="paper-card__thumb"><Image src={paperImage(doc.type)} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span>
                 <span className="paper-card__body"><strong>{doc.displayName || doc.name}</strong><span>{doc.type}{property ? ` · ${property.name}` : ""}</span></span>
                 <span className="paper-card__go" aria-hidden="true">→</span>
               </Link>
@@ -48,7 +48,8 @@ export default function VaultPage() {
           </div>
         </section>
         {!s.properties.length ? <GroupedList><ListRow title="Add a property" detail="Keep documents together." href="/property/new" /></GroupedList> : null}
-        <Disclosure title="What this means"><p className="text-[14px] leading-relaxed text-ink-muted">Papers you add stay in your vault. Malware scanning is not connected on this preview, so a file here is your copy, not a scan result or a government approval.</p></Disclosure>
+        <Disclosure title="What this means"><p className="next-quiet">Papers you add stay in your vault. Malware scanning is not connected on this preview, so a file here is your copy, not a scan result or a government approval.</p></Disclosure>
+        {docs[0] ? <NextBar kicker={s.properties.find((property) => property.id === docs[0].propertyId)?.name || "Open a paper"} title={docs[0].displayName || docs[0].name} href={`/property/${docs[0].propertyId}/documents/${docs[0].id}`} action="Preview" /> : null}
       </div>
     </div>
   );

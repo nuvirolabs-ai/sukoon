@@ -5,7 +5,7 @@ import { useStore } from "@/components/StoreProvider";
 import { PageHead } from "@/components/ui";
 import { inr, todayISO } from "@/lib/utils";
 import { AnimatedList } from "@/components/motion/AnimatedList";
-import { Scene, SCENE } from "@/components/PlaceCover";
+import { NextBar, Scene, SCENE } from "@/components/PlaceCover";
 import Link from "next/link";
 
 type Obligation = { id: string; propertyId: string; label: string; type: string; amount: number | null; dueDate: string; direction: string };
@@ -40,7 +40,7 @@ export default function BillsPage() {
   return (
     <div>
       <PageHead title="Bills & payments" sub="Recorded by you" />
-      <div className="space-y-4 pb-6">
+      <div className="space-y-4 pb-6 pb-next">
         <Scene src={SCENE.dates}>
           <p>Bills you recorded</p>
           <strong>{nextBill ? nextBill.title : "Nothing due yet"}</strong>
@@ -69,6 +69,7 @@ export default function BillsPage() {
         })}
         {!items.length && !list.length ? <p className="text-[14px] text-ink-muted">No bills yet.</p> : null}
         <Disclosure title="Spreadsheet" detail="Bills you recorded"><button type="button" onClick={caExport} className="h-11 w-full rounded-full border border-line">Download spreadsheet</button></Disclosure>
+        {nextBill ? <NextBar kicker="Next date" title={nextBill.title} href={`/property/${nextBill.propertyId}?tab=bills`} action="Open" /> : null}
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Suspense, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen } from "lucide-react";
 import { cx } from "@/lib/utils";
 import { useStore } from "./StoreProvider";
 import { t } from "@/lib/i18n";
@@ -13,26 +14,56 @@ export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-shell">
       <a href="#main-content" className="skip-link">Skip to content</a><main id="main-content" className="app-workspace">{children}</main>
-      <BottomNav />
+      <Suspense fallback={null}><BottomNav /></Suspense>
     </div>
   );
 }
 
+const NAV_ICON = "h-[22px] w-[22px]";
+
+function dockPlace(path: string, tab: string | null, properties: Array<{ id: string; name: string }>) {
+  if (path.startsWith("/vault")) return { href: "/vault", label: "Vault", slot: "more" as const, icon: <FolderOpen className={NAV_ICON} /> };
+  if (path.startsWith("/construction")) return { href: "/construction", label: "Build", slot: "more" as const, icon: <HardHat className={NAV_ICON} /> };
+  if (path.startsWith("/bills")) return { href: "/bills", label: "Bills", slot: "more" as const, icon: <Receipt className={NAV_ICON} /> };
+  if (path.startsWith("/reminders")) return { href: "/reminders", label: "Reminders", slot: "more" as const, icon: <Bell className={NAV_ICON} /> };
+  if (path.startsWith("/updates")) return { href: "/updates", label: "Updates", slot: "more" as const, icon: <Inbox className={NAV_ICON} /> };
+  if (path.startsWith("/guides") || path.startsWith("/guideline")) return { href: "/guides", label: "Guides", slot: "more" as const, icon: <BookOpen className={NAV_ICON} /> };
+  if (path.startsWith("/buy-sell")) return { href: "/buy-sell", label: "Buy / Sell", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
+  const match = path.match(/^\/property\/([^/]+)/);
+  if (!match || match[1] === "new") return null;
+  const name = properties.find((property) => property.id === match[1])?.name || "Property";
+  const section = path.includes("/documents/") ? "Papers" : path.includes("/bills/") ? "Bills" : tab === "vault" ? "Papers" : tab === "bills" ? "Bills" : tab === "maint" ? "Maintenance" : tab === "rent" ? "Rent" : tab === "timeline" ? "Timeline" : tab === "share" ? "Sharing" : tab === "export" ? "Exports" : "";
+  const href = section === "Papers" ? `/property/${match[1]}?tab=vault` : section === "Bills" ? `/property/${match[1]}?tab=bills` : section ? `/property/${match[1]}?tab=${tab || "overview"}` : `/property/${match[1]}`;
+  return { href, label: section ? `${name} · ${section}` : name, slot: "context" as const, icon: <Building2 className={NAV_ICON} /> };
+}
+
 function BottomNav() {
   const path = usePathname();
+  const tab = useSearchParams().get("tab");
   let lang: "en" | "hi" = "en";
+  let properties: Array<{ id: string; name: string }> = [];
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { s } = useStore();
     lang = s.lang;
+    properties = s.properties;
   } catch {}
+  const place = dockPlace(path, tab, properties);
+  const placeKey = place ? `${place.slot}:${place.href}` : "";
+  useEffect(() => {
+    document.documentElement.classList.toggle("has-dock-place", Boolean(placeKey));
+    return () => document.documentElement.classList.remove("has-dock-place");
+  }, [placeKey]);
+  const moreActive = !place && (path.startsWith("/more") || path.startsWith("/drafts") || path.startsWith("/pricing"));
   const tabs = [
-    { href: "/", label: t("home", lang), active: path === "/", icon: <Home className="h-[22px] w-[22px]" /> },
-    { href: "/properties", label: t("properties", lang), active: path.startsWith("/propert"), icon: <Building2 className="h-[22px] w-[22px]" /> },
+    { href: "/", label: t("home", lang), active: path === "/", icon: <Home className={NAV_ICON} /> },
+    { href: "/properties", label: t("properties", lang), active: path.startsWith("/propert"), icon: <Building2 className={NAV_ICON} /> },
   ];
   const tabsAfter = [
-    { href: "/search", label: t("explore", lang), active: path.startsWith("/search") || path.startsWith("/buy-sell"), icon: <Compass className="h-[22px] w-[22px]" /> },
-    { href: "/more", label: t("more", lang), active: path.startsWith("/more") || path.startsWith("/guideline") || path.startsWith("/drafts") || path.startsWith("/guides") || path.startsWith("/construction") || path.startsWith("/bills") || path.startsWith("/updates") || path.startsWith("/vault") || path.startsWith("/reminders") || path.startsWith("/pricing"), icon: <MoreHorizontal className="h-[22px] w-[22px]" /> },
+    { href: "/search", label: t("explore", lang), active: path.startsWith("/search") || path.startsWith("/buy-sell"), icon: <Compass className={NAV_ICON} /> },
+    place?.slot === "more"
+      ? { href: place.href, label: place.label, active: true, icon: place.icon }
+      : { href: "/more", label: t("more", lang), active: moreActive || path.startsWith("/more"), icon: <MoreHorizontal className={NAV_ICON} /> },
   ];
   const item = (href: string, label: string, active: boolean, icon: React.ReactNode) => (
     <Link href={href} aria-current={active ? "page" : undefined} className={cx("nav-item", active && "is-active")}>
@@ -43,6 +74,7 @@ function BottomNav() {
   );
   return (
     <nav aria-label="Main navigation" className="bottom-navigation">
+      {place ? <div className="dock-place"><strong>{place.label}</strong>{place.slot === "more" ? <Link href="/more">All sections</Link> : null}</div> : null}
       <div className="nav-items">
         {tabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
         <div className="nav-fab">
