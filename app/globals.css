@@ -849,21 +849,29 @@ html.is-inner .row-value { font-size: 15px; font-weight: 500; letter-spacing: -0
 html.is-inner .motion-compactbar {
   position: fixed;
   top: 0;
-  left: 50%;
-  width: min(760px, 100%);
+  left: 0;
+  width: 100%;
   margin: 0;
-  padding: 10px 16px 0;
-  transform: translateX(-50%) translateY(-8px);
+  padding: 8px 16px 10px;
+  transform: translateY(-8px);
   z-index: 35;
+  background: #ebe6dc;
+  border-bottom: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 10px 28px rgba(32, 24, 16, .08);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
 }
-html.is-inner .motion-compactbar.is-visible { transform: translateX(-50%); }
+html.is-inner .motion-compactbar.is-visible { transform: none; }
 html.is-inner .motion-compactbar__inner {
-  border-radius: 22px;
-  background: rgba(255, 252, 248, .78);
-  border: 1px solid rgba(255, 255, 255, .72);
-  box-shadow: 0 10px 28px rgba(32, 24, 16, .12);
-  backdrop-filter: blur(22px) saturate(1.45);
-  -webkit-backdrop-filter: blur(22px) saturate(1.45);
+  max-width: 760px;
+  margin: 0 auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 4px 0;
 }
 html.is-inner .motion-compactbar__title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
 html.is-inner .grouped-list,
@@ -937,12 +945,6 @@ html.is-inner .section-switch button[aria-current="page"] {
   color: #fff;
   box-shadow: none;
 }
-html.is-inner nav.section-switch[aria-label="Property sections"],
-html.is-inner nav.section-switch[aria-label="More property sections"] {
-  position: sticky;
-  top: 64px;
-  z-index: 25;
-}
 html.is-inner .bottom-navigation {
   left: 14px;
   right: 14px;
@@ -998,11 +1000,18 @@ html.is-inner .primary-disclosure { border-radius: 16px; font-weight: 600; lette
     left: auto;
     width: auto;
     transform: translateY(-8px);
+    background: transparent;
+    border-bottom: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 8px 0 0;
   }
   html.is-inner .motion-compactbar.is-visible { transform: none; }
-  html.is-inner nav.section-switch[aria-label="Property sections"],
-  html.is-inner nav.section-switch[aria-label="More property sections"] {
-    position: static;
-    top: auto;
+  html.is-inner .motion-compactbar__inner {
+    background: rgba(255, 252, 248, .9);
+    border: 1px solid rgba(255, 255, 255, .72);
+    border-radius: 22px;
+    box-shadow: 0 10px 28px rgba(32, 24, 16, .1);
   }
 }
