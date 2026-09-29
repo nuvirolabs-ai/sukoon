@@ -696,7 +696,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
         />
         )}
         {p.owner && tab !== "now" ? (
-          <Link href={`/construction/${id}?tab=now`} className="text-[14px] underline">
+          <Link href={`/construction/${id}?tab=now`} className="back-pill">
             ← Back to story
           </Link>
         ) : null}
@@ -963,8 +963,8 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 </Surface>
               );
             })()}
-            <details className="mt-4">
-              <summary className="cursor-pointer py-2 text-[15px] font-semibold">Full plan →</summary>
+            <details className="plan-toggle">
+              <summary>Full plan</summary>
             <p className="text-[13px] text-ink-muted">Tap a stage to see its tasks.</p>
             <div className="roadmap">
             {(() => {
@@ -1582,25 +1582,26 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
         {tab === "more" && p.capabilities.materials ? (
           <>
             <span id="materials" />
-            <p className="text-[14px] text-ink-muted">Owner-entered quantities and rates. Not a live market feed.</p>
+            <p className="next-quiet">Owner-entered quantities and rates. Not a live market feed.</p>
             {p.materials.map((m) => {
               const history = p.prices.filter((r) => r.materialId === m.id);
               return (
-                <section key={m.id} className="border-b border-line py-4 min-w-0">
-                  <h2 className="text-[18px] font-medium">{m.name}</h2>
-                  <p className="text-[13px] text-ink-muted">{m.quantity} {m.unit} · {displayLabel(m.status)}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
+                <section key={m.id} className="record-card">
+                  <p className="record-kicker">{displayLabel(m.status)}{m.requiredByDate ? ` · ${dueCopy(m.requiredByDate)}` : ""}</p>
+                  <h2>{m.name}</h2>
+                  <p className="record-meta">{m.quantity} {m.unit}</p>
                   {history[0] ? (
-                    <p className="mt-2 text-[15px]">
-                      <FlashOnChange value={history[0].pricePaise}>{inr(Number(history[0].pricePaise) / 100)}</FlashOnChange> / {m.unit}
-                      {history[1] ? <span className="text-ink-muted"> · previous {inr(Number(history[1].pricePaise) / 100)}</span> : null}
+                    <p className="record-price">
+                      <FlashOnChange value={history[0].pricePaise}>{inr(Number(history[0].pricePaise) / 100)}</FlashOnChange>
+                      <span className="record-price__unit"> / {m.unit}{history[1] ? ` · previous ${inr(Number(history[1].pricePaise) / 100)}` : ""}</span>
                     </p>
                   ) : null}
-                  {history.map((h) => (
-                    <p key={h.id} className="text-[13px] text-ink-muted">
+                  {history.length ? <div className="record-history">{history.map((h) => (
+                    <p key={h.id}>
                       {presentDate(h.recordedDate)} · {h.brand} {h.grade} · {h.dealer} ·{" "}
                       {h.location} · {rupees(h.pricePaise)}/{h.unit}
                     </p>
-                  ))}
+                  ))}</div> : null}
                   {actionForm(
                     "Update requirement",
                     "MATERIAL_UPDATE",
@@ -1681,7 +1682,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             ])}
             {p.materials.length ? (
               <section>
-                <h2 className="section-heading">Quotes and orders</h2>
+                <div className="section-heading"><h2>Quotes and orders</h2></div>
                 <p className="text-[13px] text-ink-muted">Manual quote entry only. No supplier marketplace.</p>
                 <GroupedList>
                   {p.supplierQuotes.map((q) => (
@@ -1776,7 +1777,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
               <Link
                 key={d.id}
                 href={d.href}
-                className="block border-b border-line py-3 text-[13px]"
+                className="record-link"
               >
                 {presentName(d.label || d.title)} · v{d.version}
                 <span className="block text-[13px] text-ink-muted">
@@ -1931,17 +1932,17 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             {p.capabilities.updates ? (
             <>
             {p.updates.length ? (
-              <AnimatedList stagger={false} className="divide-y divide-line">
+              <AnimatedList stagger={false} className="space-y-3">
               {p.updates.map((u) => (
-                <section key={u.id} className="py-4 motion-pressable">
-                  <h2 className="font-serif text-lg">{u.title}</h2>
-                  <p className="mt-2 text-[13px] whitespace-pre-wrap">
-                    {u.description}
-                  </p>
-                  <p className="mt-2 text-[13px] text-ink-muted">
-                    {presentDate(String(u.occurredAt))}{u.issueStatus === "OPEN" ? " · Open site issue" : ""}
-                    {Array.isArray(u.photoRefs) && (u.photoRefs as unknown[]).length ? ` · ${(u.photoRefs as unknown[]).length} photos` : ""}
-                    {u.workerCount ? ` · ${u.workerCount} workers on site` : ""}
+                <section key={u.id} className="record-card">
+                  <p className="record-kicker">{presentDate(String(u.occurredAt))}{u.issueStatus === "OPEN" ? " · Open site issue" : ""}</p>
+                  <h2>{u.title}</h2>
+                  <p className="record-body">{u.description}</p>
+                  <p className="record-meta">
+                    {[
+                      Array.isArray(u.photoRefs) && (u.photoRefs as unknown[]).length ? `${(u.photoRefs as unknown[]).length} photos` : "",
+                      u.workerCount ? `${u.workerCount} workers on site` : "",
+                    ].filter(Boolean).join(" · ")}
                   </p>
                   {u.weatherNote ? (
                     <p className="mt-1 text-[13px] text-ink-muted">{u.weatherNote}</p>
@@ -1980,7 +1981,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             )}
             </>) : null}
             <section>
-              <h2 className="section-heading">Issues</h2>
+              <div className="section-heading"><h2>Issues</h2></div>
               <p className="text-[13px] text-ink-muted">Problems and exceptions, separate from planned work.</p>
               <GroupedList>
                 {p.issues.map((i) => (
@@ -2023,7 +2024,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
             </section>
             {p.capabilities.materials ? (
               <section>
-                <h2 className="section-heading">Deliveries</h2>
+                <div className="section-heading"><h2>Deliveries</h2></div>
                 <GroupedList>
                   {p.deliveries.map((d) => {
                     const expected = d.expectedQuantity === null ? null : Number(d.expectedQuantity);
@@ -2221,14 +2222,10 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
           <>
             <span id="people" />
             {p.contacts.map((c) => (
-              <section key={c.id} className="border-b border-line py-4">
-                <h2 className="font-serif text-lg">{c.name}</h2>
-                <p className="text-[14px]">
-                  {displayLabel(c.role)} · {c.company}
-                </p>
-                <p className="text-[14px]">
-                  {c.phone} {c.email}
-                </p>
+              <section key={c.id} className="record-card">
+                <p className="record-kicker">{displayLabel(c.role)}{c.company ? ` · ${c.company}` : ""}</p>
+                <h2>{c.name}</h2>
+                <p className="record-meta">{[c.phone, c.email].filter(Boolean).join(" · ") || "No phone or email recorded"}</p>
                 <p className="text-[13px] text-ink-muted">Added by owner</p>
                 {actionForm(
                   "Edit contact",
@@ -2307,7 +2304,7 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
         {tab === "more" ? (
           <>
             <span id="history" />
-            <h2 className="section-heading">Full history</h2>
+            <div className="section-heading"><h2>Full history</h2></div>
             {(() => {
               const groups = new Map<string, typeof p.events>();
               for (const e of p.events) {
@@ -2322,15 +2319,15 @@ export function ConstructionProjectScreen({ id }: { id: string }) {
                 return presentDate(day);
               };
               return [...groups.entries()].map(([day, rows]) => (
-                <div key={day}>
+                <section key={day} className="record-group">
                   <p className="hist-day">{dayLabel(day)}</p>
                   {rows.map((e) => (
-                    <div key={e.id} className="border-b border-line py-3">
-                      <p className="text-[13px]">{displayLabel(e.title)}</p>
-                      <p className="text-[13px] text-ink-muted">{String(e.createdAt).slice(11, 16)} UTC</p>
+                    <div key={e.id} className="record-row">
+                      <p>{displayLabel(e.title)}</p>
+                      <span>{String(e.createdAt).slice(11, 16)} UTC</span>
                     </div>
                   ))}
-                </div>
+                </section>
               ));
             })()}
             {actionForm("Add a construction reminder", "REMINDER_SET", [

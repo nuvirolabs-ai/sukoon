@@ -141,7 +141,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 }
 
 export function EmptyState({ title, detail, action }: { title: string; detail?: string; action?: React.ReactNode }) {
-  return <Surface tone="soft" className="text-center"><p className="text-[18px] font-medium">{title}</p>{detail ? <p className="mt-1 text-[13px] leading-5 text-ink-muted">{detail}</p> : null}{action ? <div className="mt-3">{action}</div> : null}</Surface>;
+  return <Surface tone="soft" className="empty-state text-center"><p className="empty-state__title">{title}</p>{detail ? <p className="empty-state__detail">{detail}</p> : null}{action ? <div className="mt-3">{action}</div> : null}</Surface>;
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
