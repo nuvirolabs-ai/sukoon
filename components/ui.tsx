@@ -50,10 +50,15 @@ function BottomNav() {
   } catch {}
   const place = dockPlace(path, tab, properties);
   const placeKey = place ? `${place.slot}:${place.href}` : "";
+  const inner = path !== "/" && path !== "/home-reference";
   useEffect(() => {
     document.documentElement.classList.toggle("has-dock-place", Boolean(placeKey));
-    return () => document.documentElement.classList.remove("has-dock-place");
-  }, [placeKey]);
+    document.documentElement.classList.toggle("is-inner", inner);
+    return () => {
+      document.documentElement.classList.remove("has-dock-place");
+      document.documentElement.classList.remove("is-inner");
+    };
+  }, [placeKey, inner]);
   const moreActive = !place && (path.startsWith("/more") || path.startsWith("/drafts") || path.startsWith("/pricing"));
   const tabs = [
     { href: "/", label: t("home", lang), active: path === "/", icon: <Home className={NAV_ICON} /> },
