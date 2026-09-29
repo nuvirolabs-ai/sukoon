@@ -1855,3 +1855,12 @@ model WorkerHeartbeat {
 
   @@index([environment, lastSeenAt])
 }
+
+// Preview-only bytes for the client workspace. Rows exist only when the
+// public preview document store is enabled. They are not a malware-scan result.
+model PreviewObject {
+  storageKey  String   @id
+  bytes       Bytes
+  contentType String
+  createdAt   DateTime @default(now())
+}

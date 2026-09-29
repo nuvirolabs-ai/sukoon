@@ -1,11 +1,12 @@
 "use client";
-import { Disclosure, GroupedList, ListRow, SectionHeader, activityTitle, shortDate, humanText } from "@/components/consumer";
+import { Disclosure, GroupedList, ListRow, SectionHeader, activityTitle, shortDate } from "@/components/consumer";
 import { Suspense, useEffect, useState } from "react";
 import { PageHead } from "@/components/ui";
 import { AnimatedList } from "@/components/motion/AnimatedList";
 import { UpdatesSkeleton } from "@/components/motion/Skeleton";
 
 import { useStore } from "@/components/StoreProvider";
+import { NextBar, Scene, SCENE } from "@/components/PlaceCover";
 import { useSearchParams } from "next/navigation";
 type Item = { id: string; type: string; title: string; detail?: string | null; date: string; href: string; read?: boolean };
 type Education = { slug: string; title: string; summary: string; sourceName: string };
@@ -29,13 +30,15 @@ function UpdatesContent() {
     {name:"Earlier", rows:items.filter(i=>new Date(i.date).getTime()<today.getTime()-6*86400000 || Number.isNaN(new Date(i.date).getTime()))}
   ];
   return <div><PageHead title={attentionOnly?"Needs attention":"Updates"} sub={mode==="shared"?"Shared with you":undefined} />
-    <div className="space-y-6 pb-6">
+    <div className="space-y-6 pb-6 pb-next">
+      <Scene src={SCENE.dates}><p>{attentionOnly ? "Needs attention" : "Updates"}</p><strong>{attentionOnly ? "Open the next step" : "See what changed, then open the record"}</strong></Scene>
       {error&&<p role="alert" className="text-red-700">{error}</p>}
       {!loaded&&!error ? <UpdatesSkeleton /> : null}
       {loaded&&!items.length&&!error ? <p className="text-ink-muted p-5">You’re all caught up. New activity will appear here.</p> : null}
-      {groups.filter(g=>g.rows.length).map(g=><section key={g.name}><SectionHeader title={g.name} detail={String(g.rows.length)}/><GroupedList><AnimatedList stagger={false}>{g.rows.map(item=><Disclosure key={`${item.type}-${item.id}`} title={activityTitle(item.title,item.detail)} detail={`${s.properties.find(p=>item.href.includes(p.id))?.name||"Your account"} · ${shortDate(item.date)}`}><GroupedList><ListRow title="Open related record" href={item.href}/></GroupedList>{item.detail&&<details><summary>Activity details</summary><p className="whitespace-pre-wrap break-words text-sm">{humanText(item.detail)}</p></details>}</Disclosure>)}</AnimatedList></GroupedList></section>)}
-      {!attentionOnly&&<section><SectionHeader title="Complete property history" detail={total===null?undefined:`${history.length} of ${total} events`}/><GroupedList><AnimatedList stagger={false}>{history.map(item=><Disclosure key={item.id} title={activityTitle(item.title,item.detail)} detail={`${s.properties.find(p=>item.href.includes(p.id))?.name||"Shared property"} · ${shortDate(item.date)}`}><ListRow title="Open related record" href={item.href}/>{item.detail&&<p className="text-sm whitespace-pre-wrap">{humanText(item.detail)}</p>}</Disclosure>)}</AnimatedList></GroupedList>{nextPage!==null?<button type="button" className="primary-disclosure motion-pressable" disabled={loadingHistory} onClick={()=>void loadHistory()}>{loadingHistory?"Loading history…":history.length?"See older events":"Browse all property history"}</button>:<p className="text-sm text-ink-muted">All {total} events shown.</p>}</section>}
-      <Disclosure title="Helpful reading" detail={`${education.length} current guides`}><p className="text-[14px] text-ink-muted mb-4">Reviewed, effective content. Not legal, tax, title, market or government advice.</p><GroupedList>{education.map(row=><ListRow key={row.slug} href={`/guides/${row.slug}`} title={row.title} detail={row.sourceName}/>)}</GroupedList>{!education.length&&<p>No current published education.</p>}</Disclosure>
+      {groups.filter(g=>g.rows.length).map(g=><section key={g.name}><SectionHeader title={g.name} detail={String(g.rows.length)}/><GroupedList><AnimatedList stagger={false}>{g.rows.map(item=><ListRow key={`${item.type}-${item.id}`} href={item.href} title={activityTitle(item.title,item.detail)} detail={`${s.properties.find(p=>item.href.includes(p.id))?.name||"Your account"} · ${shortDate(item.date)}`} />)}</AnimatedList></GroupedList></section>)}
+      {!attentionOnly&&<section><SectionHeader title="Complete property history" detail={total===null?undefined:`${history.length} of ${total} events`}/><GroupedList><AnimatedList stagger={false}>{history.map(item=><ListRow key={item.id} href={item.href} title={activityTitle(item.title,item.detail)} detail={`${s.properties.find(p=>item.href.includes(p.id))?.name||"Shared property"} · ${shortDate(item.date)}`} />)}</AnimatedList></GroupedList>{nextPage!==null?<button type="button" className="primary-disclosure motion-pressable" disabled={loadingHistory} onClick={()=>void loadHistory()}>{loadingHistory?"Loading history…":history.length?"See older events":"Browse all property history"}</button>:<p className="text-sm text-ink-muted">All {total} events shown.</p>}</section>}
+      {items[0] ? <NextBar kicker="Open this" title={activityTitle(items[0].title, items[0].detail)} href={items[0].href} action="Go" /> : null}
+      <Disclosure title="Helpful reading" detail={`${education.length} current guides`}><p className="text-[14px] text-ink-muted mb-4">How Sukoon works. These guides are not legal, tax, or circle-rate advice.</p><GroupedList>{education.map(row=><ListRow key={row.slug} href={`/guides/${row.slug}`} title={row.title} detail={row.sourceName}/>)}</GroupedList>{!education.length&&<p>No current published education.</p>}</Disclosure>
     </div></div>;
 }
 export default function UpdatesPage(){return <Suspense><UpdatesContent/></Suspense>;}

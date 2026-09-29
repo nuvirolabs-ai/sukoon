@@ -40,7 +40,7 @@ export default function PurchasesPage() {
 
   return (
     <div>
-      <PageHead title="Purchases" backHref="/buy-sell" backLabel="Buy / Sell" />
+      <PageHead title="Purchases" sub="Private workspaces" backHref="/buy-sell" backLabel="Buy / Sell" />
       <div className="pb-8 space-y-6">
         {error ? <ErrorState message={error} /> : null}
         {!groups.active.length && !groups.archived.length && !groups.practice.length ? <EmptyState title="No purchase workspaces yet" detail="Track a prospective property privately. Progress here does not establish ownership." /> : null}

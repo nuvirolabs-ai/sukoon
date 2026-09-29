@@ -45,7 +45,7 @@ export type DocumentProcessingState =
   | "failed"
   | "archived";
 
-export type DocumentScanStatus = "scan_pending" | "clean" | "unavailable" | "failed" | "infected";
+export type DocumentScanStatus = "scan_pending" | "clean" | "unavailable" | "failed" | "infected" | "owner_copy";
 export type DocumentReviewStatus = "awaiting_review" | "in_review" | "partially_confirmed" | "confirmed";
 export type DocumentSource = "user_uploaded" | "user_replaced" | "document_extracted" | "fixture_ai" | "purchase_import";
 

@@ -54,12 +54,29 @@ function publish(next: ClientSnapshot) {
   listeners.forEach((listener) => listener());
 }
 
+async function openPreviewWorkspace() {
+  if (process.env.NEXT_PUBLIC_SUKOON_PUBLIC_PREVIEW !== "1") return false;
+  const response = await fetch("/api/auth/preview-workspace/enter", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: "{}",
+    credentials: "same-origin",
+  });
+  return response.ok;
+}
+
 export function startClientStore() {
   if (loadStarted || typeof window === "undefined") return;
   loadStarted = true;
   const epoch = accountEpoch;
-  void fetch("/api/session", { cache: "no-store" })
-    .then(async (response) => {
+  void (async () => {
+    try {
+      let response = await fetch("/api/session", { cache: "no-store", credentials: "same-origin" });
+      if (epoch !== accountEpoch) return;
+      if (response.status === 401 && await openPreviewWorkspace()) {
+        if (epoch !== accountEpoch) return;
+        response = await fetch("/api/session", { cache: "no-store", credentials: "same-origin" });
+      }
       if (epoch !== accountEpoch) return;
       if (response.status === 401) {
         publish({ status: "signed-out", state: null, email: null, version: 0 });
@@ -70,8 +87,7 @@ export function startClientStore() {
       if (!response.ok || !body.data) throw new Error(body.error?.message || "Could not load the local session.");
       publish({ status: "ready", state: body.data.state, email: body.data.user.email, version: body.data.version });
       armExpiry(body.data.expiresAt);
-    })
-    .catch((error: unknown) => {
+    } catch (error: unknown) {
       if (epoch !== accountEpoch) return;
       publish({
         status: "unreachable",
@@ -80,7 +96,8 @@ export function startClientStore() {
         version: snapshot.version,
         error: error instanceof Error ? error.message : "Could not reach Sukoon.",
       });
-    });
+    }
+  })();
 }
 
 export function retrySession() {

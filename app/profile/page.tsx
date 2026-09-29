@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const name = s.properties.find((p) => p.ownerName)?.ownerName;
   return (
     <div>
-      <PageHead title={presentName(name || "Profile")} sub={email} />
+      <PageHead title={presentName(name || "Profile")} sub={name ? "Your Sukoon account" : email} />
       <div className="space-y-6 pb-6">
         <div className="surface p-5">
           <p className="text-[13px] text-ink-muted">Account</p>

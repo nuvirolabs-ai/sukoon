@@ -64,6 +64,24 @@ describe("staging provider contract", () => {
     expect(providerConfiguration({ ...stagingEnv, DATABASE_URL: "postgresql://localhost:5432/sukoon_s02_local_review" }).errors.join(" ")).toMatch(/database/i);
     expect(providerConfiguration({ ...stagingEnv, BETTER_AUTH_URL: "http://demo.sukoon.nuvirolabs.com" }).errors.join(" ")).toMatch(/HTTPS|origin/i);
     expect(trustedOriginList({ ...stagingEnv, SUKOON_ANDROID_SERVER_URL: "http://127.0.0.1:3100" })).toEqual(["https://demo.sukoon.nuvirolabs.com"]);
+    expect(trustedOriginList({
+      ...stagingEnv,
+      SUKOON_PUBLIC_PREVIEW: "1",
+      VERCEL_URL: "sukoon-preview.vercel.app",
+      VERCEL_BRANCH_URL: "sukoon-git-preview.vercel.app",
+      VERCEL_PROJECT_PRODUCTION_URL: "sukoon.vercel.app",
+    })).toEqual([
+      "https://demo.sukoon.nuvirolabs.com",
+      "https://sukoon-preview.vercel.app",
+      "https://sukoon-git-preview.vercel.app",
+    ]);
+    expect(trustedOriginList({
+      ...stagingEnv,
+      APP_ENV: "production",
+      SUKOON_RUNTIME_PROFILE: "PRODUCTION",
+      SUKOON_PUBLIC_PREVIEW: "1",
+      VERCEL_URL: "sukoon-preview.vercel.app",
+    })).toEqual(["https://demo.sukoon.nuvirolabs.com"]);
   });
 
   it("keeps the local/test mailbox and local adapters valid", () => {

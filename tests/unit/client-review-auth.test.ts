@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { accessCodeMatches, clearClientReviewLoginAttempts, clientReviewAuthConfigured, recordReviewLoginFailure, reviewLoginAttemptAllowed, stagingReviewAuthConfigured, stagingReviewAuthEnvironment } from "@/lib/client-review-auth";
+import { accessCodeMatches, clearClientReviewLoginAttempts, clientReviewAuthConfigured, publicPreviewWorkspaceEnabled, recordReviewLoginFailure, reviewLoginAttemptAllowed, stagingReviewAuthConfigured, stagingReviewAuthEnvironment } from "@/lib/client-review-auth";
 import { sessionLifetimeSeconds } from "@/lib/session-policy";
 
 const valid = {
@@ -74,6 +74,14 @@ describe("STAGING review access-code boundary", () => {
     const production = { ...staging, APP_ENV: "production", SUKOON_RUNTIME_PROFILE: "PRODUCTION" };
     expect(stagingReviewAuthEnvironment(production)).toBe(false);
     expect(stagingReviewAuthConfigured(production)).toBe(false);
+    expect(publicPreviewWorkspaceEnabled({ ...production, SUKOON_PUBLIC_PREVIEW: "1" })).toBe(false);
+  });
+
+  it("opens the synthetic workspace only on an explicit staging preview", () => {
+    expect(publicPreviewWorkspaceEnabled({ ...staging, SUKOON_PUBLIC_PREVIEW: "1" })).toBe(true);
+    expect(publicPreviewWorkspaceEnabled(staging)).toBe(false);
+    expect(publicPreviewWorkspaceEnabled({ ...staging, SUKOON_PUBLIC_PREVIEW: "true" })).toBe(false);
+    expect(publicPreviewWorkspaceEnabled({ ...staging, SUKOON_PUBLIC_PREVIEW: "1", SUKOON_STAGING_REVIEW_LOGIN: "false" })).toBe(false);
   });
 
   it("uses the same timing-safe validation boundary and lockout policy", () => {

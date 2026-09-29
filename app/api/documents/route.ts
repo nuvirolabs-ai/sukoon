@@ -4,6 +4,7 @@ import { readStateForUser } from "@/lib/repository";
 import { createDocumentForUser, listDocumentsForUser, listPurchaseDocumentsForUser, VaultInputError, VaultStorageError } from "@/lib/vault-repository";
 import { getWorkspaceForUser } from "@/lib/repository";
 import { listSharedDocumentsForUser, SharingInputError } from "@/lib/sharing";
+import { hostedPrivateStorageClosed } from "@/lib/preview-documents";
 
 export const runtime = "nodejs";
 
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (process.env.NODE_ENV === "production") return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
+  if (hostedPrivateStorageClosed()) return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return errorResponse("AUTHENTICATION_REQUIRED", "Sign in required.", 401);
   let form: FormData;
