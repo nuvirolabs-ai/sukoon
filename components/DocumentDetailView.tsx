@@ -113,7 +113,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
   return (
     <div>
       <PageHead title={title} backHref={backHref} backLabel={backLabel} />
-      <div className="space-y-6 pb-8 pb-next">
+      <div className="space-y-6 pb-8">
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
         <Scene src={paperImage(current.type)}>
           <p>{document.type}</p>
@@ -126,6 +126,12 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
           {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Open the PDF <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview stays closed until this version can be opened.</p>}
           {ownerCopy ? <p className="next-quiet">Malware scanning is not connected on this preview.</p> : <p className="next-quiet">Security scan · {displayLabel(document.scanStatus || "pending")}</p>}
         </section>
+        {(() => {
+          const paper = otherPaper(s.docs, propertyId, current.id);
+          const propertyName = s.properties.find((property) => property.id === propertyId)?.name || "this property";
+          if (paper) return <NextBar kicker={/tax receipt/i.test(paper.type) ? `Other paper on ${propertyName}` : `Also on ${propertyName}`} title={paper.displayName || paper.name} href={`/property/${propertyId}/documents/${paper.id}`} action="Open" />;
+          return <NextBar kicker="Back to the property" title={propertyName} href={`/property/${propertyId}`} action="Open" />;
+        })()}
         {mode === "owner" && document.scanStatus === "unavailable" ? <ScanRetry documentId={document.id} /> : null}
         <section>
           <SectionHeader title="Details" />
@@ -176,12 +182,6 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
             </Disclosure>
           </>
         ) : null}
-        {(() => {
-          const paper = otherPaper(s.docs, propertyId, current.id);
-          const propertyName = s.properties.find((property) => property.id === propertyId)?.name || "this property";
-          if (paper) return <NextBar kicker={/tax receipt/i.test(paper.type) ? `Other paper on ${propertyName}` : `Also on ${propertyName}`} title={paper.displayName || paper.name} href={`/property/${propertyId}/documents/${paper.id}`} action="Open" />;
-          return <NextBar kicker="Back to the property" title={propertyName} href={`/property/${propertyId}`} action="Open" />;
-        })()}
       </div>
     </div>
   );

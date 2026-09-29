@@ -102,7 +102,7 @@ function PassportContent() {
       <PageHead title={tab === "overview" ? p.name : `${({vault:"Documents",bills:"Bills & payments",maint:"Maintenance",share:"Sharing",timeline:"Timeline",rent:"Rent",export:"Exports"} as Record<string,string>)[tab] || displayLabel(tab)}`} sub={tab === "overview" ? `${displayLabel(p.type)} · ${p.area}${p.city ? `, ${p.city}` : ""}` : p.name} backHref={tab !== "overview" ? `/property/${p.id}?tab=overview` : undefined} backLabel="Property" right={<PropertySwitcher currentId={p.id} tab={tab} />} />
       {tab !== "overview" ? <nav className="section-switch pb-2" aria-label="Property sections">{PROPERTY_SECTIONS.map((section) => <Link key={section.value} href={section.value === "overview" ? `/property/${p.id}` : `/property/${p.id}?tab=${section.value}`} aria-current={tab === section.value ? "page" : undefined}>{section.label}</Link>)}</nav> : null}
 
-      <div className="space-y-3 pb-6 pb-next">
+      <div className="space-y-3 pb-6">
         {tab==="overview" && (
           <>
             <Scene src={placeImage(p)}>
