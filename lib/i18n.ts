@@ -7,6 +7,8 @@ export const STR: Record<string, { en: string; hi: string }> = {
   portfolio: { en: "Portfolio", hi: "पोर्टफोलियो" },
   totalDue: { en: "Due this month", hi: "इस माह बकाया" },
   viewAll: { en: "View all", hi: "सभी देखें" },
+  estate: { en: "Estate & Build", hi: "प्रॉपर्टी व निर्माण" },
+  market: { en: "Deals & Market", hi: "सौदे व बाज़ार" },
   addProperty: { en: "+ Add", hi: "+ जोड़ें" },
 };
 

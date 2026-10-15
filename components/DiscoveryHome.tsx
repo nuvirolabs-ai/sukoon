@@ -2,36 +2,107 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Building2, House, MapPin, Search, SlidersHorizontal } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  Calculator,
+  Compass,
+  FileText,
+  HardHat,
+  House,
+  MapPin,
+  MessageCircle,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import { useStore } from "@/components/StoreProvider";
 import { dayGreeting, dueCopy, presentName } from "@/lib/ui-content";
 
-const CARDS = [
+const UNIFIED_HUBS = [
   {
-    title: "Vault",
-    copy: "All your property documents, safe & organized.",
-    href: "/vault",
+    title: "मेरी प्रॉपर्टी व निर्माण हब",
+    titleSub: "Property & Construction",
+    copy: "पोर्टफोलियो ₹4.85 Cr, सुरक्षित कागज़ात वॉल्ट, आज के मंडी भाव व 5 मकान नक्शे।",
+    href: "/estate",
+    art: "/home/construction.png",
+    tag: "कागज़ + निर्माण",
+    badgeBg: "bg-mint text-forest",
+    accent: "border-forest/20",
+  },
+  {
+    title: "बाज़ार, सौदे व ज्ञान हब",
+    titleSub: "Market, Deals & Intelligence",
+    copy: "WhatsApp ताज़ा सौदे, ईएमआई कैलकुलेटर, गाइडलाइन दरें व तैयार कानूनी ड्राफ्ट।",
+    href: "/market",
+    art: "/home/buy-sell.png",
+    tag: "सौदे + ज्ञान",
+    badgeBg: "bg-emerald-100 text-emerald-800",
+    accent: "border-emerald-500/20",
+  },
+] as const;
+
+const QUICK_TOOLS = [
+  {
+    icon: <TrendingUp size={16} className="text-forest" />,
+    label: "दैनिक भाव",
+    sub: "Rates",
+    href: "/estate?tab=rates",
+  },
+  {
+    icon: <Calculator size={16} className="text-infinity-blue" />,
+    label: "EMI टूल",
+    sub: "Loans",
+    href: "/market?tab=calculator",
+  },
+  {
+    icon: <Compass size={16} className="text-amber-700" />,
+    label: "मकान नक्शे",
+    sub: "Plans",
+    href: "/estate?tab=plans",
+  },
+  {
+    icon: <MessageCircle size={16} className="text-emerald-600" />,
+    label: "WhatsApp सौदे",
+    sub: "Deals",
+    href: "/market?tab=deals",
+  },
+  {
+    icon: <FileText size={16} className="text-indigo-600" />,
+    label: "कानूनी ड्राफ्ट",
+    sub: "Drafts",
+    href: "/market?tab=drafts",
+  },
+] as const;
+
+const FOUR_CARDS = [
+  {
+    title: "Vault (कागज़ वॉल्ट)",
+    copy: "रजिस्ट्री, नामांतरण व टैक्स रसीदें सुरक्षित रखें।",
+    href: "/estate?tab=portfolio",
     art: "/home/vault.png",
     tone: "vault",
   },
   {
-    title: "Construction",
-    copy: "Plan. Track. Build. With confidence.",
-    href: "/construction",
+    title: "Construction (निर्माण)",
+    copy: "आज के सरिया-सीमेंट भाव, खर्चा डायरी व नक्शे।",
+    href: "/estate?tab=rates",
     art: "/home/construction.png",
     tone: "construction",
   },
   {
-    title: "Buy / Sell",
-    copy: "Verified properties. Smarter decisions.",
-    href: "/buy-sell",
+    title: "Buy / Sell (सौदा बाज़ार)",
+    copy: "WhatsApp सीधे सौदे व वेरीफाइड मैचमेकिंग।",
+    href: "/market?tab=deals",
     art: "/home/buy-sell.png",
     tone: "buy",
   },
   {
-    title: "Updates",
-    copy: "Market trends, legal changes, tax deadlines and more.",
-    href: "/updates",
+    title: "Updates (वास्तु व ज्ञान)",
+    copy: "वास्तु शास्त्र, रियल एस्टेट समाचार व शेयर बाज़ार।",
+    href: "/market?tab=knowledge",
     art: "/home/updates.png",
     tone: "updates",
   },
@@ -64,55 +135,165 @@ export type DiscoveryToday = {
 export function DiscoveryHomeView({ mark, today }: { mark: string; today?: DiscoveryToday | null }) {
   return (
     <div className="discovery-home">
+      {/* Hero Visual Section */}
       <section className="discovery-hero" aria-label="Sukoon">
-        <Image className="discovery-hero__photo" src="/home/hero.png" alt="" fill priority sizes="430px" style={{ objectFit: "cover", objectPosition: "center 42%" }} />
+        <Image
+          className="discovery-hero__photo"
+          src="/home/hero.png"
+          alt=""
+          fill
+          priority
+          sizes="430px"
+          style={{ objectFit: "cover", objectPosition: "center 42%" }}
+        />
         <Link href="/profile" className="discovery-mark" aria-label="Profile">
           {mark}
         </Link>
-        <Image className="discovery-hero__logo" src="/brand/sukoon-logo.png" alt="Sukoon. Escape the chaos." width={456} height={144} priority />
+        <Image
+          className="discovery-hero__logo"
+          src="/brand/sukoon-logo.png"
+          alt="Sukoon. Escape the chaos."
+          width={456}
+          height={144}
+          priority
+        />
       </section>
 
+      {/* Search Bar */}
       <form className="discovery-search" action="/search" role="search">
         <Search size={18} aria-hidden="true" />
-        <input name="q" type="search" enterKeyHint="search" placeholder="Search a property, location, document..." aria-label="Search a property, location, or document" />
+        <input
+          name="q"
+          type="search"
+          enterKeyHint="search"
+          placeholder="सर्च करें: प्लॉट, मकान, रजिस्ट्री, गाइडलाइन..."
+          aria-label="Search a property, location, or document"
+        />
         <Link href="/search" className="discovery-search__filter" aria-label="Search filters">
           <SlidersHorizontal size={18} aria-hidden="true" />
         </Link>
       </form>
 
+      {/* Daily Market Live Ticker Bar */}
+      <Link
+        href="/estate?tab=rates"
+        className="mx-auto block w-full rounded-xl bg-champagne/50 border border-amber-200/80 p-2.5 text-xs text-amber-950 transition hover:bg-champagne/70 mb-3 shadow-2xs"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span className="shrink-0 px-2 py-0.5 rounded bg-amber-200 font-extrabold text-[10px] text-amber-900 uppercase">
+              आज के मंडी भाव (Indore)
+            </span>
+            <div className="truncate text-[11px] font-medium text-amber-900">
+              सरिया ₹57.5/kg (↑) • रेती ₹46/cft • अल्ट्राटेक ₹385/बोरी • गिट्टी ₹29 • ईंट ₹7.8
+            </div>
+          </div>
+          <span className="shrink-0 text-amber-900 font-bold ml-1">→</span>
+        </div>
+      </Link>
+
+      {/* Filter Chips */}
       <div className="discovery-chips">
-        <Link className="discovery-chip" href="/properties?city=Indore">
+        <Link className="discovery-chip" href="/market">
           <MapPin size={15} aria-hidden="true" /> Indore
         </Link>
-        <Link className="discovery-chip" href="/properties?type=flat">
+        <Link className="discovery-chip" href="/market">
           <House size={15} aria-hidden="true" /> Flat
         </Link>
-        <Link className="discovery-chip is-selected" href="/properties?type=plot" aria-current="true">
+        <Link className="discovery-chip is-selected" href="/market" aria-current="true">
           <PlotIcon /> Plot
         </Link>
-        <Link className="discovery-chip" href="/properties?type=commercial">
+        <Link className="discovery-chip" href="/market">
           <Building2 size={15} aria-hidden="true" /> Commercial
         </Link>
       </div>
 
+      {/* 5 Quick Tools Strip */}
+      <div className="grid grid-cols-5 gap-1.5 my-3.5">
+        {QUICK_TOOLS.map((tool, idx) => (
+          <Link
+            key={idx}
+            href={tool.href}
+            className="p-2 rounded-xl bg-white border border-line flex flex-col items-center text-center transition hover:shadow-xs hover:border-forest/30"
+          >
+            <div className="w-8 h-8 rounded-lg bg-canvas/60 flex items-center justify-center mb-1">
+              {tool.icon}
+            </div>
+            <span className="text-[11px] font-bold text-foreground leading-tight">{tool.label}</span>
+            <span className="text-[9px] text-ink-muted">{tool.sub}</span>
+          </Link>
+        ))}
+      </div>
+
+      {/* THE TWO UNIFIED CONSOLIDATED HUBS (Client's Core Architecture) */}
+      <div className="my-4 space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
+            मुख्य हब (2 Unified Interfaces)
+          </h2>
+          <span className="text-[10px] text-ink-muted">सुखून प्रोपटेक सिस्टम</span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3">
+          {UNIFIED_HUBS.map((hub) => (
+            <Link
+              key={hub.title}
+              href={hub.href}
+              className={`p-4 rounded-2xl bg-white border ${hub.accent} shadow-sm transition hover:shadow-md flex items-center justify-between gap-3 group`}
+            >
+              <div className="space-y-1 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${hub.badgeBg}`}>
+                    {hub.tag}
+                  </span>
+                  <span className="text-[10px] text-ink-muted">{hub.titleSub}</span>
+                </div>
+                <h3 className="text-base font-bold text-foreground group-hover:text-forest transition">
+                  {hub.title}
+                </h3>
+                <p className="text-xs text-ink-muted leading-relaxed">
+                  {hub.copy}
+                </p>
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-forest pt-1">
+                  <span>हब खोलें (Open Hub)</span>
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition" />
+                </div>
+              </div>
+
+              <div className="w-20 h-20 rounded-xl relative overflow-hidden shrink-0 border border-line/60">
+                <Image src={hub.art} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Today Section */}
       {today ? (
         <section className="discovery-today" aria-label="Today">
           <strong>{today.greeting}</strong>
           <p>{today.summary}</p>
           {today.actions.length ? (
             <div className="discovery-today__actions">
-              {today.actions.map((action) => <Link key={action.href + action.label} href={action.href}>{action.label}</Link>)}
+              {today.actions.map((action) => (
+                <Link key={action.href + action.label} href={action.href}>
+                  {action.label}
+                </Link>
+              ))}
             </div>
           ) : null}
         </section>
       ) : null}
 
-      <div className="discovery-grid">
-        {CARDS.map((card) => (
+      {/* 4 Feature Cards (Direct Deep Links) */}
+      <div className="discovery-grid mt-4">
+        {FOUR_CARDS.map((card) => (
           <Link key={card.title} href={card.href} className={`discovery-card is-${card.tone}`}>
             <strong>{card.title}</strong>
             <p>{card.copy}</p>
-            <span className="discovery-card__go" aria-hidden="true"><ArrowRight size={16} /></span>
+            <span className="discovery-card__go" aria-hidden="true">
+              <ArrowRight size={16} />
+            </span>
             <Image className="discovery-card__art" src={card.art} alt="" width={1024} height={1024} />
           </Link>
         ))}
@@ -134,11 +315,11 @@ export function DiscoveryHome() {
   const first = ownerName.split(/\s+/).filter(Boolean)[0];
   const today = {
     greeting: dayGreeting(first),
-    summary: `${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"} · ${papers.length} ${papers.length === 1 ? "paper" : "papers"} filed`,
+    summary: `${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"} · ${papers.length} ${papers.length === 1 ? "paper" : "papers"} filed · ₹4.85 Cr पोर्टफोलियो`,
     actions: [
-      { href: nextBill ? `/property/${nextBill.propertyId}?tab=bills` : "/vault", label: nextBill ? `${nextBill.title} · ${dueCopy(nextBill.dueDate)}` : papers.length ? "Open your papers" : "Add a paper" },
-      featured ? { href: `/property/${featured.propertyId}/documents/${featured.id}`, label: featured.displayName || featured.name } : { href: "/vault", label: "Vault" },
-      project ? { href: `/construction/${project.id}`, label: project.name } : { href: "/reminders", label: "Reminders" },
+      { href: "/estate", label: "मेरी प्रॉपर्टी व निर्माण हब खोलें" },
+      { href: "/market", label: "ताज़ा WhatsApp सौदे व EMI देखें" },
+      nextBill ? { href: `/property/${nextBill.propertyId}?tab=bills`, label: `${nextBill.title} · ${dueCopy(nextBill.dueDate)}` } : { href: "/estate", label: "कागज़ात देखें" },
     ],
   };
   return <DiscoveryHomeView mark={profileMark(email, ownerName)} today={today} />;

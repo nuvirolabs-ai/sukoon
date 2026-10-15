@@ -24,11 +24,11 @@ export default function MorePage() {
           <button type="button" onClick={() => void logout()} className="mt-3 h-11 w-full rounded-full border border-line bg-white text-[15px]">Sign out</button>
         </section>
         <div className="more-grid">
-          <Link href="/vault" className="more-tile is-vault"><Image src="/home/vault.png" alt="" width={120} height={120} /><strong>Vault</strong><span>Your papers</span></Link>
+          <Link href="/estate?tab=portfolio" className="more-tile is-vault"><Image src="/home/vault.png" alt="" width={120} height={120} /><strong>Estate &amp; Vault</strong><span>प्रॉपर्टी व कागज़ात</span></Link>
           <Link href="/bills" className="more-tile is-bills is-photo"><Image src={SCENE.dates} alt="" width={120} height={120} /><strong>Bills</strong><span>What is coming up</span></Link>
-          <Link href="/construction" className="more-tile is-build"><Image src="/home/construction.png" alt="" width={120} height={120} /><strong>Construction</strong><span>The build log</span></Link>
-          <Link href="/buy-sell" className="more-tile is-buy"><Image src="/home/buy-sell.png" alt="" width={120} height={120} /><strong>Buy / Sell</strong><span>Private purchase work</span></Link>
-          <Link href="/updates" className="more-tile is-updates"><Image src="/home/updates.png" alt="" width={120} height={120} /><strong>Updates</strong><span>Activity on your records</span></Link>
+          <Link href="/estate?tab=rates" className="more-tile is-build"><Image src="/home/construction.png" alt="" width={120} height={120} /><strong>Construction</strong><span>मंडी भाव व खर्चे</span></Link>
+          <Link href="/market?tab=deals" className="more-tile is-buy"><Image src="/home/buy-sell.png" alt="" width={120} height={120} /><strong>Market &amp; Deals</strong><span>WhatsApp सौदे</span></Link>
+          <Link href="/market?tab=knowledge" className="more-tile is-updates"><Image src="/home/updates.png" alt="" width={120} height={120} /><strong>Intelligence</strong><span>वास्तु, दरें व समाचार</span></Link>
           <Link href="/reminders" className="more-tile is-dates is-photo"><Image src={SCENE.dates} alt="" width={120} height={120} /><strong>Reminders</strong><span>Dates you set</span></Link>
         </div>
         <section>

@@ -22,13 +22,15 @@ export function Shell({ children }: { children: React.ReactNode }) {
 const NAV_ICON = "h-[22px] w-[22px]";
 
 function dockPlace(path: string, tab: string | null, properties: Array<{ id: string; name: string }>) {
-  if (path.startsWith("/vault")) return { href: "/vault", label: "Vault", slot: "more" as const, icon: <FolderOpen className={NAV_ICON} /> };
-  if (path.startsWith("/construction")) return { href: "/construction", label: "Build", slot: "more" as const, icon: <HardHat className={NAV_ICON} /> };
+  if (path.startsWith("/estate")) return { href: "/estate", label: "Estate & Build", slot: "context" as const, icon: <Building2 className={NAV_ICON} /> };
+  if (path.startsWith("/market")) return { href: "/market", label: "Deals & Market", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
+  if (path.startsWith("/vault")) return { href: "/estate?tab=portfolio", label: "Vault", slot: "more" as const, icon: <FolderOpen className={NAV_ICON} /> };
+  if (path.startsWith("/construction")) return { href: "/estate?tab=rates", label: "Build", slot: "more" as const, icon: <HardHat className={NAV_ICON} /> };
   if (path.startsWith("/bills")) return { href: "/bills", label: "Bills", slot: "more" as const, icon: <Receipt className={NAV_ICON} /> };
   if (path.startsWith("/reminders")) return { href: "/reminders", label: "Reminders", slot: "more" as const, icon: <Bell className={NAV_ICON} /> };
-  if (path.startsWith("/updates")) return { href: "/updates", label: "Updates", slot: "more" as const, icon: <Inbox className={NAV_ICON} /> };
+  if (path.startsWith("/updates")) return { href: "/market?tab=knowledge", label: "Updates", slot: "more" as const, icon: <Inbox className={NAV_ICON} /> };
   if (path.startsWith("/guides") || path.startsWith("/guideline")) return { href: "/guides", label: "Guides", slot: "more" as const, icon: <BookOpen className={NAV_ICON} /> };
-  if (path.startsWith("/buy-sell")) return { href: "/buy-sell", label: "Buy / Sell", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
+  if (path.startsWith("/buy-sell")) return { href: "/market?tab=deals", label: "Buy / Sell", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
   const match = path.match(/^\/property\/([^/]+)/);
   if (!match || match[1] === "new") return null;
   const name = properties.find((property) => property.id === match[1])?.name || "Property";
@@ -62,10 +64,20 @@ function BottomNav() {
   const moreActive = !place && (path.startsWith("/more") || path.startsWith("/drafts") || path.startsWith("/pricing"));
   const tabs = [
     { href: "/", label: t("home", lang), active: path === "/", icon: <Home className={NAV_ICON} /> },
-    { href: "/properties", label: t("properties", lang), active: path.startsWith("/propert"), icon: <Building2 className={NAV_ICON} /> },
+    {
+      href: "/estate",
+      label: t("estate", lang),
+      active: path.startsWith("/estate") || path.startsWith("/propert") || path.startsWith("/vault") || path.startsWith("/construction"),
+      icon: <Building2 className={NAV_ICON} />,
+    },
   ];
   const tabsAfter = [
-    { href: "/search", label: t("explore", lang), active: path.startsWith("/search") || path.startsWith("/buy-sell"), icon: <Compass className={NAV_ICON} /> },
+    {
+      href: "/market",
+      label: t("market", lang),
+      active: path.startsWith("/market") || path.startsWith("/buy-sell") || path.startsWith("/updates") || path.startsWith("/search"),
+      icon: <Compass className={NAV_ICON} />,
+    },
     place?.slot === "more"
       ? { href: place.href, label: place.label, active: true, icon: place.icon }
       : { href: "/more", label: t("more", lang), active: moreActive || path.startsWith("/more"), icon: <MoreHorizontal className={NAV_ICON} /> },
