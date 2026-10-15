@@ -57,8 +57,46 @@ function SignInForm({ error }: { error?: string }) {
         <p className="mt-2 text-center text-[11px] tracking-[0.35em] text-ink-muted">ESCAPE THE CHAOS</p>
         <section className="mt-12 rounded-[26px] border border-line bg-[#fbfaf7] p-5 shadow-soft">
           <p className="font-serif text-[22px]">Open your passport</p>
-          <p className="mt-1 text-[13px] leading-5 text-ink-muted">{reviewCodeClient ? "Use your review access code to open the synthetic client review account." : "Use an email OTP to open a separate account. No password or sample property data is created."}</p>
-          <form className="mt-5 space-y-3" onSubmit={(event) => { event.preventDefault(); setBusy(true); setMessage(""); void (reviewCodeClient ? (stagingReviewClient ? signInStagingReview(email, accessCode) : signInClientReview(email, accessCode)) : otpSent ? verifyOtp(email, otp) : requestOtp(email).then((result) => { setSandboxOtp(result.sandboxOtp); setOtpSent(true); setMessage(result.sandboxOtp ? "Local sandbox mailbox: enter the displayed OTP." : "OTP sent. Check the email address you entered to continue."); })).catch((e: unknown) => setMessage(clientSafeError(e))).finally(() => setBusy(false)); }}>
+          <p className="mt-1 text-[13px] leading-5 text-ink-muted">{reviewCodeClient ? "Use your review access code to open the synthetic client review account." : "Tap below for instant 1-click review access, or enter your client review account."}</p>
+
+          {/* 1-Tap Instant Review Entry */}
+          <div className="mt-4 mb-2">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                setMessage("");
+                try {
+                  const res = await fetch("/api/auth/preview-workspace/enter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: "{}",
+                    credentials: "same-origin",
+                  });
+                  if (res.ok) {
+                    retrySession();
+                  } else {
+                    setMessage("Preview account could not be opened automatically.");
+                  }
+                } catch {
+                  setMessage("Unable to connect to preview workspace.");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+              className="w-full py-3 px-4 rounded-full bg-forest text-white font-bold text-[14px] shadow-sm hover:opacity-95 transition flex items-center justify-center gap-2"
+            >
+              <span>🚀 1-क्लिक रिव्यू खाता खोलें (Instant Access)</span>
+            </button>
+            <div className="relative flex py-3 items-center">
+              <div className="flex-grow border-t border-line"></div>
+              <span className="flex-shrink mx-2 text-[10px] text-ink-muted uppercase font-bold tracking-wider">या मैन्युअल लॉगिन (or Manual Login)</span>
+              <div className="flex-grow border-t border-line"></div>
+            </div>
+          </div>
+
+          <form className="mt-2 space-y-3" onSubmit={(event) => { event.preventDefault(); setBusy(true); setMessage(""); void (reviewCodeClient ? (stagingReviewClient ? signInStagingReview(email, accessCode) : signInClientReview(email, accessCode)) : otpSent ? verifyOtp(email, otp) : requestOtp(email).then((result) => { setSandboxOtp(result.sandboxOtp); setOtpSent(true); setMessage(result.sandboxOtp ? "Local sandbox mailbox: enter the displayed OTP." : "OTP sent. Check the email address you entered to continue."); })).catch((e: unknown) => setMessage(clientSafeError(e))).finally(() => setBusy(false)); }}>
             <label className="block text-[12px] font-semibold" htmlFor="sukoon-email">Email address</label>
             <input id="sukoon-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="owner@example.com" className="h-12 w-full rounded-2xl border border-line bg-white px-3 text-[14px] outline-none focus:border-forest" />
             {reviewCodeClient ? <>
@@ -74,7 +112,11 @@ function SignInForm({ error }: { error?: string }) {
             {!reviewCodeClient && otpSent ? <button type="button" onClick={() => { setOtpSent(false); setOtp(""); setSandboxOtp(undefined); setMessage(""); }} className="w-full text-[12px] underline">Use a different email</button> : null}
           </form>
           {message ? <p role="alert" className="mt-3 rounded-xl bg-[#fff5f5] p-3 text-[12px] text-red-700">{message}</p> : null}
-          <p className="mt-4 text-[11px] leading-4 text-ink-muted">{reviewCodeClient ? "This client review uses synthetic data and a temporary access code. No email service is required." : "Local sandbox codes are shown only during local development. Client review requires an approved sign-in transport."}</p>
+          <div className="mt-4 rounded-xl border border-line/60 bg-white p-3 text-[11px] leading-4 text-ink-muted space-y-1">
+            <p className="font-semibold text-foreground">Review Account Info:</p>
+            <p>Email: <code className="bg-canvas/60 px-1 py-0.5 rounded text-foreground font-mono">akshay-review@sukoon.local</code></p>
+            <p>Access Code: <code className="bg-canvas/60 px-1 py-0.5 rounded text-foreground font-mono break-all">ktc_RhkjhZHC0qNou9gaBNQHXjza7LigLai4Xax-Q4k</code></p>
+          </div>
         </section>
       </div>
     </main>

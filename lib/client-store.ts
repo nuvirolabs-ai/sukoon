@@ -55,14 +55,17 @@ function publish(next: ClientSnapshot) {
 }
 
 async function openPreviewWorkspace() {
-  if (process.env.NEXT_PUBLIC_SUKOON_PUBLIC_PREVIEW !== "1") return false;
-  const response = await fetch("/api/auth/preview-workspace/enter", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: "{}",
-    credentials: "same-origin",
-  });
-  return response.ok;
+  try {
+    const response = await fetch("/api/auth/preview-workspace/enter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+      credentials: "same-origin",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 export function startClientStore() {
