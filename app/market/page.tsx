@@ -108,7 +108,7 @@ function MarketContent() {
     totalDealAmount: "28500000",
     advanceTokenAmount: "2500000",
     registryDeadline: "2026-12-15",
-    propertyLocality: "Indore (म.प्र.)",
+    propertyLocality: "Indore (M.P.)",
   });
   const [copiedDraft, setCopiedDraft] = useState(false);
 
@@ -200,21 +200,21 @@ function MarketContent() {
           className="inline-flex items-center gap-2 text-sm font-semibold text-forest hover:opacity-80 transition"
         >
           <ArrowLeft size={18} />
-          <span>होम (Home)</span>
+          <span>Home</span>
         </Link>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold">
           <MessageCircle size={14} className="text-emerald-600" />
-          <span>लाइव बाज़ार व सौदे (Live Deals)</span>
+          <span>Live Market &amp; Deals</span>
         </div>
       </header>
 
       {/* Main Title */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold tracking-tight text-forest mb-1">
-          बाज़ार, सौदे व ज्ञान हब
+          Market, Deals &amp; Intelligence Hub
         </h1>
         <p className="text-xs text-ink-muted">
-          Market, Deals &amp; Intelligence — WhatsApp सौदे, ईएमआई, गाइडलाइन दरें व कानूनी ड्राफ्ट
+          Market, Deals &amp; Intelligence — WhatsApp Deals, EMI Tool, Circle Rates &amp; Legal Drafts
         </p>
       </div>
 
@@ -229,7 +229,7 @@ function MarketContent() {
           }`}
         >
           <MessageCircle size={14} className={tab === "deals" ? "text-mint" : "text-emerald-600"} />
-          <span>ताज़ा सौदे (Deals)</span>
+          <span>Live Deals Feed</span>
         </button>
 
         <button
@@ -241,7 +241,7 @@ function MarketContent() {
           }`}
         >
           <PlusCircle size={14} />
-          <span>सौदा पोस्ट करें</span>
+          <span>Post a Deal</span>
         </button>
 
         <button
@@ -253,7 +253,7 @@ function MarketContent() {
           }`}
         >
           <Calculator size={14} />
-          <span>ईएमआई व गाइडलाइन</span>
+          <span>EMI &amp; Circle Rates</span>
         </button>
 
         <button
@@ -265,7 +265,7 @@ function MarketContent() {
           }`}
         >
           <FileText size={14} />
-          <span>कानूनी ड्राफ्ट (Agreements)</span>
+          <span>Legal Drafts</span>
         </button>
 
         <button
@@ -277,12 +277,12 @@ function MarketContent() {
           }`}
         >
           <Compass size={14} />
-          <span>वास्तु, न्यूज़ व स्टॉक्स</span>
+          <span>Market Intelligence</span>
         </button>
       </nav>
 
       {/* =========================================================================
-          TAB 1: WHATSAPP DEALS FEED (ताज़ा सौदे)
+          TAB 1: WHATSAPP DEALS FEED
           ========================================================================= */}
       {tab === "deals" && (
         <div className="space-y-4">
@@ -294,10 +294,10 @@ function MarketContent() {
               </div>
               <div>
                 <h3 className="text-xs font-bold text-emerald-950">
-                  इंदौर प्रॉपर्टी WhatsApp ब्रॉडकास्ट स्ट्रीम
+                  Indore Property WhatsApp Deals Stream
                 </h3>
                 <p className="text-[11px] text-emerald-800">
-                  प्रतिदिन अपडेटेड डायरेक्ट सौदे — 1-क्लिक में WhatsApp पर बात करें।
+                  Direct verified deals updated daily — connect instantly on WhatsApp.
                 </p>
               </div>
             </div>
@@ -305,7 +305,7 @@ function MarketContent() {
               onClick={() => setTab("post")}
               className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shrink-0 transition"
             >
-              + पोस्ट करें
+              + Post Deal
             </button>
           </div>
 
@@ -321,7 +321,7 @@ function MarketContent() {
                     : "bg-white text-ink-muted border border-line"
                 }`}
               >
-                {t === "All" ? "सभी प्रॉपर्टी (All)" : t}
+                {t === "All" ? "All Properties" : t}
               </button>
             ))}
           </div>
@@ -337,7 +337,7 @@ function MarketContent() {
                 <div className="p-3.5 border-b border-line/60 flex items-center justify-between bg-canvas/20">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      ✓ सत्यापित सौदा (Verified)
+                      ✓ Verified Listing
                     </span>
                     <span className="text-[11px] text-ink-muted">{deal.postedDate}</span>
                   </div>
@@ -358,11 +358,11 @@ function MarketContent() {
 
                   <div className="flex items-baseline justify-between bg-canvas/40 p-2.5 rounded-xl border border-line/50">
                     <div>
-                      <span className="text-[10px] text-ink-muted block uppercase">मांग मूल्य (Demand Price)</span>
+                      <span className="text-[10px] text-ink-muted block uppercase">Demand Price</span>
                       <span className="text-lg font-black text-forest">{deal.priceFormatted}</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-ink-muted block uppercase">साइज़ (Dimensions)</span>
+                      <span className="text-[10px] text-ink-muted block uppercase">Dimensions</span>
                       <span className="text-xs font-bold text-foreground">{deal.dimensions} ({deal.areaSqft} sqft)</span>
                     </div>
                   </div>
@@ -388,7 +388,7 @@ function MarketContent() {
                       <a
                         href={`tel:${deal.phone}`}
                         className="p-2 rounded-xl bg-canvas text-forest hover:bg-mint transition"
-                        title="कॉल करें"
+                        title="Call"
                       >
                         <Phone size={16} />
                       </a>
@@ -401,7 +401,7 @@ function MarketContent() {
                         className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition"
                       >
                         <MessageCircle size={15} />
-                        <span>WhatsApp चैट</span>
+                        <span>WhatsApp Chat</span>
                       </a>
                     </div>
                   </div>
@@ -413,29 +413,29 @@ function MarketContent() {
       )}
 
       {/* =========================================================================
-          TAB 2: POST A DEAL (सौदा पोस्ट करें)
+          TAB 2: POST A DEAL
           ========================================================================= */}
       {tab === "post" && (
         <div className="space-y-4">
           <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
             <h3 className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
               <span>⚡</span>
-              <span>30 सेकंड में सौदा पोस्ट करें (Post Deal to Community)</span>
+              <span>Post a Deal in 30 Seconds</span>
             </h3>
             <p className="text-[11px] text-emerald-800 leading-relaxed mt-1">
-              जैसे आप WhatsApp ग्रुप में प्रॉपर्टी का मैसेज डालते हैं, वैसे ही यहां डालें। इंदौर के हज़ारों सक्रिय खरीदारों तक तुरंत पहुंचेगा।
+              Post property details just like a WhatsApp group message. Instantly reaches verified Indore buyers and investors.
             </p>
           </div>
 
           <form onSubmit={handlePostDeal} className="p-5 rounded-2xl bg-white border border-line shadow-xs space-y-3.5">
             <div>
               <label className="text-xs font-semibold text-ink-muted block mb-1">
-                प्रॉपर्टी का शीर्षक (Deal Title)
+                Property Listing Title
               </label>
               <input
                 type="text"
                 required
-                placeholder="उदा. 1,000 sq.ft पूर्व मुखी प्लॉट सुपर कॉरिडोर में"
+                placeholder="e.g. 1,000 sq.ft East-facing plot on Super Corridor"
                 value={postTitle}
                 onChange={(e) => setPostTitle(e.target.value)}
                 className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -445,29 +445,29 @@ function MarketContent() {
             <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  प्रॉपर्टी का प्रकार (Type)
+                  Property Type
                 </label>
                 <select
                   value={postType}
                   onChange={(e) => setPostType(e.target.value as WhatsAppDeal["type"])}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
                 >
-                  <option value="Plot">प्लॉट (Plot)</option>
-                  <option value="Independent House">मकान / विला (House)</option>
-                  <option value="Flat">फ्लैट (Flat)</option>
-                  <option value="Commercial">दुकान / कमर्शियल (Shop)</option>
-                  <option value="Agriculture">कृषि भूमि (Farm Land)</option>
+                  <option value="Plot">Plot</option>
+                  <option value="Independent House">Independent House / Villa</option>
+                  <option value="Flat">Flat / Apartment</option>
+                  <option value="Commercial">Commercial / Shop</option>
+                  <option value="Agriculture">Agricultural Land</option>
                 </select>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  मांग मूल्य (Demand Price)
+                  Demand Price (₹)
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="उदा. 48 Lakhs"
+                  placeholder="e.g. 48 Lakhs"
                   value={postPrice}
                   onChange={(e) => setPostPrice(e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -478,12 +478,12 @@ function MarketContent() {
             <div className="grid grid-cols-2 gap-2.5">
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  स्थान / कॉलोनी (Location)
+                  Location / Colony
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="उदा. Super Corridor Phase 2"
+                  placeholder="e.g. Super Corridor Phase 2"
                   value={postLocation}
                   onChange={(e) => setPostLocation(e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -492,11 +492,11 @@ function MarketContent() {
 
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  साइज़ / विमा (Dimensions)
+                  Dimensions / Plot Area
                 </label>
                 <input
                   type="text"
-                  placeholder="उदा. 20 x 50"
+                  placeholder="e.g. 20 x 50 (1,000 sq.ft)"
                   value={postDimensions}
                   onChange={(e) => setPostDimensions(e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -506,12 +506,12 @@ function MarketContent() {
 
             <div>
               <label className="text-xs font-semibold text-ink-muted block mb-1">
-                WhatsApp मोबाइल नंबर (WhatsApp Number)
+                WhatsApp Mobile Number
               </label>
               <input
                 type="tel"
                 required
-                placeholder="उदा. 98260 12345"
+                placeholder="e.g. 98260 12345"
                 value={postPhone}
                 onChange={(e) => setPostPhone(e.target.value)}
                 className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -523,20 +523,20 @@ function MarketContent() {
               className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-xs transition"
             >
               <Send size={16} />
-              <span>सौदा लाइव पोस्ट करें (Post Deal to Stream)</span>
+              <span>Post Deal to Live Stream</span>
             </button>
           </form>
 
           {postPostedSuccess && (
             <div className="p-4 rounded-xl bg-emerald-100 text-emerald-900 font-bold text-center text-xs animate-fade-in">
-              🎉 आपका सौदा सफलतापूर्वक पोस्ट हो गया! ताज़ा सौदों में दिखाई दे रहा है।
+              🎉 Your deal was posted successfully! It is now live in the verified deals feed.
             </div>
           )}
         </div>
       )}
 
       {/* =========================================================================
-          TAB 3: EMI & GUIDELINE CALCULATOR (ईएमआई व गाइडलाइन दरें)
+          TAB 3: EMI & GUIDELINE CALCULATOR
           ========================================================================= */}
       {tab === "calculator" && (
         <div className="space-y-5">
@@ -545,15 +545,15 @@ function MarketContent() {
             <div className="flex items-center justify-between border-b border-line pb-2">
               <h3 className="text-sm font-bold text-forest flex items-center gap-1.5">
                 <Calculator size={18} />
-                <span>होम लोन ईएमआई कैलकुलेटर (EMI Calculator)</span>
+                <span>Home Loan EMI Calculator</span>
               </h3>
-              <span className="text-[11px] text-ink-muted">मासिक किश्त जांचें</span>
+              <span className="text-[11px] text-ink-muted">Estimate Monthly Installment</span>
             </div>
 
             {/* Slider 1: Loan Amount */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-ink-muted">लोन राशि (Loan Amount):</span>
+                <span className="text-ink-muted">Loan Amount:</span>
                 <span className="font-extrabold text-forest">₹{loanAmountLakhs} Lakhs</span>
               </div>
               <input
@@ -570,8 +570,8 @@ function MarketContent() {
             {/* Slider 2: Interest Rate */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-ink-muted">ब्याज दर (Interest Rate):</span>
-                <span className="font-extrabold text-forest">{interestRate}% प्रति वर्ष</span>
+                <span className="text-ink-muted">Interest Rate:</span>
+                <span className="font-extrabold text-forest">{interestRate}% p.a.</span>
               </div>
               <input
                 type="range"
@@ -587,8 +587,8 @@ function MarketContent() {
             {/* Slider 3: Tenure */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-ink-muted">अवधि (Tenure):</span>
-                <span className="font-extrabold text-forest">{loanTenureYears} वर्ष ({totalMonths} माह)</span>
+                <span className="text-ink-muted">Loan Tenure:</span>
+                <span className="font-extrabold text-forest">{loanTenureYears} Years ({totalMonths} Months)</span>
               </div>
               <input
                 type="range"
@@ -604,18 +604,18 @@ function MarketContent() {
             {/* Result Display Box */}
             <div className="p-4 rounded-xl bg-mint/50 border border-emerald-200 text-center space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-900">
-                आपकी अनुमानित मासिक किश्त (Monthly EMI)
+                Estimated Monthly EMI
               </span>
               <div className="text-3xl font-black text-forest">
-                ₹{emi.toLocaleString("en-IN")}<span className="text-xs font-normal text-ink-muted">/माह</span>
+                ₹{emi.toLocaleString("en-IN")}<span className="text-xs font-normal text-ink-muted">/mo</span>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-2 text-[11px] text-ink-muted border-t border-emerald-200/60 mt-2">
                 <div>
-                  <span className="block text-[10px]">मूलधन (Principal)</span>
+                  <span className="block text-[10px]">Principal Amount</span>
                   <span className="font-bold text-foreground">₹{principal.toLocaleString("en-IN")}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px]">कुल ब्याज (Total Interest)</span>
+                  <span className="block text-[10px]">Total Interest Payable</span>
                   <span className="font-bold text-amber-800">₹{totalInterest.toLocaleString("en-IN")}</span>
                 </div>
               </div>
@@ -625,14 +625,14 @@ function MarketContent() {
           {/* Bank Loan Comparison */}
           <div>
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-2">
-              बैंक ब्याज दर तुलना (Top Home Loan Offers)
+              Top Bank Home Loan Offers
             </h3>
             <div className="bg-white rounded-xl border border-line divide-y divide-line overflow-hidden shadow-xs">
               {BANK_LOAN_DETAILS.map((bank) => (
                 <div key={bank.id} className="p-3.5 flex items-center justify-between">
                   <div>
                     <h4 className="text-xs font-bold text-foreground">{bank.bankName}</h4>
-                    <p className="text-[11px] text-ink-muted">प्रोसेसिंग फीस: {bank.processingFee}</p>
+                    <p className="text-[11px] text-ink-muted">Processing Fee: {bank.processingFee}</p>
                     <p className="text-[10px] text-emerald-700 font-medium mt-0.5">
                       ✓ {bank.specialFeatures[0]}
                     </p>
@@ -641,7 +641,7 @@ function MarketContent() {
                     <span className="text-sm font-black text-forest">
                       {bank.interestRateMin}% - {bank.interestRateMax}%
                     </span>
-                    <span className="block text-[10px] text-ink-muted">अवधि: 30 वर्ष तक</span>
+                    <span className="block text-[10px] text-ink-muted">Tenure: Up to 30 Years</span>
                   </div>
                 </div>
               ))}
@@ -652,17 +652,17 @@ function MarketContent() {
           <div className="p-5 rounded-2xl bg-white border border-line shadow-xs space-y-3">
             <div className="border-b border-line pb-2">
               <h3 className="text-sm font-bold text-forest">
-                इंदौर सरकारी कलेक्टर गाइडलाइन दरें (Circle Rates)
+                Indore Collector Guideline Rates (Circle Rates)
               </h3>
               <p className="text-xs text-ink-muted mt-0.5">
-                रजिस्ट्री स्टाम्प ड्यूटी गणना हेतु सरकारी न्यूनतम दर प्रति वर्गफीट
+                Official government base valuation per sq.ft for stamp duty and registry
               </p>
             </div>
 
             {/* Area Selector */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-ink-muted block">
-                क्षेत्र चुनें (Select Area in Indore):
+                Select Locality in Indore:
               </label>
               <select
                 value={selectedGuidelineId}
@@ -682,15 +682,15 @@ function MarketContent() {
               <div className="text-xs text-ink-muted font-medium">{selectedGuideline.zone}</div>
               <div className="grid grid-cols-3 gap-2 text-center pt-1">
                 <div className="p-2 rounded-lg bg-white border border-line">
-                  <span className="text-[10px] text-ink-muted block">आवासीय प्लॉट</span>
+                  <span className="text-[10px] text-ink-muted block">Residential Plot</span>
                   <span className="text-xs font-black text-forest">₹{selectedGuideline.residentialPlotRate}/sqft</span>
                 </div>
                 <div className="p-2 rounded-lg bg-white border border-line">
-                  <span className="text-[10px] text-ink-muted block">कमर्शियल प्लॉट</span>
+                  <span className="text-[10px] text-ink-muted block">Commercial Plot</span>
                   <span className="text-xs font-black text-forest">₹{selectedGuideline.commercialPlotRate}/sqft</span>
                 </div>
                 <div className="p-2 rounded-lg bg-white border border-line">
-                  <span className="text-[10px] text-ink-muted block">फ्लैट बिल्ट-अप</span>
+                  <span className="text-[10px] text-ink-muted block">Flat Built-up</span>
                   <span className="text-xs font-black text-forest">₹{selectedGuideline.flatBuiltUpRate}/sqft</span>
                 </div>
               </div>
@@ -703,12 +703,12 @@ function MarketContent() {
       )}
 
       {/* =========================================================================
-          TAB 4: QUICK EDITABLE LEGAL DRAFTINGS (कानूनी ड्राफ्ट)
+          TAB 4: QUICK EDITABLE LEGAL DRAFTINGS
           ========================================================================= */}
       {tab === "drafts" && (
         <div className="space-y-4">
           <div className="p-3.5 rounded-xl bg-champagne/40 border border-amber-200 text-xs text-amber-900 leading-relaxed">
-            📜 <strong>तैयार कानूनी दस्तावेज़ ड्राफ्ट (Ready Legal Templates):</strong> विवरण भरें और 1-क्लिक में हिंदी व अंग्रेजी में कानूनी अनुबंध तैयार करें।
+            📜 <strong>Ready-to-Use Legal Draft Templates:</strong> Fill in key transaction terms and generate customized legal agreements in 1 click.
           </div>
 
           {/* Template Selector Pills */}
@@ -723,7 +723,7 @@ function MarketContent() {
                     : "bg-white text-foreground border border-line"
                 }`}
               >
-                {tmpl.titleHindi}
+                {tmpl.title}
               </button>
             ))}
           </div>
@@ -731,7 +731,7 @@ function MarketContent() {
           {/* Editable Variables Input Form */}
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs space-y-3">
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider">
-              दस्तावेज़ में विवरण भरें (Edit Fields):
+              Customize Agreement Details:
             </h3>
 
             <div className="grid grid-cols-1 gap-2.5">
@@ -760,7 +760,7 @@ function MarketContent() {
           <div className="p-4 rounded-2xl bg-white border border-line shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-line pb-2">
               <h4 className="text-xs font-bold text-forest">
-                {selectedDraft.titleHindi} — तैयार प्रतिलिपि
+                {selectedDraft.title} — Generated Agreement
               </h4>
               <div className="flex items-center gap-2">
                 <button
@@ -768,7 +768,7 @@ function MarketContent() {
                   className="px-2.5 py-1 rounded bg-canvas text-forest text-xs font-bold flex items-center gap-1 hover:bg-mint transition"
                 >
                   <Copy size={13} />
-                  <span>{copiedDraft ? "कॉपी हुआ!" : "कॉपी करें"}</span>
+                  <span>{copiedDraft ? "Copied!" : "Copy Draft"}</span>
                 </button>
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(getProcessedDraftText())}`}
@@ -790,7 +790,7 @@ function MarketContent() {
       )}
 
       {/* =========================================================================
-          TAB 5: VASTU, NEWS & KNOWLEDGE (वास्तु, न्यूज़ व स्टॉक्स)
+          TAB 5: VASTU, NEWS & KNOWLEDGE
           ========================================================================= */}
       {tab === "knowledge" && (
         <div className="space-y-5">
@@ -799,10 +799,10 @@ function MarketContent() {
             <div className="border-b border-line pb-2">
               <h3 className="text-sm font-bold text-forest flex items-center gap-1.5">
                 <Compass size={18} />
-                <span>प्रामाणिक वास्तु शास्त्र नियम (Basic Vastu Shastra)</span>
+                <span>Basic Vastu Shastra Principles</span>
               </h3>
               <p className="text-xs text-ink-muted mt-0.5">
-                मकान निर्माण व प्लॉट चयन हेतु 8 दिशाओं के मुख्य वास्तु नियम
+                Key Vastu orientation guidelines for home construction and plot selection
               </p>
             </div>
 
@@ -810,14 +810,14 @@ function MarketContent() {
               {VASTU_GUIDELINES.map((v, i) => (
                 <div key={i} className="p-3 rounded-xl bg-canvas/30 border border-line/60 space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-forest">{v.directionHindi}</span>
+                    <span className="text-xs font-bold text-forest">{v.direction}</span>
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-semibold">
                       {v.element}
                     </span>
                   </div>
                   <p className="text-[11px] text-foreground leading-relaxed">{v.keyAdvice}</p>
                   <div className="text-[10px] text-ink-muted">
-                    <strong className="text-forest">उत्तम उपयोग:</strong> {v.idealRooms.join(", ")}
+                    <strong className="text-forest">Best Suited For:</strong> {v.idealRooms.join(", ")}
                   </div>
                 </div>
               ))}
@@ -828,7 +828,7 @@ function MarketContent() {
           <div>
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-2 flex items-center gap-1">
               <Newspaper size={14} />
-              <span>ताज़ा रियल एस्टेट खबरें (Real Estate News)</span>
+              <span>Real Estate News &amp; Infrastructure</span>
             </h3>
             <div className="space-y-2.5">
               {REAL_ESTATE_NEWS.map((item) => (
@@ -839,7 +839,7 @@ function MarketContent() {
                   </div>
                   <h4 className="text-xs font-bold text-foreground leading-snug">{item.headline}</h4>
                   <p className="text-[11px] text-ink-muted mt-1 leading-relaxed">{item.summary}</p>
-                  <span className="text-[10px] text-ink-muted block mt-1.5">स्रोत: {item.source}</span>
+                  <span className="text-[10px] text-ink-muted block mt-1.5">Source: {item.source}</span>
                 </div>
               ))}
             </div>
@@ -849,7 +849,7 @@ function MarketContent() {
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs">
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-2 flex items-center gap-1">
               <TrendingUp size={14} />
-              <span>रियल एस्टेट स्टॉक्स व आरईआईटी (Stock Market &amp; REITs)</span>
+              <span>Real Estate Stocks &amp; REITs</span>
             </h3>
             <div className="grid grid-cols-2 gap-2">
               {REAL_ESTATE_STOCKS.map((stk) => (
@@ -871,11 +871,11 @@ function MarketContent() {
             </div>
           </div>
 
-          {/* Real Estate Glossary (शब्दावली) */}
+          {/* Real Estate Glossary */}
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs space-y-2.5">
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-1 flex items-center gap-1">
               <HelpCircle size={14} />
-              <span>रियल एस्टेट शब्दावली (Layman Dictionary)</span>
+              <span>Real Estate Layman&apos;s Dictionary</span>
             </h3>
             <div className="space-y-2 text-xs">
               {REAL_ESTATE_GLOSSARY.map((g, i) => (
@@ -894,7 +894,7 @@ function MarketContent() {
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs space-y-2.5">
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-1 flex items-center gap-1">
               <ShieldAlert size={14} />
-              <span>ज़रूरी सावधानियां (Do&apos;s &amp; Don&apos;ts)</span>
+              <span>Property Buyer Checklist (Do&apos;s &amp; Don&apos;ts)</span>
             </h3>
             <div className="space-y-1.5 text-xs">
               {DOS_AND_DONTS.map((chk) => (
@@ -919,7 +919,7 @@ function MarketContent() {
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs space-y-2.5">
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-1 flex items-center gap-1">
               <Video size={14} />
-              <span>ज्ञानवर्धक वीडियो व पॉडकास्ट (Videos &amp; Podcasts)</span>
+              <span>Educational Videos &amp; Podcasts</span>
             </h3>
             <div className="space-y-2">
               {MEDIA_RESOURCES.map((m) => (
@@ -949,7 +949,7 @@ function MarketContent() {
 
 export default function MarketPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">लोड हो रहा है...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">Loading Market Hub...</div>}>
       <MarketContent />
     </Suspense>
   );

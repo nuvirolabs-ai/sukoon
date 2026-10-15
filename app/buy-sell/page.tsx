@@ -12,7 +12,7 @@ export default function BuySellPage() {
 
   return (
     <div className="p-8 text-center text-xs text-ink-muted">
-      सौदे व बाज़ार हब लोड हो रहा है...
+      Loading Market &amp; Deals Hub...
     </div>
   );
 }

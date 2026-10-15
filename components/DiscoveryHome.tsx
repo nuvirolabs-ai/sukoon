@@ -23,22 +23,22 @@ import { dayGreeting, dueCopy, presentName } from "@/lib/ui-content";
 
 const UNIFIED_HUBS = [
   {
-    title: "मेरी प्रॉपर्टी व निर्माण हब",
-    titleSub: "Property & Construction",
-    copy: "पोर्टफोलियो ₹4.85 Cr, सुरक्षित कागज़ात वॉल्ट, आज के मंडी भाव व 5 मकान नक्शे।",
+    title: "Property & Construction Hub",
+    titleSub: "Portfolio, Vault & Build Log",
+    copy: "₹4.85 Cr portfolio valuation, encrypted paper vault, daily Indore material rates, and 5 architectural floor plans.",
     href: "/estate",
     art: "/home/construction.png",
-    tag: "कागज़ + निर्माण",
+    tag: "Vault + Build",
     badgeBg: "bg-mint text-forest",
     accent: "border-forest/20",
   },
   {
-    title: "बाज़ार, सौदे व ज्ञान हब",
-    titleSub: "Market, Deals & Intelligence",
-    copy: "WhatsApp ताज़ा सौदे, ईएमआई कैलकुलेटर, गाइडलाइन दरें व तैयार कानूनी ड्राफ्ट।",
+    title: "Market, Deals & Intelligence Hub",
+    titleSub: "Live Deals, Rates & Legal Drafts",
+    copy: "Verified WhatsApp deals stream, instant EMI calculator, Indore collector guideline rates, and legal drafts.",
     href: "/market",
     art: "/home/buy-sell.png",
-    tag: "सौदे + ज्ञान",
+    tag: "Deals + Intelligence",
     badgeBg: "bg-emerald-100 text-emerald-800",
     accent: "border-emerald-500/20",
   },
@@ -47,61 +47,61 @@ const UNIFIED_HUBS = [
 const QUICK_TOOLS = [
   {
     icon: <TrendingUp size={16} className="text-forest" />,
-    label: "दैनिक भाव",
-    sub: "Rates",
+    label: "Daily Rates",
+    sub: "Indore Mandi",
     href: "/estate?tab=rates",
   },
   {
     icon: <Calculator size={16} className="text-infinity-blue" />,
-    label: "EMI टूल",
-    sub: "Loans",
+    label: "EMI Tool",
+    sub: "Home Loans",
     href: "/market?tab=calculator",
   },
   {
     icon: <Compass size={16} className="text-amber-700" />,
-    label: "मकान नक्शे",
-    sub: "Plans",
+    label: "Floor Plans",
+    sub: "5 Layouts",
     href: "/estate?tab=plans",
   },
   {
     icon: <MessageCircle size={16} className="text-emerald-600" />,
-    label: "WhatsApp सौदे",
-    sub: "Deals",
+    label: "Live Deals",
+    sub: "WhatsApp",
     href: "/market?tab=deals",
   },
   {
     icon: <FileText size={16} className="text-indigo-600" />,
-    label: "कानूनी ड्राफ्ट",
-    sub: "Drafts",
+    label: "Legal Drafts",
+    sub: "Agreements",
     href: "/market?tab=drafts",
   },
 ] as const;
 
 const FOUR_CARDS = [
   {
-    title: "Vault (कागज़ वॉल्ट)",
-    copy: "रजिस्ट्री, नामांतरण व टैक्स रसीदें सुरक्षित रखें।",
+    title: "Document Vault",
+    copy: "Secure storage for registry deeds, mutation, and tax receipts.",
     href: "/estate?tab=portfolio",
     art: "/home/vault.png",
     tone: "vault",
   },
   {
-    title: "Construction (निर्माण)",
-    copy: "आज के सरिया-सीमेंट भाव, खर्चा डायरी व नक्शे।",
+    title: "Construction Log",
+    copy: "Daily raw material rates, expense notebook, and floor plans.",
     href: "/estate?tab=rates",
     art: "/home/construction.png",
     tone: "construction",
   },
   {
-    title: "Buy / Sell (सौदा बाज़ार)",
-    copy: "WhatsApp सीधे सौदे व वेरीफाइड मैचमेकिंग।",
+    title: "Buy & Sell Deals",
+    copy: "Direct WhatsApp deals and verified inventory matchmaking.",
     href: "/market?tab=deals",
     art: "/home/buy-sell.png",
     tone: "buy",
   },
   {
-    title: "Updates (वास्तु व ज्ञान)",
-    copy: "वास्तु शास्त्र, रियल एस्टेट समाचार व शेयर बाज़ार।",
+    title: "Market Intelligence",
+    copy: "Real estate news, guideline rates, and Vastu compass guide.",
     href: "/market?tab=knowledge",
     art: "/home/updates.png",
     tone: "updates",
@@ -166,7 +166,7 @@ export function DiscoveryHomeView({ mark, today }: { mark: string; today?: Disco
           name="q"
           type="search"
           enterKeyHint="search"
-          placeholder="सर्च करें: प्लॉट, मकान, रजिस्ट्री, गाइडलाइन..."
+          placeholder="Search plot, flat, registry, circle rates..."
           aria-label="Search a property, location, or document"
         />
         <Link href="/search" className="discovery-search__filter" aria-label="Search filters">
@@ -182,10 +182,10 @@ export function DiscoveryHomeView({ mark, today }: { mark: string; today?: Disco
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 overflow-hidden">
             <span className="shrink-0 px-2 py-0.5 rounded bg-amber-200 font-extrabold text-[10px] text-amber-900 uppercase">
-              आज के मंडी भाव (Indore)
+              Daily Indore Rates
             </span>
             <div className="truncate text-[11px] font-medium text-amber-900">
-              सरिया ₹57.5/kg (↑) • रेती ₹46/cft • अल्ट्राटेक ₹385/बोरी • गिट्टी ₹29 • ईंट ₹7.8
+              Steel ₹57.5/kg (↑) • Sand ₹46/cft • UltraTech ₹385/bag • Aggregate ₹29 • Bricks ₹7.8
             </div>
           </div>
           <span className="shrink-0 text-amber-900 font-bold ml-1">→</span>
@@ -229,9 +229,9 @@ export function DiscoveryHomeView({ mark, today }: { mark: string; today?: Disco
       <div className="my-4 space-y-3">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
-            मुख्य हब (2 Unified Interfaces)
+            Primary Hubs (2 Unified Interfaces)
           </h2>
-          <span className="text-[10px] text-ink-muted">सुखून प्रोपटेक सिस्टम</span>
+          <span className="text-[10px] text-ink-muted">Sukoon Proptech System</span>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
@@ -255,7 +255,7 @@ export function DiscoveryHomeView({ mark, today }: { mark: string; today?: Disco
                   {hub.copy}
                 </p>
                 <div className="inline-flex items-center gap-1 text-xs font-bold text-forest pt-1">
-                  <span>हब खोलें (Open Hub)</span>
+                  <span>Open Hub</span>
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition" />
                 </div>
               </div>
@@ -315,11 +315,11 @@ export function DiscoveryHome() {
   const first = ownerName.split(/\s+/).filter(Boolean)[0];
   const today = {
     greeting: dayGreeting(first),
-    summary: `${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"} · ${papers.length} ${papers.length === 1 ? "paper" : "papers"} filed · ₹4.85 Cr पोर्टफोलियो`,
+    summary: `${s.properties.length} ${s.properties.length === 1 ? "property" : "properties"} · ${papers.length} ${papers.length === 1 ? "paper" : "papers"} filed · ₹4.85 Cr Portfolio`,
     actions: [
-      { href: "/estate", label: "मेरी प्रॉपर्टी व निर्माण हब खोलें" },
-      { href: "/market", label: "ताज़ा WhatsApp सौदे व EMI देखें" },
-      nextBill ? { href: `/property/${nextBill.propertyId}?tab=bills`, label: `${nextBill.title} · ${dueCopy(nextBill.dueDate)}` } : { href: "/estate", label: "कागज़ात देखें" },
+      { href: "/estate", label: "Open Property & Construction Hub" },
+      { href: "/market", label: "Explore Live Deals & EMI Calculator" },
+      nextBill ? { href: `/property/${nextBill.propertyId}?tab=bills`, label: `${nextBill.title} · ${dueCopy(nextBill.dueDate)}` } : { href: "/estate", label: "Open Document Vault" },
     ],
   };
   return <DiscoveryHomeView mark={profileMark(email, ownerName)} today={today} />;

@@ -12,7 +12,7 @@ export default function ConstructionPage() {
 
   return (
     <div className="p-8 text-center text-xs text-ink-muted">
-      निर्माण हब लोड हो रहा है...
+      Loading Construction Hub...
     </div>
   );
 }

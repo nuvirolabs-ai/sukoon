@@ -1,15 +1,15 @@
 export const STR: Record<string, { en: string; hi: string }> = {
-  home: { en: "Home", hi: "होम" },
-  properties: { en: "Properties", hi: "प्रॉपर्टी" },
-  explore: { en: "Explore", hi: "खोजें" },
-  more: { en: "More", hi: "और" },
-  attention: { en: "Needs attention", hi: "ध्यान दें" },
-  portfolio: { en: "Portfolio", hi: "पोर्टफोलियो" },
-  totalDue: { en: "Due this month", hi: "इस माह बकाया" },
-  viewAll: { en: "View all", hi: "सभी देखें" },
-  estate: { en: "Estate & Build", hi: "प्रॉपर्टी व निर्माण" },
-  market: { en: "Deals & Market", hi: "सौदे व बाज़ार" },
-  addProperty: { en: "+ Add", hi: "+ जोड़ें" },
+  home: { en: "Home", hi: "Home" },
+  properties: { en: "Properties", hi: "Properties" },
+  explore: { en: "Explore", hi: "Explore" },
+  more: { en: "More", hi: "More" },
+  attention: { en: "Needs attention", hi: "Needs attention" },
+  portfolio: { en: "Portfolio", hi: "Portfolio" },
+  totalDue: { en: "Due this month", hi: "Due this month" },
+  viewAll: { en: "View all", hi: "View all" },
+  estate: { en: "Property & Build", hi: "Property & Build" },
+  market: { en: "Deals & Market", hi: "Deals & Market" },
+  addProperty: { en: "+ Add", hi: "+ Add" },
 };
 
 export function t(key: keyof typeof STR, lang: "en" | "hi") {

@@ -3,11 +3,11 @@
 export interface RawMaterialRate {
   id: string;
   name: string;
-  nameHindi: string;
+  nameAlt: string;
   category: "Steel" | "Cement" | "Sand" | "Aggregates" | "Bricks";
   brandOrType: string;
   unit: string;
-  unitHindi: string;
+  unitShort: string;
   currentRate: number;
   previousRate: number;
   trend: "up" | "down" | "stable";
@@ -52,7 +52,7 @@ export interface ConceptualPlan {
   builtUpSqft: number;
   title: string;
   configuration: string; // e.g. "3 BHK Duplex"
-  facing: string; // e.g. "East Facing (पूर्व मुखी)"
+  facing: string; // e.g. "East Facing (Vastu Compliant)"
   vastuCompliant: boolean;
   floors: string;
   estimatedCost: string;
@@ -73,16 +73,16 @@ export interface QuickExpense {
   note?: string;
 }
 
-// Daily Live Rates for Indore Market (मंडी भाव)
+// Daily Live Rates for Indore Market
 export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   {
     id: "mat-01",
-    name: "TMT Sariya (Iron / Steel)",
-    nameHindi: "टीएमटी सरिया (लोहा)",
+    name: "TMT Steel Bars (Sariya)",
+    nameAlt: "Fe 550D High Strength Steel",
     category: "Steel",
     brandOrType: "Tata Tiscon / Kamdhenu Fe 550D (12mm)",
     unit: "per kg",
-    unitHindi: "प्रति किलो",
+    unitShort: "/kg",
     currentRate: 57.5,
     previousRate: 56.0,
     trend: "up",
@@ -92,12 +92,12 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   },
   {
     id: "mat-02",
-    name: "TMT Sariya (Commercial / Secondary)",
-    nameHindi: "लोहा सरिया (लोकल/कमर्शियल)",
+    name: "TMT Steel (Secondary Grade)",
+    nameAlt: "Fe 500D Commercial Steel",
     category: "Steel",
     brandOrType: "Moira / Prime Gold Fe 500D",
     unit: "per kg",
-    unitHindi: "प्रति किलो",
+    unitShort: "/kg",
     currentRate: 52.0,
     previousRate: 52.5,
     trend: "down",
@@ -107,12 +107,12 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   },
   {
     id: "mat-03",
-    name: "Narmada Sand (Reti)",
-    nameHindi: "नर्मदा रेती (बालू)",
+    name: "Narmada River Sand",
+    nameAlt: "Coarse River Sand (Screened)",
     category: "Sand",
-    brandOrType: "Coarse River Sand (छनी हुई रेती)",
+    brandOrType: "Coarse Washed River Sand",
     unit: "per cu.ft",
-    unitHindi: "प्रति घन फीट (CFT)",
+    unitShort: "/cu.ft",
     currentRate: 46.0,
     previousRate: 45.0,
     trend: "up",
@@ -122,12 +122,12 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   },
   {
     id: "mat-04",
-    name: "Crushed M-Sand (Manufactured Sand)",
-    nameHindi: "एम-सैंड (पत्थर की रेती)",
+    name: "Crushed M-Sand (Manufactured)",
+    nameAlt: "Double Washed Stone Dust",
     category: "Sand",
     brandOrType: "Double Washed Plaster Grade",
     unit: "per cu.ft",
-    unitHindi: "प्रति घन फीट (CFT)",
+    unitShort: "/cu.ft",
     currentRate: 34.0,
     previousRate: 34.0,
     trend: "stable",
@@ -138,11 +138,11 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   {
     id: "mat-05",
     name: "UltraTech Cement",
-    nameHindi: "अल्ट्राटेक सीमेंट (पीपीसी)",
+    nameAlt: "Super PPC Grade 53",
     category: "Cement",
     brandOrType: "UltraTech Super PPC Grade 53",
     unit: "per 50kg bag",
-    unitHindi: "प्रति 50 किलो बोरी",
+    unitShort: "/bag",
     currentRate: 385.0,
     previousRate: 380.0,
     trend: "up",
@@ -153,11 +153,11 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   {
     id: "mat-06",
     name: "Ambuja Cement",
-    nameHindi: "अंबुजा सीमेंट (कवच)",
+    nameAlt: "Kawach Water-Shield PPC",
     category: "Cement",
     brandOrType: "Ambuja Kawach Water-Shield PPC",
     unit: "per 50kg bag",
-    unitHindi: "प्रति 50 किलो बोरी",
+    unitShort: "/bag",
     currentRate: 375.0,
     previousRate: 375.0,
     trend: "stable",
@@ -168,11 +168,11 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   {
     id: "mat-07",
     name: "Black Stone Chips (Gitti 20mm)",
-    nameHindi: "काली गिट्टी (20mm स्लैब)",
+    nameAlt: "RCC Slab Grade Basalt Aggregate",
     category: "Aggregates",
     brandOrType: "Crushed Basalt Metal (RCC Grade)",
     unit: "per cu.ft",
-    unitHindi: "प्रति घन फीट (CFT)",
+    unitShort: "/cu.ft",
     currentRate: 29.0,
     previousRate: 30.0,
     trend: "down",
@@ -182,12 +182,12 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   },
   {
     id: "mat-08",
-    name: "Red Clay Bricks (लाल ईंट)",
-    nameHindi: "लाल भट्ठे की ईंट (पक्की)",
+    name: "Red Clay Kiln Bricks",
+    nameAlt: "Standard Baked Red Bricks",
     category: "Bricks",
     brandOrType: "Standard 9\" x 4\" x 3\" Kiln Baked",
     unit: "per piece",
-    unitHindi: "प्रति नग",
+    unitShort: "/pc",
     currentRate: 7.8,
     previousRate: 7.5,
     trend: "up",
@@ -197,12 +197,12 @@ export const DAILY_MATERIAL_RATES: RawMaterialRate[] = [
   },
   {
     id: "mat-09",
-    name: "AAC Fly Ash Blocks",
-    nameHindi: "एएसी हल्के ब्लॉक (6 इंच)",
+    name: "AAC Lightweight Blocks",
+    nameAlt: "6-Inch Aerated Concrete Blocks",
     category: "Bricks",
     brandOrType: "Siporex / Magicrete 600x200x150mm",
     unit: "per piece",
-    unitHindi: "प्रति नग",
+    unitShort: "/pc",
     currentRate: 64.0,
     previousRate: 64.0,
     trend: "stable",
@@ -218,7 +218,7 @@ export const AUTHORIZED_DEALERS: MaterialDealer[] = [
     id: "dlr-01",
     name: "Rameshwar Patel",
     businessName: "Patel Steel & Cement Traders",
-    categories: ["TMT Sariya", "UltraTech Cement", "Binding Wire"],
+    categories: ["TMT Steel", "UltraTech Cement", "Binding Wire"],
     location: "Loha Mandi, Indore",
     address: "Shop 14-16, Near Central Gate, Loha Mandi",
     phone: "+91 98260 12345",
@@ -230,15 +230,15 @@ export const AUTHORIZED_DEALERS: MaterialDealer[] = [
   {
     id: "dlr-02",
     name: "Gaurav Khandelwal",
-    businessName: "Khandelwal Reti & Gitti Supply",
-    categories: ["Narmada Sand", "Black Metal Gitti", "Crusher Dust"],
+    businessName: "Khandelwal Sand & Aggregate Supply",
+    categories: ["Narmada Sand", "Black Metal Aggregate", "Crusher Dust"],
     location: "Nemawar Road, Indore",
     address: "Plot 88, Near Toll Plaza, Nemawar Road",
     phone: "+91 98930 54321",
     whatsapp: "919893054321",
     rating: 4.7,
     verified: true,
-    specialty: "Direct Dam / Quarry Delivery (Dumper & Tractor Trolley)",
+    specialty: "Direct Quarry Delivery (Dumper & Tractor Trolley)",
   },
   {
     id: "dlr-03",
@@ -251,7 +251,7 @@ export const AUTHORIZED_DEALERS: MaterialDealer[] = [
     whatsapp: "919425099887",
     rating: 4.9,
     verified: true,
-    specialty: "Dr. Fixit Certified Waterproofing & Fast Bulk Supply",
+    specialty: "Dr. Fixit Certified Waterproofing & Wholesale Bulk Supply",
   },
   {
     id: "dlr-04",
@@ -259,41 +259,41 @@ export const AUTHORIZED_DEALERS: MaterialDealer[] = [
     businessName: "Malwa Bricks & Clay Products",
     categories: ["Kiln Baked Bricks", "Terracotta Tiles"],
     location: "Sanwer Road, Indore",
-    address: "Sector F, Sanwer Road Industrial Area",
-    phone: "+91 98270 44556",
-    whatsapp: "919827044556",
+    address: "Sector F, Industrial Area, Sanwer Road",
+    phone: "+91 97550 11223",
+    whatsapp: "919755011223",
     rating: 4.6,
     verified: true,
-    specialty: "A-Grade Red Clay Kiln Bricks with Lowest Breakage Guarantee",
+    specialty: "Direct Kiln Supply (Truckloads of 5,000 / 10,000 pieces)",
   },
 ];
 
-// Listed Authorized Architects in Indore
+// Registered Architects Directory in Indore
 export const AUTHORIZED_ARCHITECTS: ArchitectProfile[] = [
   {
     id: "arch-01",
-    name: "Ar. Rajiv Nene (COA Reg: CA/98/22814)",
-    firm: "Rajiv Nene & Associates",
-    experienceYears: 24,
-    location: "Palasia / Old Palasia, Indore",
-    specialization: "Luxury Bungalows, Modern Vastu Duplexes & Villa Sanctions",
-    notableProjects: "Over 350+ completed residences in Vijay Nagar, Saket & Bypass",
-    phone: "+91 98260 77112",
-    whatsapp: "919826077112",
+    name: "Ar. Prashant Agrawal",
+    firm: "Agrawal & Associates Design Studio",
+    experienceYears: 14,
+    location: "Vijay Nagar, Indore",
+    specialization: "Modern Residential Architecture, Vastu Planning, Interior Design",
+    notableProjects: "Over 200 luxury bungalows built in Scheme 54, 78, and Bypass",
+    phone: "+91 98270 44556",
+    whatsapp: "919827044556",
     rating: 4.9,
     verified: true,
-    avatarText: "RN",
+    avatarText: "PA",
   },
   {
     id: "arch-02",
     name: "Ar. Neha Verma",
-    firm: "Studio VastuKala Architecture",
-    experienceYears: 14,
-    location: "Vijay Nagar, Indore",
-    specialization: "100% Vastu-Compliant 20x50 & 30x50 Modern Plot Plans",
-    notableProjects: "Award-winning compact row houses in Super Corridor & Scheme 78",
-    phone: "+91 94253 66221",
-    whatsapp: "919425366221",
+    firm: "GreenSpace Eco Architecture",
+    experienceYears: 9,
+    location: "Super Corridor, Indore",
+    specialization: "Sustainable Eco-Homes, Zero Energy Design, Duplex Layouts",
+    notableProjects: "Boutique villas on Super Corridor & Airport Road",
+    phone: "+91 94066 33221",
+    whatsapp: "919406633221",
     rating: 4.8,
     verified: true,
     avatarText: "NV",
@@ -323,15 +323,15 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     builtUpSqft: 1150,
     title: "15 × 45 Compact Smart Duplex (675 sq.ft)",
     configuration: "2 BHK + Pooja + Car Porch",
-    facing: "East Facing (पूर्व मुखी - उत्तम वास्तु)",
+    facing: "East Facing (Vastu Compliant)",
     vastuCompliant: true,
     floors: "Ground + First Floor (G+1)",
     estimatedCost: "₹21 - ₹24 Lakhs (Standard Finishing)",
-    description: "Designed for compact urban plots with maximum ventilation, smart natural light shafts (cutouts), and complete space optimization.",
+    description: "Engineered for compact urban plots with maximum ventilation, smart natural light shafts, and complete space optimization.",
     features: [
       "Front Car/Bike Parking Porch (10' x 14')",
       "Ventilated Living Room with double height feeling",
-      "Agni-Kona (South-East) Kitchen with utility wash area",
+      "South-East Kitchen with utility wash area",
       "Master bedroom with private balcony on first floor",
     ],
     roomDetails: {
@@ -341,7 +341,7 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
         "Kitchen (South-East): 7'0\" x 8'6\"",
         "Common Washroom: 4'6\" x 6'0\"",
         "Ground Bedroom: 10'0\" x 11'0\"",
-        "Rear Ventilation Shaft (OTS): 3'0\" x 4'0\"",
+        "Rear Ventilation Shaft: 3'0\" x 4'0\"",
       ],
       firstFloor: [
         "Master Bedroom: 13'6\" x 11'6\" (Attached Bath: 5'0\" x 7'0\")",
@@ -358,15 +358,15 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     builtUpSqft: 1750,
     title: "20 × 50 Prime Modern Villa (1,000 sq.ft)",
     configuration: "3 BHK + Drawing Room + Modular Kitchen",
-    facing: "North-East Facing (ईशान मुखी)",
+    facing: "North-East Facing (Vastu Compliant)",
     vastuCompliant: true,
     floors: "Ground + First Floor (G+1)",
     estimatedCost: "₹32 - ₹36 Lakhs (Premium Finishing)",
-    description: "The most popular Indian residential plot size. Balanced proportions, wide 20-foot frontage, spacious sedan car parking, and peaceful family living.",
+    description: "The most popular Indian residential plot size. Balanced proportions, wide 20-foot frontage, spacious sedan car parking, and comfortable family living.",
     features: [
       "Large Covered Car Parking for Sedan / SUV",
       "Separate Formal Drawing Room & Family Living Zone",
-      "Pooja Room in North-East (ईशान कोण)",
+      "Pooja Room in North-East direction",
       "Large Master Bedroom with Walk-in Wardrobe space",
       "Spacious Modular Kitchen with Breakfast Counter",
     ],
@@ -375,8 +375,8 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
         "Car Porch: 10'0\" x 15'0\"",
         "Drawing Room: 12'6\" x 13'0\"",
         "Family Living & Dining: 18'6\" x 11'6\"",
-        "Modular Kitchen (SE): 8'6\" x 10'0\"",
-        "Pooja Room (NE): 4'0\" x 5'0\"",
+        "Modular Kitchen (South-East): 8'6\" x 10'0\"",
+        "Pooja Room (North-East): 4'0\" x 5'0\"",
         "Ground Bedroom: 11'0\" x 12'0\" (Attached Bath)",
       ],
       firstFloor: [
@@ -394,11 +394,11 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     builtUpSqft: 2500,
     title: "30 × 50 Executive Garden Bungalow (1,500 sq.ft)",
     configuration: "4 BHK + Servant Room + Front Lawn",
-    facing: "East Facing (सूर्य मुखी)",
+    facing: "East Facing (Sunrise Alignment)",
     vastuCompliant: true,
     floors: "G+1 with Private Terrace Lounge",
     estimatedCost: "₹48 - ₹55 Lakhs",
-    description: "Expansive 30-foot front elevation allowing grand entrance, 2-car driveway parking, lush green side setback, and luxurious open-to-sky courtyard.",
+    description: "Expansive 30-foot front elevation allowing grand entrance, 2-car driveway parking, lush green side setback, and luxurious courtyard feel.",
     features: [
       "Dual Car Covered Parking + Front Garden Lawn",
       "Central Brahmasthan Courtyard with skylight",
@@ -412,7 +412,7 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
         "Dining Room: 12'0\" x 12'0\"",
         "Kitchen + Store + Utility: 10'0\" x 14'0\"",
         "Guest Bedroom: 13'0\" x 13'0\"",
-        "Pooja Ghar: 6'0\" x 6'0\"",
+        "Pooja Mandir: 6'0\" x 6'0\"",
       ],
       firstFloor: [
         "Master Suite with Balcony: 15'0\" x 16'0\"",
@@ -429,7 +429,7 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     builtUpSqft: 3800,
     title: "40 × 60 Luxury Estate Villa (2,400 sq.ft)",
     configuration: "4 BHK + Home Theatre + Gym + 2-Car Porch",
-    facing: "North Facing (कुबेर मुखी - समृद्धि कारक)",
+    facing: "North Facing (Prosperity Alignment)",
     vastuCompliant: true,
     floors: "G+1 with Roof Deck",
     estimatedCost: "₹75 - ₹88 Lakhs",
@@ -462,16 +462,16 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     plotAreaSqft: 4000,
     builtUpSqft: 6200,
     title: "50 × 80 Royal Heritage Mansion (4,000 sq.ft)",
-    configuration: "5 BHK + Swimming Pool / Jacuzzi + Lift Provision + 3-Car Parking",
-    facing: "East-North Corner Facing",
+    configuration: "5 BHK + Private Pool / Deck + Elevator Provision + 3-Car Garage",
+    facing: "North-East Corner Facing",
     vastuCompliant: true,
-    floors: "Basement / Stilt + Ground + First Floor",
+    floors: "Stilt + Ground + First Floor",
     estimatedCost: "₹1.25 - ₹1.50 Crore",
-    description: "Architectural masterpiece for large corner plots. Features internal elevator provision, private plunge pool/deck, 3 car parking, and royal classical facade.",
+    description: "Architectural masterpiece for large corner plots. Features internal elevator provision, private plunge pool/deck, 3-car parking, and royal classical facade.",
     features: [
       "Stately 50-Foot Portico & 3 Car Garage",
       "Private Rear Plunge Pool & Deck Lawn",
-      "Passenger Elevator (Lift) connecting all levels",
+      "Passenger Elevator connecting all levels",
       "Separate Formal Drawing Room & Informal Family Lounge",
     ],
     roomDetails: {
@@ -496,7 +496,7 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
 export const INITIAL_QUICK_EXPENSES: QuickExpense[] = [
   {
     id: "exp-01",
-    agencyName: "Sharma Sariya Steels",
+    agencyName: "Sharma Steel Traders",
     amount: 86250,
     category: "Material",
     date: "14 Oct 2026",
@@ -504,34 +504,34 @@ export const INITIAL_QUICK_EXPENSES: QuickExpense[] = [
   },
   {
     id: "exp-02",
-    agencyName: "Mukesh Mistri (Thekedar)",
+    agencyName: "Mukesh Construction Contractor",
     amount: 32000,
     category: "Labor",
     date: "12 Oct 2026",
-    note: "Centering and Shuttering labor weekly payment",
+    note: "Centering and Shuttering weekly labor settlement",
   },
   {
     id: "exp-03",
-    agencyName: "Khandelwal Reti Supply",
+    agencyName: "Khandelwal Sand Suppliers",
     amount: 18400,
     category: "Material",
     date: "10 Oct 2026",
-    note: "2 Dumper Narmada Sand (छनी हुई रेती)",
+    note: "2 Dumpers Narmada Screened River Sand",
   },
   {
     id: "exp-04",
-    agencyName: "Shree Ram Concrete Mixer Machine",
+    agencyName: "Shree Ram Mixer & Vibrator Hire",
     amount: 8500,
     category: "Equipment",
     date: "08 Oct 2026",
-    note: "Slab casting mixer machine & vibrator hire",
+    note: "Slab casting mixer machine & needle vibrator hire",
   },
   {
     id: "exp-05",
-    agencyName: "UltraTech Cement Depot Dewas Naka",
+    agencyName: "UltraTech Depot Dewas Naka",
     amount: 38500,
     category: "Material",
     date: "05 Oct 2026",
-    note: "100 Bags UltraTech Super PPC for columns",
+    note: "100 Bags UltraTech Super PPC for RCC columns",
   },
 ];

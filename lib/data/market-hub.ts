@@ -61,7 +61,7 @@ export interface BankLoanDetail {
 export interface LegalDraftTemplate {
   id: string;
   title: string;
-  titleHindi: string;
+  titleSubtitle: string;
   category: "Rental" | "Sale" | "Lease" | "Compliance";
   estimatedTimeMin: number;
   description: string;
@@ -86,7 +86,7 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
     type: "Plot",
     dimensions: "20 × 50",
     areaSqft: 1000,
-    facing: "East Facing (शुभ पूर्व मुखी)",
+    facing: "East Facing (Sunrise Alignment)",
     reraApproved: true,
     clearTitle: true,
     postedDate: "Today, 10:15 AM",
@@ -113,7 +113,7 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
     type: "Independent House",
     dimensions: "25 × 60",
     areaSqft: 1500,
-    facing: "North Facing (कुबेर मुखी)",
+    facing: "North Facing (Road Frontage)",
     reraApproved: true,
     clearTitle: true,
     postedDate: "Today, 09:40 AM",
@@ -126,7 +126,7 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
       "Italian Marble Flooring & Teak Wood Doors",
       "Covered Parking for 2 Large SUVs",
       "Modular Hafele Kitchen with Chimney",
-      "IMC Narmada Water Connection & Sump",
+      "Municipal Narmada Water Connection & Sump",
     ],
     image: "/places/place-house.png",
   },
@@ -140,7 +140,7 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
     type: "Commercial",
     dimensions: "40 × 60 Corner",
     areaSqft: 2400,
-    facing: "North-East Corner (ईशान कोना)",
+    facing: "North-East Corner (Double Road)",
     reraApproved: true,
     clearTitle: true,
     postedDate: "Yesterday, 04:20 PM",
@@ -186,7 +186,7 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
   },
 ];
 
-// Official Collector Guideline Rates for Indore (गाइडलाइन दरें)
+// Official Collector Guideline Rates for Indore (Circle Rates)
 export const INDORE_GUIDELINE_RATES: GuidelineRate[] = [
   {
     id: "guide-01",
@@ -199,7 +199,7 @@ export const INDORE_GUIDELINE_RATES: GuidelineRate[] = [
   },
   {
     id: "guide-02",
-    locality: "Super Corridor (TCS/Infosys Belt)",
+    locality: "Super Corridor (TCS / Infosys Belt)",
     zone: "Zone 12 (Aerodrome & IT Growth Corridor)",
     residentialPlotRate: 4600,
     commercialPlotRate: 9800,
@@ -328,101 +328,101 @@ export const BANK_LOAN_DETAILS: BankLoanDetail[] = [
 export const LEGAL_DRAFT_TEMPLATES: LegalDraftTemplate[] = [
   {
     id: "draft-rental",
-    title: "Residential Rental Agreement (किरायानामा)",
-    titleHindi: "आवासीय किरायानामा अनुबंध",
+    title: "Residential Rental Agreement",
+    titleSubtitle: "Standard 11-Month Tenancy Contract",
     category: "Rental",
     estimatedTimeMin: 3,
     description: "Standard 11-month legal rent agreement for flat, independent house, or villa in Madhya Pradesh.",
     variables: [
-      { key: "landlordName", label: "Landlord (मकान मालिक का नाम)", defaultValue: "Akshay Sharma", type: "text" },
-      { key: "tenantName", label: "Tenant (किरायेदार का नाम)", defaultValue: "Rahul Verma", type: "text" },
-      { key: "propertyAddress", label: "Property Address (मकान का पता)", defaultValue: "Flat 302, Scheme 54, Vijay Nagar, Indore", type: "text" },
-      { key: "monthlyRent", label: "Monthly Rent ₹ (मासिक किराया)", defaultValue: "18500", type: "number" },
-      { key: "securityDeposit", label: "Security Deposit ₹ (अमानत राशि)", defaultValue: "37000", type: "number" },
-      { key: "agreementDate", label: "Commencement Date (प्रारंभ तिथि)", defaultValue: "2026-11-01", type: "date" },
+      { key: "landlordName", label: "Landlord Full Name", defaultValue: "Akshay Sharma", type: "text" },
+      { key: "tenantName", label: "Tenant Full Name", defaultValue: "Rahul Verma", type: "text" },
+      { key: "propertyAddress", label: "Property Address", defaultValue: "Flat 302, Scheme 54, Vijay Nagar, Indore", type: "text" },
+      { key: "monthlyRent", label: "Monthly Rent (₹)", defaultValue: "18500", type: "number" },
+      { key: "securityDeposit", label: "Security Deposit (₹)", defaultValue: "37000", type: "number" },
+      { key: "agreementDate", label: "Commencement Date", defaultValue: "2026-11-01", type: "date" },
     ],
-    templateContent: `RENT AGREEMENT / किरायानामा
+    templateContent: `RESIDENTIAL LEASE AGREEMENT
 
-यह किरायानामा आज दिनांक {{agreementDate}} को स्थान इंदौर (म.प्र.) में निष्पादित किया गया:
+This Tenancy Agreement is executed on {{agreementDate}} at Indore, Madhya Pradesh:
 
-प्रथम पक्ष (मकान मालिक / Landlord):
-श्री/श्रीमती {{landlordName}}, निवासी इंदौर (म.प्र.)।
+FIRST PARTY (LANDLORD):
+{{landlordName}}, resident of Indore (M.P.)
 
-द्वितीय पक्ष (किरायेदार / Tenant):
-श्री/श्रीमती {{tenantName}}, निवासी इंदौर (म.प्र.)।
+SECOND PARTY (TENANT):
+{{tenantName}}, resident of Indore (M.P.)
 
-शर्तें निम्नलिखित हैं:
-1. प्रथम पक्ष ने अपना मकान स्थित: {{propertyAddress}} द्वितीय पक्ष को आवासीय उपयोग हेतु 11 माह की अवधि के लिए किराये पर दिया है।
-2. मासिक किराया ₹{{monthlyRent}}/- (अक्षरी: रुपये {{monthlyRent}} मात्र) प्रति माह तय हुआ है, जिसका भुगतान प्रत्येक माह की 5 तारीख तक करना अनिवार्य होगा।
-3. द्वितीय पक्ष ने अमानत राशि (Security Deposit) ₹{{securityDeposit}}/- प्रथम पक्ष के पास जमा की है, जो मकान खाली करते समय समायोजन पश्चात बिना ब्याज वापस की जाएगी।
-4. बिजली बिल का भुगतान द्वितीय पक्ष स्वयं मीटर रीडिंग के अनुसार करेगा।
-5. 11 माह पश्चात दोनों पक्षों की आपसी सहमति से किरायानामा नवीनीकृत किया जा सकेगा।
+TERMS & CONDITIONS:
+1. PREMISES: The Landlord leases to the Tenant the residential premises situated at {{propertyAddress}} for a tenancy period of 11 (eleven) months.
+2. MONTHLY RENT: The agreed monthly rent is ₹{{monthlyRent}}/- per month, payable in advance on or before the 5th day of every calendar month.
+3. SECURITY DEPOSIT: The Tenant has deposited an interest-free refundable security deposit of ₹{{securityDeposit}}/- with the Landlord, refundable upon handover of possession after adjusting any dues or damages.
+4. UTILITIES: Electricity, water, and society maintenance charges shall be borne and paid directly by the Tenant as per meter bills.
+5. RENEWAL: The agreement may be renewed upon mutual consent of both parties before expiry.
 
-प्रथम पक्ष (Landlord) Signature: ____________________
-द्वितीय पक्ष (Tenant) Signature: ____________________
-गवाह 1: ____________________     गवाह 2: ____________________`,
+Landlord Signature: ____________________
+Tenant Signature: ____________________
+Witness 1: ____________________     Witness 2: ____________________`,
   },
   {
     id: "draft-sale-agreement",
-    title: "Agreement to Sell / Bayanama (इकरारनामा / बयानामा)",
-    titleHindi: "अचल संपत्ति विक्रय इकरारनामा",
+    title: "Agreement to Sell & Earnest Money Receipt",
+    titleSubtitle: "Property Advance & Deal Lock Contract",
     category: "Sale",
     estimatedTimeMin: 5,
-    description: "Standard pre-registry sale contract recording advance token amount (Bayana), total deal value, and final registry deadline.",
+    description: "Standard pre-registry sale contract recording advance earnest money, total deal value, and final registry deadline.",
     variables: [
-      { key: "sellerName", label: "Seller Name (विक्रेता का नाम)", defaultValue: "Vikas Trivedi", type: "text" },
-      { key: "buyerName", label: "Buyer Name (क्रेता का नाम)", defaultValue: "Akshay Sharma", type: "text" },
-      { key: "propertyDescription", label: "Plot / Property Details (प्रॉपर्टी विवरण)", defaultValue: "Plot No. 14, Scheme 54, PU-4, Indore (Area: 3200 sq.ft)", type: "text" },
-      { key: "totalDealAmount", label: "Total Deal Amount ₹ (कुल सौदा राशि)", defaultValue: "28500000", type: "number" },
-      { key: "advanceTokenAmount", label: "Bayana / Advance Paid ₹ (बयाना राशि)", defaultValue: "2500000", type: "number" },
-      { key: "registryDeadline", label: "Registry Target Date (रजिस्ट्री की अंतिम तिथि)", defaultValue: "2026-12-15", type: "date" },
+      { key: "sellerName", label: "Seller Full Name", defaultValue: "Vikas Trivedi", type: "text" },
+      { key: "buyerName", label: "Buyer Full Name", defaultValue: "Akshay Sharma", type: "text" },
+      { key: "propertyDescription", label: "Plot / Property Description", defaultValue: "Plot No. 14, Scheme 54, PU-4, Indore (Area: 3,200 sq.ft)", type: "text" },
+      { key: "totalDealAmount", label: "Total Deal Amount (₹)", defaultValue: "28500000", type: "number" },
+      { key: "advanceTokenAmount", label: "Advance Earnest Money Paid (₹)", defaultValue: "2500000", type: "number" },
+      { key: "registryDeadline", label: "Registry Target Deadline", defaultValue: "2026-12-15", type: "date" },
     ],
-    templateContent: `AGREEMENT TO SELL / विक्रय इकरारनामा (बयानामा)
+    templateContent: `AGREEMENT TO SELL & EARNEST MONEY RECEIPT
 
-यह विक्रय अनुबंध पत्र आज दिनांक को स्थान इंदौर में निष्पादित हुआ:
+This Agreement to Sell is executed at Indore, Madhya Pradesh:
 
-विक्रेता (Seller): श्री {{sellerName}}
-क्रेता (Buyer): श्री {{buyerName}}
+SELLER: {{sellerName}}
+BUYER: {{buyerName}}
 
-प्रॉपर्टी का विवरण:
+SUBJECT PROPERTY:
 {{propertyDescription}}
 
-नियम एवं शर्तें:
-1. विक्रेता अपनी उक्त अचल संपत्ति को क्रेता को कुल तयशुदा राशि ₹{{totalDealAmount}}/- में विक्रय करने हेतु पूर्णतः सहमत है।
-2. क्रेता ने बयाना (Advance Token Amount) स्वरूप ₹{{advanceTokenAmount}}/- का भुगतान चेक/RTGS द्वारा विक्रेता को कर दिया है, जिसकी प्राप्ति विक्रेता स्वीकार करता है।
-3. शेष धनराशि का भुगतान क्रेता द्वारा दिनांक {{registryDeadline}} तक पंजीयन कार्यालय (उप-पंजीयक इंदौर) में रजिस्ट्री के समय किया जाएगा।
-4. विक्रेता प्रमाणित करता है कि उक्त संपत्ति पूर्णतः भारमुक्त, विवादरहित एवं साफ मालिकाना हक की है। किसी बैंक या वित्तीय संस्था में कोई बंधक नहीं है।
-5. यदि विक्रेता नियत तिथि तक रजिस्ट्री नहीं कराता है, तो क्रेता न्यायालय के माध्यम से विशिष्ट अनुपालन (Specific Performance) कराने का पूर्ण अधिकारी होगा।
+KEY TERMS & RECITALS:
+1. TOTAL CONSIDERATION: The Seller agrees to sell and transfer absolute freehold title of the property to the Buyer for a total consideration of ₹{{totalDealAmount}}/-.
+2. EARNEST MONEY (ADVANCE): The Buyer has paid ₹{{advanceTokenAmount}}/- as token advance money via Bank Cheque / RTGS, the receipt whereof the Seller hereby acknowledges.
+3. BALANCE PAYMENT & REGISTRY: The balance amount shall be paid by the Buyer on or before {{registryDeadline}} at the office of the Sub-Registrar Indore during final deed execution.
+4. TITLE WARRANTY: The Seller warrants that the property is completely free from mortgages, charges, litigation, tax encumbrances, or family disputes.
+5. SPECIFIC PERFORMANCE: Both parties agree to specific performance under the Indian Contract Act in the event of default.
 
-विक्रेता के हस्ताक्षर: ____________________
-क्रेता के हस्ताक्षर: ____________________
-गवाह 1: ____________________     गवाह 2: ____________________`,
+Seller Signature: ____________________
+Buyer Signature: ____________________
+Witness 1: ____________________     Witness 2: ____________________`,
   },
   {
     id: "draft-registry-checklist",
-    title: "Property Registry Checklist (रजिस्ट्री ज़रूरी कागज़ात चेकलिस्ट)",
-    titleHindi: "उप-पंजीयक कार्यालय रजिस्ट्री चेकलिस्ट",
+    title: "Property Registry Mandatory Checklist",
+    titleSubtitle: "Sub-Registrar Office Statutory Documents",
     category: "Compliance",
     estimatedTimeMin: 2,
     description: "Complete list of statutory documents required at the Sub-Registrar office for smooth deed registration in MP.",
     variables: [
-      { key: "propertyLocality", label: "Locality (स्थान)", defaultValue: "Indore (म.प्र.)", type: "text" },
+      { key: "propertyLocality", label: "Locality / District", defaultValue: "Indore (M.P.)", type: "text" },
     ],
-    templateContent: `PROPERTY REGISTRATION MANDATORY CHECKLIST / रजिस्ट्री चेकलिस्ट
+    templateContent: `PROPERTY REGISTRATION STATUTORY CHECKLIST
 
-उप-पंजीयक कार्यालय में रजिस्ट्री हेतु आवश्यक दस्तावेज़:
+Mandatory documents required at the Sub-Registrar Office for Deed Execution in {{propertyLocality}}:
 
-1. [ ] मूल विक्रय पत्र (Sale Deed Draft) ई-स्टाम्प पेपर पर मुद्रित
-2. [ ] विक्रेता का मूल स्वामित्व दस्तावेज़ (पूर्व रजिस्ट्री / आवंटन पत्र)
-3. [ ] नगर निगम चालू वित्तीय वर्ष का संपत्ति कर (Property Tax) अदेय प्रमाणपत्र (NOC)
-4. [ ] नामांतरण (Mutation) प्रतिलिपि एवं अद्यतन खसरा / B-1 खतौनी नकल
-5. [ ] विक्रेता एवं क्रेता दोनों के आधार कार्ड एवं पैन कार्ड (PAN Card अनिवार्य)
-6. [ ] दो सक्षम वयस्क गवाह (पहचान पत्र एवं आधार कार्ड सहित)
-7. [ ] विकास प्राधिकरण (IDA) अथवा T&CP स्वीकृत अभिन्यास (Sanction Map)
-8. [ ] संपदा (SAMPADA MP) ऑनलाइन स्लॉट बुकिंग रसीद
-9. [ ] बैंक चेक / RTGS यूटीआर विवरण (भुगतान के प्रमाण स्वरूप)
-10. [ ] टीडीएस (TDS Form 26QB) रसीद (यदि संपत्ति मूल्य ₹50 लाख से अधिक हो - धारा 194-IA)
+1. [ ] Original Sale Deed draft printed on electronic Stamp Paper (E-Stamp)
+2. [ ] Previous Link Title Deeds / Original Allotment Letter from Authority
+3. [ ] Municipal Corporation Property Tax No Dues Certificate (NOC)
+4. [ ] Updated Revenue Mutation Record (Namantaran) and B-1 Khasra extract
+5. [ ] Aadhaar Card & PAN Card of both Seller and Buyer (PAN mandatory)
+6. [ ] Two adult identity-verified witnesses with photo ID & Aadhaar
+7. [ ] T&CP Town Planning Sanction Map / IDA Approved Layout Plan
+8. [ ] SAMPADA MP online registration slot booking receipt
+9. [ ] Bank Cheque / RTGS UTR payment details (proof of transaction)
+10. [ ] TDS Form 26QB acknowledgement receipt (for transactions exceeding ₹50 Lakhs under Section 194-IA)
 
-निर्देश: संपदा पोर्टल पर ऑनलाइन स्लॉट समय से 15 मिनट पूर्व दोनों पक्ष उपस्थित हों।`,
+Note: Parties should report at the Sub-Registrar office 15 minutes before the booked SAMPADA slot.`,
   },
 ];

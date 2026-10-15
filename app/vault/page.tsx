@@ -12,7 +12,7 @@ export default function VaultPage() {
 
   return (
     <div className="p-8 text-center text-xs text-ink-muted">
-      संपत्ति व कागज़ात हब लोड हो रहा है...
+      Loading Property &amp; Vault Hub...
     </div>
   );
 }

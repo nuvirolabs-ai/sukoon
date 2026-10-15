@@ -114,21 +114,21 @@ function EstateContent() {
           className="inline-flex items-center gap-2 text-sm font-semibold text-forest hover:opacity-80 transition"
         >
           <ArrowLeft size={18} />
-          <span>होम (Home)</span>
+          <span>Home</span>
         </Link>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-mint text-forest text-xs font-semibold">
           <ShieldCheck size={14} />
-          <span>सत्यापित प्रॉपर्टी हब (Verified Hub)</span>
+          <span>Verified Property Hub</span>
         </div>
       </header>
 
       {/* Main Title */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold tracking-tight text-forest mb-1">
-          प्रॉपर्टी और निर्माण हब
+          Property &amp; Construction Hub
         </h1>
         <p className="text-xs text-ink-muted">
-          My Property &amp; Construction — पोर्टफोलियो, कागज़ात, दैनिक भाव व खर्चा डायरी
+          My Property &amp; Construction — Portfolio, Papers, Daily Rates &amp; Expense Notebook
         </p>
       </div>
 
@@ -143,7 +143,7 @@ function EstateContent() {
           }`}
         >
           <Wallet size={14} />
-          <span>पोर्टफोलियो व कागज़</span>
+          <span>Portfolio &amp; Vault</span>
         </button>
 
         <button
@@ -155,7 +155,7 @@ function EstateContent() {
           }`}
         >
           <TrendingUp size={14} />
-          <span>दैनिक मंडी भाव (Rates)</span>
+          <span>Daily Material Rates</span>
         </button>
 
         <button
@@ -167,7 +167,7 @@ function EstateContent() {
           }`}
         >
           <Layers size={14} />
-          <span>खर्चा डायरी (Notebook)</span>
+          <span>Expense Notebook</span>
         </button>
 
         <button
@@ -179,7 +179,7 @@ function EstateContent() {
           }`}
         >
           <Compass size={14} />
-          <span>मकान के नक्शे (Plans)</span>
+          <span>Floor Plans</span>
         </button>
 
         <button
@@ -191,12 +191,12 @@ function EstateContent() {
           }`}
         >
           <HardHat size={14} />
-          <span>डीलर व आर्किटेक्ट</span>
+          <span>Architects &amp; Dealers</span>
         </button>
       </nav>
 
       {/* =========================================================================
-          TAB 1: PORTFOLIO & VAULT (पोर्टफोलियो और सुरक्षित कागज़)
+          TAB 1: PORTFOLIO & VAULT
           ========================================================================= */}
       {tab === "portfolio" && (
         <div className="space-y-4">
@@ -205,27 +205,27 @@ function EstateContent() {
             <div className="flex justify-between items-start mb-3">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-mint opacity-90">
-                  सुखून प्रॉपर्टी पोर्टफोलियो (Total Portfolio)
+                  Sukoon Property Portfolio
                 </span>
                 <div className="text-3xl font-extrabold mt-1">₹4.85 Crore</div>
               </div>
               <span className="px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold text-mint">
-                2 संपत्तियां (2 Assets)
+                2 Properties
               </span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/15 text-xs">
               <div>
-                <span className="text-white/60 block text-[10px]">कुल निवेश (Invested)</span>
+                <span className="text-white/60 block text-[10px]">Total Invested</span>
                 <span className="font-bold text-white">₹4.30 Cr</span>
               </div>
               <div>
-                <span className="text-white/60 block text-[10px]">शुद्ध लाभ (Gain)</span>
+                <span className="text-white/60 block text-[10px]">Unrealized Gain</span>
                 <span className="font-bold text-mint">+₹55 Lakh (+12.8%)</span>
               </div>
               <div>
-                <span className="text-white/60 block text-[10px]">मासिक किराया (Rent)</span>
-                <span className="font-bold text-white">₹18,500/माह</span>
+                <span className="text-white/60 block text-[10px]">Monthly Rent</span>
+                <span className="font-bold text-white">₹18,500/mo</span>
               </div>
             </div>
           </div>
@@ -234,9 +234,9 @@ function EstateContent() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold text-forest uppercase tracking-wide">
-                आपकी संपत्तियां (Your Properties)
+                Your Properties
               </h2>
-              <span className="text-xs text-ink-muted">100% क्लियर टाइटल</span>
+              <span className="text-xs text-ink-muted">100% Clear Title</span>
             </div>
 
             <div className="space-y-2.5">
@@ -252,9 +252,9 @@ function EstateContent() {
                       <p className="text-xs text-ink-muted">Plot 14, Scheme 54, PU-4 • 3,200 sq.ft Villa</p>
                       <div className="flex items-center gap-2 mt-2">
                         <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[11px] font-semibold">
-                          ✓ रजिस्ट्री व नामांतरण पूर्ण
+                          ✓ Registry &amp; Mutation Complete
                         </span>
-                        <span className="text-[11px] text-ink-muted">वैल्यू: ₹3.40 Cr</span>
+                        <span className="text-[11px] text-ink-muted">Value: ₹3.40 Cr</span>
                       </div>
                     </div>
                   </div>
@@ -273,9 +273,9 @@ function EstateContent() {
                       <p className="text-xs text-ink-muted">Super Corridor Phase 2 • 4,500 sq.ft Plot</p>
                       <div className="flex items-center gap-2 mt-2">
                         <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-[11px] font-semibold">
-                          🏗️ निर्माण चालू (Stage 3 स्लैब क्यूरिंग)
+                          🏗️ Construction in Progress (Stage 3 Slab Curing)
                         </span>
-                        <span className="text-[11px] text-ink-muted">बजट: ₹1.45 Cr</span>
+                        <span className="text-[11px] text-ink-muted">Budget: ₹1.45 Cr</span>
                       </div>
                     </div>
                   </div>
@@ -288,14 +288,14 @@ function EstateContent() {
           <div className="pt-2">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold text-forest uppercase tracking-wide">
-                वॉल्टेड कागज़ात (Safe Vault Papers)
+                Vaulted Property Papers
               </h2>
               <button
                 onClick={() => setAddPaperModal(true)}
                 className="text-xs font-bold text-forest hover:underline flex items-center gap-1"
               >
                 <Plus size={14} />
-                <span>कागज़ जोड़ें (Add Paper)</span>
+                <span>Add Document</span>
               </button>
             </div>
 
@@ -307,7 +307,7 @@ function EstateContent() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-foreground">पंजीकृत विक्रय पत्र (Sale Deed)</h4>
+                    <h4 className="text-xs font-bold text-foreground">Registered Sale Deed</h4>
                     <p className="text-[11px] text-ink-muted">Book 1, Vol 4092, Page 88 • Sub-Registrar Indore</p>
                   </div>
                 </div>
@@ -316,14 +316,14 @@ function EstateContent() {
                     onClick={() => setPreviewDoc("deed")}
                     className="px-2.5 py-1 rounded-md bg-canvas text-forest text-xs font-semibold hover:bg-mint transition"
                   >
-                    देखें
+                    View
                   </button>
                   <a
-                    href="https://api.whatsapp.com/send?text=विजय+नगर+मकान+की+रजिस्ट्री+सत्यापित+प्रतिलिपि+सुखून+वॉल्ट+पर+सुरक्षित+है।"
+                    href="https://api.whatsapp.com/send?text=Verified+copy+of+Vijay+Nagar+Sale+Deed+is+securely+stored+on+Sukoon+Vault."
                     target="_blank"
                     rel="noreferrer"
                     className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition"
-                    title="WhatsApp पर भेजें"
+                    title="Share on WhatsApp"
                   >
                     <Share2 size={16} />
                   </a>
@@ -337,7 +337,7 @@ function EstateContent() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-foreground">नगर निगम नामांतरण प्रमाणपत्र (Mutation)</h4>
+                    <h4 className="text-xs font-bold text-foreground">Municipal Mutation Certificate</h4>
                     <p className="text-[11px] text-ink-muted">IMC-MUT-2021-9921 • Indore Municipal Corp</p>
                   </div>
                 </div>
@@ -346,10 +346,10 @@ function EstateContent() {
                     onClick={() => setPreviewDoc("mutation")}
                     className="px-2.5 py-1 rounded-md bg-canvas text-forest text-xs font-semibold hover:bg-mint transition"
                   >
-                    देखें
+                    View
                   </button>
                   <a
-                    href="https://api.whatsapp.com/send?text=नगर+निगम+इंदौर+नामांतरण+प्रमाणपत्र+प्रतिलिपि"
+                    href="https://api.whatsapp.com/send?text=Verified+Municipal+Mutation+Certificate+Copy"
                     target="_blank"
                     rel="noreferrer"
                     className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition"
@@ -366,8 +366,8 @@ function EstateContent() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-foreground">संपत्ति कर रसीद (Tax Assessment FY 2026-27)</h4>
-                    <p className="text-[11px] text-ink-muted">IMC-PT-2026-54-0014 • ₹8,450 चुकता रसीद</p>
+                    <h4 className="text-xs font-bold text-foreground">Property Tax Receipt (FY 2026-27)</h4>
+                    <p className="text-[11px] text-ink-muted">IMC-PT-2026-54-0014 • ₹8,450 Paid Receipt</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -375,10 +375,10 @@ function EstateContent() {
                     onClick={() => setPreviewDoc("tax")}
                     className="px-2.5 py-1 rounded-md bg-canvas text-forest text-xs font-semibold hover:bg-mint transition"
                   >
-                    देखें
+                    View
                   </button>
                   <a
-                    href="https://api.whatsapp.com/send?text=नगर+निगम+संपत्ति+कर+रसीद+2026-27"
+                    href="https://api.whatsapp.com/send?text=Municipal+Property+Tax+Receipt+2026-27"
                     target="_blank"
                     rel="noreferrer"
                     className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition"
@@ -395,8 +395,8 @@ function EstateContent() {
                     <FileText size={18} />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-foreground">T&amp;CP स्वीकृत भवन निर्माण नक्शा (NOC)</h4>
-                    <p className="text-[11px] text-ink-muted">T&amp;CP-IND-B-4402 • टाउन एंड कंट्री प्लानिंग</p>
+                    <h4 className="text-xs font-bold text-foreground">T&amp;CP Sanctioned Building Plan (NOC)</h4>
+                    <p className="text-[11px] text-ink-muted">T&amp;CP-IND-B-4402 • Town &amp; Country Planning</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -404,10 +404,10 @@ function EstateContent() {
                     onClick={() => setPreviewDoc("sanction")}
                     className="px-2.5 py-1 rounded-md bg-canvas text-forest text-xs font-semibold hover:bg-mint transition"
                   >
-                    देखें
+                    View
                   </button>
                   <a
-                    href="https://api.whatsapp.com/send?text=टी+एंड+सीपी+स्वीकृत+भवन+नक्शा"
+                    href="https://api.whatsapp.com/send?text=Town+and+Country+Planning+Sanctioned+Map"
                     target="_blank"
                     rel="noreferrer"
                     className="p-1 rounded-md text-emerald-600 hover:bg-emerald-50 transition"
@@ -422,7 +422,7 @@ function EstateContent() {
       )}
 
       {/* =========================================================================
-          TAB 2: DAILY RAW MATERIAL RATES (आज के मंडी भाव)
+          TAB 2: DAILY RAW MATERIAL RATES
           ========================================================================= */}
       {tab === "rates" && (
         <div className="space-y-4">
@@ -430,10 +430,10 @@ function EstateContent() {
             <span className="text-xl">📊</span>
             <div>
               <h3 className="text-xs font-bold text-amber-900">
-                इंदौर दैनिक निर्माण सामग्री भाव (Real-Time Market Ticker)
+                Indore Daily Construction Material Rates (Real-Time Ticker)
               </h3>
               <p className="text-[11px] text-amber-800 leading-relaxed mt-0.5">
-                लोहा मंडी, देवास नाका और नेमावर रोड से प्रतिदिन सुबह 10 बजे अपडेट किए जाते हैं। ताकि मकान बनाते समय कोई आपसे अधिक दाम न ले सके।
+                Updated daily at 10 AM from Loha Mandi, Dewas Naka, and Nemawar Road wholesale yards to protect you against inflated contractor billing.
               </p>
             </div>
           </div>
@@ -450,7 +450,7 @@ function EstateContent() {
                     : "bg-white text-ink-muted border border-line"
                 }`}
               >
-                {cat === "All" ? "सभी भाव (All)" : cat}
+                {cat === "All" ? "All Materials" : cat}
               </button>
             ))}
           </div>
@@ -464,7 +464,7 @@ function EstateContent() {
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-bold text-foreground">{mat.nameHindi}</h4>
+                    <h4 className="text-sm font-bold text-foreground">{mat.name}</h4>
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-canvas text-ink-muted">
                       {mat.category}
                     </span>
@@ -479,7 +479,7 @@ function EstateContent() {
                   <div className="text-lg font-black text-forest">
                     ₹{mat.currentRate}
                   </div>
-                  <div className="text-[10px] text-ink-muted">{mat.unitHindi}</div>
+                  <div className="text-[10px] text-ink-muted">{mat.unit}</div>
                   <div className="mt-1 flex items-center justify-end gap-1 text-[11px] font-bold">
                     {mat.trend === "up" && (
                       <span className="text-red-600 flex items-center">
@@ -492,20 +492,20 @@ function EstateContent() {
                       </span>
                     )}
                     {mat.trend === "stable" && (
-                      <span className="text-ink-muted">स्थिर (Stable)</span>
+                      <span className="text-ink-muted">Stable</span>
                     )}
                   </div>
 
                   <a
                     href={`https://api.whatsapp.com/send?phone=919826012345&text=${encodeURIComponent(
-                      `नमस्ते, मुझे सुखून ऐप पर आज का ${mat.nameHindi} का भाव ₹${mat.currentRate} ${mat.unitHindi} दिखा। मुझे इसके ऑर्डर की जानकारी चाहिए।`
+                      `Hello, I saw today's rate for ${mat.name} at ₹${mat.currentRate} ${mat.unit} on Sukoon. I would like more details and an order quote.`
                     )}`}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded hover:bg-emerald-100 transition"
                   >
                     <MessageCircle size={12} />
-                    <span>ऑर्डर करें</span>
+                    <span>Order Quote</span>
                   </a>
                 </div>
               </div>
@@ -515,18 +515,18 @@ function EstateContent() {
       )}
 
       {/* =========================================================================
-          TAB 3: QUICK EXPENSES NOTEBOOK (खर्चा डायरी)
+          TAB 3: QUICK EXPENSES NOTEBOOK
           ========================================================================= */}
       {tab === "expenses" && (
         <div className="space-y-4">
           {/* Total Spent Banner */}
           <div className="p-4 rounded-xl bg-forest text-white flex items-center justify-between">
             <div>
-              <span className="text-xs text-white/70 block">कुल दर्ज खर्चा (Total Spent)</span>
+              <span className="text-xs text-white/70 block">Total Logged Expenses</span>
               <span className="text-2xl font-black">₹{totalSpent.toLocaleString("en-IN")}</span>
             </div>
             <div className="text-right text-xs text-mint">
-              <span>{expenses.length} प्रविष्टियां दर्ज</span>
+              <span>{expenses.length} entries recorded</span>
             </div>
           </div>
 
@@ -534,18 +534,18 @@ function EstateContent() {
           <div className="p-4 rounded-xl bg-white border border-line shadow-xs">
             <h3 className="text-sm font-bold text-forest mb-3 flex items-center gap-1.5">
               <span>✏️</span>
-              <span>नया खर्चा दर्ज करें (Quick Expense Notebook)</span>
+              <span>Log New Expense (Expense Notebook)</span>
             </h3>
 
             <form onSubmit={handleAddExpense} className="space-y-3">
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  ठेकेदार / एजेंसी / सामग्री का नाम (Agency Name)
+                  Contractor / Supplier / Agency Name
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="उदा. शर्मा सरिया स्टोर्स / मुकेश मिस्त्री"
+                  placeholder="e.g. Sharma TMT Stores / Mukesh Mason"
                   value={agencyName}
                   onChange={(e) => setAgencyName(e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -555,12 +555,12 @@ function EstateContent() {
               <div className="grid grid-cols-2 gap-2.5">
                 <div>
                   <label className="text-xs font-semibold text-ink-muted block mb-1">
-                    रकम ₹ (Amount)
+                    Amount (₹)
                   </label>
                   <input
                     type="number"
                     required
-                    placeholder="उदा. 25000"
+                    placeholder="e.g. 25000"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -568,29 +568,29 @@ function EstateContent() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-ink-muted block mb-1">
-                    श्रेणी (Category)
+                    Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as QuickExpense["category"])}
                     className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
                   >
-                    <option value="Material">सामग्री (Material)</option>
-                    <option value="Labor">मजदूरी (Labor)</option>
-                    <option value="Equipment">मशीनरी (Equipment)</option>
-                    <option value="Contractor">ठेकेदार (Contractor)</option>
-                    <option value="Miscellaneous">अन्य (Misc)</option>
+                    <option value="Material">Material</option>
+                    <option value="Labor">Labor</option>
+                    <option value="Equipment">Equipment &amp; Machinery</option>
+                    <option value="Contractor">Contractor Payment</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-ink-muted block mb-1">
-                  टिप्पणी (Note - Optional)
+                  Notes / Specifications (Optional)
                 </label>
                 <input
                   type="text"
-                  placeholder="उदा. 50 बोरी सीमेंट प्रथम तल स्लैब हेतु"
+                  placeholder="e.g. 50 bags cement for first floor slab"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -601,13 +601,13 @@ function EstateContent() {
                 type="submit"
                 className="w-full py-2.5 rounded-lg bg-forest text-white font-bold text-sm shadow-xs hover:opacity-95 transition"
               >
-                + खर्चा जोड़ें (Save Expense)
+                + Save Expense Entry
               </button>
             </form>
 
             {showExpenseToast && (
               <div className="mt-2 text-center text-xs font-bold text-emerald-700 bg-emerald-50 py-1.5 rounded-md">
-                ✓ खर्चा डायरी में सफलतापूर्वक दर्ज हुआ!
+                ✓ Expense recorded successfully in notebook!
               </div>
             )}
           </div>
@@ -615,7 +615,7 @@ function EstateContent() {
           {/* Expenses History List */}
           <div>
             <h3 className="text-xs font-bold text-forest uppercase tracking-wider mb-2">
-              खर्चा इतिहास (Recent Expenses)
+              Recent Expense Log
             </h3>
             <div className="bg-white rounded-xl border border-line divide-y divide-line overflow-hidden shadow-xs">
               {expenses.map((exp) => (
@@ -643,12 +643,12 @@ function EstateContent() {
       )}
 
       {/* =========================================================================
-          TAB 4: CONCEPTUAL FLOOR PLANS (मकान के नक्शे)
+          TAB 4: CONCEPTUAL FLOOR PLANS
           ========================================================================= */}
       {tab === "plans" && (
         <div className="space-y-4">
           <div className="p-3.5 rounded-xl bg-sky/40 border border-blue-200 text-xs text-blue-900 leading-relaxed">
-            📐 <strong>वास्तु-सम्मत मानक नक्शे (Standard Floor Plans):</strong> इंदौर व मध्य प्रदेश में सर्वाधिक बनने वाले 5 प्लॉट साइज़ के नक्शे। 1-क्लिक में देखें और अपने ठेकेदार/आर्किटेक्ट को WhatsApp पर भेजें।
+            📐 <strong>Standard Vastu-Compliant Floor Plans:</strong> Top 5 most requested plot sizes in Indore and MP. Review layouts in 1-click and share directly with your architect or contractor on WhatsApp.
           </div>
 
           {/* Plot Size Selector Buttons */}
@@ -674,13 +674,13 @@ function EstateContent() {
             <div className="flex items-start justify-between border-b border-line pb-3">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-infinity-blue bg-blue-50 px-2 py-0.5 rounded">
-                  {selectedPlan.dimensions} प्लॉट साइज़ ({selectedPlan.plotAreaSqft} वर्गफीट)
+                  {selectedPlan.dimensions} Plot Size ({selectedPlan.plotAreaSqft} sq.ft)
                 </span>
                 <h3 className="text-base font-bold text-forest mt-1.5">{selectedPlan.title}</h3>
                 <p className="text-xs text-ink-muted mt-0.5">{selectedPlan.configuration}</p>
               </div>
               <div className="text-right">
-                <span className="text-xs font-bold text-emerald-700 block">✓ 100% वास्तु सम्मत</span>
+                <span className="text-xs font-bold text-emerald-700 block">✓ 100% Vastu Compliant</span>
                 <span className="text-[11px] text-ink-muted">{selectedPlan.facing}</span>
               </div>
             </div>
@@ -688,11 +688,11 @@ function EstateContent() {
             {/* Estimated Cost & Specs */}
             <div className="grid grid-cols-2 gap-2 text-xs bg-canvas/40 p-3 rounded-xl border border-line/60">
               <div>
-                <span className="text-ink-muted block text-[10px]">अनुमानित निर्माण लागत (Cost)</span>
+                <span className="text-ink-muted block text-[10px]">Estimated Construction Cost</span>
                 <span className="font-extrabold text-forest">{selectedPlan.estimatedCost}</span>
               </div>
               <div>
-                <span className="text-ink-muted block text-[10px]">बिल्ट-अप एरिया (Built-up)</span>
+                <span className="text-ink-muted block text-[10px]">Total Built-up Area</span>
                 <span className="font-extrabold text-foreground">{selectedPlan.builtUpSqft} sq.ft</span>
               </div>
             </div>
@@ -704,11 +704,11 @@ function EstateContent() {
             {/* Room Breakdown */}
             <div>
               <h4 className="text-xs font-bold text-forest uppercase tracking-wider mb-2">
-                तल अनुसार कमरों का विवरण (Layout Breakdown)
+                Floor-by-Floor Room Breakdown
               </h4>
               <div className="space-y-2 text-xs">
                 <div className="p-3 rounded-lg bg-canvas/30 border border-line/60">
-                  <span className="font-bold text-forest block mb-1">ग्राउंड फ्लोर (Ground Floor):</span>
+                  <span className="font-bold text-forest block mb-1">Ground Floor:</span>
                   <ul className="list-disc list-inside space-y-0.5 text-ink-muted text-[11px]">
                     {selectedPlan.roomDetails.groundFloor.map((rm, idx) => (
                       <li key={idx}>{rm}</li>
@@ -718,7 +718,7 @@ function EstateContent() {
 
                 {selectedPlan.roomDetails.firstFloor && (
                   <div className="p-3 rounded-lg bg-canvas/30 border border-line/60">
-                    <span className="font-bold text-forest block mb-1">प्रथम तल (First Floor):</span>
+                    <span className="font-bold text-forest block mb-1">First Floor:</span>
                     <ul className="list-disc list-inside space-y-0.5 text-ink-muted text-[11px]">
                       {selectedPlan.roomDetails.firstFloor.map((rm, idx) => (
                         <li key={idx}>{rm}</li>
@@ -732,21 +732,21 @@ function EstateContent() {
             {/* WhatsApp Share Button */}
             <a
               href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                `सुकून ऐप पर ${selectedPlan.dimensions} (${selectedPlan.plotAreaSqft} sqft) का वास्तु-सम्मत नक्शा: ${selectedPlan.title}। अनुमानित लागत: ${selectedPlan.estimatedCost}।`
+                `Sukoon App - ${selectedPlan.dimensions} (${selectedPlan.plotAreaSqft} sqft) Vastu-compliant layout: ${selectedPlan.title}. Estimated Cost: ${selectedPlan.estimatedCost}.`
               )}`}
               target="_blank"
               rel="noreferrer"
               className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition"
             >
               <MessageCircle size={16} />
-              <span>ठेकेदार / आर्किटेक्ट को WhatsApp पर नक्शा भेजें</span>
+              <span>Share Floor Plan with Architect / Contractor</span>
             </a>
           </div>
         </div>
       )}
 
       {/* =========================================================================
-          TAB 5: VERIFIED DIRECTORY (डीलर और आर्किटेक्ट)
+          TAB 5: VERIFIED DIRECTORY
           ========================================================================= */}
       {tab === "directory" && (
         <div className="space-y-5">
@@ -754,7 +754,7 @@ function EstateContent() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold text-forest uppercase tracking-wider">
-                पंजीकृत आर्किटेक्ट (Authorized Architects)
+                Authorized Architects
               </h2>
               <span className="text-xs text-ink-muted">Indore COA Registered</span>
             </div>
@@ -782,18 +782,18 @@ function EstateContent() {
                       className="flex-1 py-1.5 rounded-lg bg-canvas text-forest text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-mint transition"
                     >
                       <Phone size={14} />
-                      <span>कॉल करें</span>
+                      <span>Call</span>
                     </a>
                     <a
                       href={`https://api.whatsapp.com/send?phone=${arch.whatsapp}&text=${encodeURIComponent(
-                        `नमस्ते ${arch.name}, मुझे सुखून ऐप पर आपका प्रोफाइल दिखा। मुझे इंदौर में मकान निर्माण एवं नक्शे हेतु परामर्श चाहिए।`
+                        `Hello ${arch.name}, I found your profile on Sukoon App. I would like a consultation regarding house construction and floor planning.`
                       )}`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex-1 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition"
                     >
                       <MessageCircle size={14} />
-                      <span>WhatsApp परामर्श</span>
+                      <span>WhatsApp Consult</span>
                     </a>
                   </div>
                 </div>
@@ -805,7 +805,7 @@ function EstateContent() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-bold text-forest uppercase tracking-wider">
-                अधिकृत सामग्री डीलर (Material Dealers)
+                Authorized Material Dealers
               </h2>
               <span className="text-xs text-ink-muted">Wholesale Rates</span>
             </div>
@@ -839,18 +839,18 @@ function EstateContent() {
                       className="flex-1 py-1.5 rounded-lg bg-canvas text-forest text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-mint transition"
                     >
                       <Phone size={14} />
-                      <span>कॉल करें</span>
+                      <span>Call</span>
                     </a>
                     <a
                       href={`https://api.whatsapp.com/send?phone=${dlr.whatsapp}&text=${encodeURIComponent(
-                        `नमस्ते ${dlr.name}, मुझे सुखून ऐप पर आपकी दुकान ${dlr.businessName} का विवरण मिला। मुझे निर्माण सामग्री के थोक भाव चाहिए।`
+                        `Hello ${dlr.name}, I found ${dlr.businessName} on Sukoon App. Please share wholesale prices for building materials.`
                       )}`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex-1 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition"
                     >
                       <MessageCircle size={14} />
-                      <span>WhatsApp भाव</span>
+                      <span>WhatsApp Quote</span>
                     </a>
                   </div>
                 </div>
@@ -868,10 +868,10 @@ function EstateContent() {
           <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-line pb-2">
               <h3 className="text-sm font-bold text-forest">
-                {previewDoc === "deed" && "रजिस्ट्री विक्रय पत्र (Sale Deed)"}
-                {previewDoc === "mutation" && "नगर निगम नामांतरण प्रमाणपत्र"}
-                {previewDoc === "tax" && "संपत्ति कर रसीद FY 2026-27"}
-                {previewDoc === "sanction" && "भवन निर्माण स्वीकृति नक्शा"}
+                {previewDoc === "deed" && "Registered Sale Deed"}
+                {previewDoc === "mutation" && "Municipal Mutation Certificate"}
+                {previewDoc === "tax" && "Property Tax Assessment FY 2026-27"}
+                {previewDoc === "sanction" && "Sanctioned Building Plan NOC"}
               </h3>
               <button onClick={() => setPreviewDoc(null)} className="text-ink-muted hover:text-foreground">
                 <X size={18} />
@@ -882,9 +882,9 @@ function EstateContent() {
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center">
                 <ShieldCheck size={28} />
               </div>
-              <h4 className="text-xs font-bold text-foreground">सत्यापित व एन्क्रिप्टेड डिजिटल प्रति</h4>
+              <h4 className="text-xs font-bold text-foreground">Verified &amp; Encrypted Digital Record</h4>
               <p className="text-[11px] text-ink-muted">
-                यह दस्तावेज़ सुखून प्राइवेट वॉल्ट में सुरक्षित है। इसका डिजिटल चेकसम प्रमाणित है।
+                This document is secured inside your Sukoon Private Vault. Digital checksum verified offline.
               </p>
               <div className="text-[10px] font-mono bg-white p-2 rounded border border-line text-ink-muted">
                 SHA-256: 8f4b12...a99c01 (Verified Offline)
@@ -896,16 +896,16 @@ function EstateContent() {
                 onClick={() => setPreviewDoc(null)}
                 className="flex-1 py-2 rounded-xl bg-forest text-white text-xs font-bold"
               >
-                बंद करें
+                Close
               </button>
               <a
-                href="https://api.whatsapp.com/send?text=सुखून+वॉल्ट+से+सत्यापित+प्रॉपर्टी+दस्तावेज़"
+                href="https://api.whatsapp.com/send?text=Verified+Property+Document+from+Sukoon+Vault"
                 target="_blank"
                 rel="noreferrer"
                 className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5"
               >
                 <Share2 size={14} />
-                <span>शेयर</span>
+                <span>Share</span>
               </a>
             </div>
           </div>
@@ -919,7 +919,7 @@ function EstateContent() {
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-line pb-2">
-              <h3 className="text-sm font-bold text-forest">नया कागज़ जोड़ें (Add Paper)</h3>
+              <h3 className="text-sm font-bold text-forest">Add Document to Vault</h3>
               <button onClick={() => { setAddPaperModal(false); setPaperAddedSuccess(false); }} className="text-ink-muted hover:text-foreground">
                 <X size={18} />
               </button>
@@ -930,26 +930,26 @@ function EstateContent() {
                 <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center">
                   <CheckCircle2 size={28} />
                 </div>
-                <h4 className="text-sm font-bold text-foreground">कागज़ सुरक्षित वॉल्ट में जुड़ गया!</h4>
+                <h4 className="text-sm font-bold text-foreground">Document Successfully Vaulted!</h4>
                 <p className="text-xs text-ink-muted">
-                  आपका दस्तावेज़ सुरक्षित रूप से सेव हो गया है।
+                  Your document is encrypted and saved securely.
                 </p>
                 <button
                   onClick={() => { setAddPaperModal(false); setPaperAddedSuccess(false); }}
                   className="mt-3 px-6 py-2 rounded-xl bg-forest text-white text-xs font-bold"
                 >
-                  ठीक है
+                  Done
                 </button>
               </div>
             ) : (
               <div className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold text-ink-muted block mb-1">
-                    कागज़ का नाम (Document Title)
+                    Document Title
                   </label>
                   <input
                     type="text"
-                    placeholder="उदा. बिजली कनेक्शन एनओसी / डायवर्सन ऑर्डर"
+                    placeholder="e.g. Electricity Connection NOC / NA Diversion Order"
                     value={newPaperTitle}
                     onChange={(e) => setNewPaperTitle(e.target.value)}
                     className="w-full text-sm px-3 py-2 rounded-lg border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
@@ -959,10 +959,10 @@ function EstateContent() {
                 <div className="p-6 rounded-xl border-2 border-dashed border-forest/40 bg-canvas/30 text-center space-y-2 cursor-pointer hover:bg-mint/20 transition">
                   <Scan size={32} className="mx-auto text-forest" />
                   <span className="text-xs font-bold text-forest block">
-                    कैमरे से फोटो खींचें या फाइल चुनें
+                    Take Photo with Camera or Browse Files
                   </span>
                   <span className="text-[10px] text-ink-muted block">
-                    PDF, JPG, PNG (ऑटो कॉर्नर डिटेक्शन सक्रिय)
+                    PDF, JPG, PNG (Auto-edge detection active)
                   </span>
                 </div>
 
@@ -970,7 +970,7 @@ function EstateContent() {
                   onClick={() => setPaperAddedSuccess(true)}
                   className="w-full py-2.5 rounded-xl bg-forest text-white text-xs font-bold hover:opacity-95 transition"
                 >
-                  वॉल्ट में सुरक्षित करें (Encrypt &amp; Save)
+                  Encrypt &amp; Vault Document
                 </button>
               </div>
             )}
@@ -983,7 +983,7 @@ function EstateContent() {
 
 export default function EstatePage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">लोड हो रहा है...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">Loading Property Hub...</div>}>
       <EstateContent />
     </Suspense>
   );

@@ -35,8 +35,8 @@ function UpdatesContent() {
       <Scene src={SCENE.dates}><p>{attentionOnly ? "Needs attention" : "Updates"}</p><strong>{attentionOnly ? "Open the next step" : "See what changed, then open the record"}</strong></Scene>
       <Link href="/market?tab=knowledge" className="block p-3.5 rounded-xl bg-mint/50 border border-forest/30 flex items-center justify-between transition hover:bg-mint/70">
         <div>
-          <span className="text-xs font-bold text-forest">ताज़ा बाज़ार समाचार, वास्तु व रियल एस्टेट ज्ञान</span>
-          <p className="text-[11px] text-ink-muted">इंदौर रियल एस्टेट अपडेट्स, सर्किल रेट्स व कानूनी शब्दावली देखें →</p>
+          <span className="text-xs font-bold text-forest">Real Estate News, Circle Rates &amp; Vastu Guide</span>
+          <p className="text-[11px] text-ink-muted">View Indore master plan updates, circle rates, and legal glossary →</p>
         </div>
       </Link>
       {error&&<p role="alert" className="text-red-700">{error}</p>}

@@ -87,11 +87,11 @@ function SignInForm({ error }: { error?: string }) {
               }}
               className="w-full py-3 px-4 rounded-full bg-forest text-white font-bold text-[14px] shadow-sm hover:opacity-95 transition flex items-center justify-center gap-2"
             >
-              <span>🚀 1-क्लिक रिव्यू खाता खोलें (Instant Access)</span>
+              <span>🚀 1-Click Instant Review Access</span>
             </button>
             <div className="relative flex py-3 items-center">
               <div className="flex-grow border-t border-line"></div>
-              <span className="flex-shrink mx-2 text-[10px] text-ink-muted uppercase font-bold tracking-wider">या मैन्युअल लॉगिन (or Manual Login)</span>
+              <span className="flex-shrink mx-2 text-[10px] text-ink-muted uppercase font-bold tracking-wider">or Manual Sign-In</span>
               <div className="flex-grow border-t border-line"></div>
             </div>
           </div>
