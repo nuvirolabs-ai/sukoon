@@ -38,22 +38,23 @@ import {
   type QuickExpense,
   type ConceptualPlan,
 } from "@/lib/data/construction-hub";
+import { ConstructionJourneyView } from "@/components/ConstructionJourneyView";
 
-type ActiveTab = "portfolio" | "rates" | "expenses" | "plans" | "directory";
+type ActiveTab = "journey" | "portfolio" | "rates" | "expenses" | "plans" | "directory";
 
 function EstateContent() {
   const searchParams = useSearchParams();
   const urlTab = searchParams.get("tab") as ActiveTab | null;
 
   const [tab, setTab] = useState<ActiveTab>(() => {
-    if (urlTab && ["portfolio", "rates", "expenses", "plans", "directory"].includes(urlTab)) {
+    if (urlTab && ["journey", "portfolio", "rates", "expenses", "plans", "directory"].includes(urlTab)) {
       return urlTab;
     }
-    return "portfolio";
+    return "journey";
   });
 
   useEffect(() => {
-    if (urlTab && ["portfolio", "rates", "expenses", "plans", "directory"].includes(urlTab)) {
+    if (urlTab && ["journey", "portfolio", "rates", "expenses", "plans", "directory"].includes(urlTab)) {
       setTab(urlTab);
     }
   }, [urlTab]);
@@ -128,22 +129,22 @@ function EstateContent() {
           Property &amp; Construction Hub
         </h1>
         <p className="text-xs text-ink-muted">
-          My Property &amp; Construction — Portfolio, Papers, Daily Rates &amp; Expense Notebook
+          My Property &amp; Construction — Zero-to-One Build Guide, Vault, Daily Rates &amp; Expense Notebook
         </p>
       </div>
 
-      {/* 5-Tab Navigation Pill Bar */}
+      {/* 6-Tab Navigation Pill Bar */}
       <nav className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-5 text-xs font-semibold">
         <button
-          onClick={() => setTab("portfolio")}
+          onClick={() => setTab("journey")}
           className={`px-3.5 py-2 rounded-full whitespace-nowrap transition flex items-center gap-1.5 ${
-            tab === "portfolio"
+            tab === "journey"
               ? "bg-forest text-white shadow-sm"
               : "bg-white text-foreground border border-line"
           }`}
         >
-          <Wallet size={14} />
-          <span>Portfolio &amp; Vault</span>
+          <Hammer size={14} />
+          <span>Build Journey (0 to 1)</span>
         </button>
 
         <button
@@ -193,7 +194,24 @@ function EstateContent() {
           <HardHat size={14} />
           <span>Architects &amp; Dealers</span>
         </button>
+
+        <button
+          onClick={() => setTab("portfolio")}
+          className={`px-3.5 py-2 rounded-full whitespace-nowrap transition flex items-center gap-1.5 ${
+            tab === "portfolio"
+              ? "bg-forest text-white shadow-sm"
+              : "bg-white text-foreground border border-line"
+          }`}
+        >
+          <Wallet size={14} />
+          <span>Portfolio &amp; Vault</span>
+        </button>
       </nav>
+
+      {/* =========================================================================
+          TAB: BUILD JOURNEY (0 TO 1)
+          ========================================================================= */}
+      {tab === "journey" && <ConstructionJourneyView />}
 
       {/* =========================================================================
           TAB 1: PORTFOLIO & VAULT

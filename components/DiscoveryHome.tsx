@@ -8,6 +8,7 @@ import {
   Calculator,
   Compass,
   FileText,
+  Hammer,
   HardHat,
   House,
   MapPin,
@@ -45,6 +46,12 @@ const UNIFIED_HUBS = [
 ] as const;
 
 const QUICK_TOOLS = [
+  {
+    icon: <Hammer size={16} className="text-forest" />,
+    label: "Build Guide",
+    sub: "0 to 1 Steps",
+    href: "/estate?tab=journey",
+  },
   {
     icon: <TrendingUp size={16} className="text-forest" />,
     label: "Daily Rates",
@@ -87,8 +94,8 @@ const FOUR_CARDS = [
   },
   {
     title: "Construction Log",
-    copy: "Daily raw material rates, expense notebook, and floor plans.",
-    href: "/estate?tab=rates",
+    copy: "Interactive 0-to-1 build guide, stages, material rates & spend.",
+    href: "/estate?tab=journey",
     art: "/home/construction.png",
     tone: "construction",
   },

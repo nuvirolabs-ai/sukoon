@@ -7,7 +7,7 @@ export default function ConstructionPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/estate?tab=rates");
+    router.replace("/estate?tab=journey");
   }, [router]);
 
   return (
