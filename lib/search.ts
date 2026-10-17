@@ -1,6 +1,7 @@
 import { getActiveSharesForUser, shareScopeAllows } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceForUser } from "@/lib/repository";
+import { previewDocumentsEnabled } from "@/lib/preview-documents";
 import { Prisma } from "@/lib/generated/prisma/client";
 import type { Prisma as PrismaTypes } from "@/lib/generated/prisma/client";
 
@@ -76,11 +77,13 @@ export async function reconcileSearchProjections(workspaceId: string) {
   const [properties, documents] = await Promise.all([
     prisma.property.findMany({ where: { workspaceId, status: "active" }, select: { id: true, name: true, type: true, city: true, area: true, address: true, jurisdiction: true, identifiers: true } }),
     prisma.propertyDoc.findMany({
-      where: { workspaceId, property: { status: "active" }, archivedAt: null, deletedAt: null, scanStatus: "clean", reviewStatus: "confirmed" },
+      where: previewDocumentsEnabled()
+        ? { workspaceId, property: { status: "active" }, archivedAt: null, deletedAt: null, OR: [{ scanStatus: "clean", reviewStatus: "confirmed" }, { scanStatus: "owner_copy" }] }
+        : { workspaceId, property: { status: "active" }, archivedAt: null, deletedAt: null, scanStatus: "clean", reviewStatus: "confirmed" },
       select: {
         id: true, propertyId: true, type: true, name: true, displayName: true, originalFilename: true, version: true,
         archivedAt: true, deletedAt: true, reviewStatus: true,
-        versions: { where: { scanStatus: "clean", reviewStatus: "confirmed" }, orderBy: { version: "desc" }, take: 1, select: { id: true, version: true, displayName: true, originalFilename: true, source: true, reviewStatus: true, scanStatus: true } },
+        versions: { where: previewDocumentsEnabled() ? { OR: [{ scanStatus: "clean", reviewStatus: "confirmed" }, { scanStatus: "owner_copy" }] } : { scanStatus: "clean", reviewStatus: "confirmed" }, orderBy: { version: "desc" }, take: 1, select: { id: true, version: true, displayName: true, originalFilename: true, source: true, reviewStatus: true, scanStatus: true } },
         parsingRuns: { where: { status: "succeeded" }, orderBy: { createdAt: "desc" }, select: { documentVersionId: true, textChars: true, textChunks: true } },
       },
     }),
@@ -103,13 +106,14 @@ export async function reconcileSearchProjections(workspaceId: string) {
       const version = document.versions[0];
       if (!version) continue;
       const chunks = parsedChunks(document.parsingRuns.find((run) => run.documentVersionId === version.id)?.textChunks);
-      const text = searchableText(chunks);
+      const parsed = searchableText(chunks);
+      const text = parsed || (version.scanStatus === "owner_copy" ? `${version.displayName} ${document.type} ${document.name}`.slice(0, MAX_SEARCHABLE_TEXT) : "");
       const id = `search:document:${document.id}:v${version.version}`;
       desiredIds.push(id);
       await tx.searchProjection.upsert({
         where: { id },
-        create: { id, workspaceId, propertyId: document.propertyId, documentId: document.id, documentVersionId: version.id, entityType: "DOCUMENT", sourceType: sourceType(version.source), title: version.displayName || version.originalFilename || document.displayName || document.name, category: document.type, searchableText: text || null, searchableChunks: chunks.length ? jsonValue(chunks) : undefined, searchableTextChars: text.length, reviewState: document.reviewStatus, visibilityState: "ACTIVE" },
-        update: { propertyId: document.propertyId, documentVersionId: version.id, sourceType: sourceType(version.source), title: version.displayName || version.originalFilename || document.displayName || document.name, category: document.type, searchableText: text || null, searchableChunks: chunks.length ? jsonValue(chunks) : Prisma.JsonNull, searchableTextChars: text.length, reviewState: document.reviewStatus, visibilityState: "ACTIVE", archivedAt: null, deletedAt: null },
+        create: { id, workspaceId, propertyId: document.propertyId, documentId: document.id, documentVersionId: version.id, entityType: "DOCUMENT", sourceType: sourceType(version.source), title: version.displayName || version.originalFilename || document.displayName || document.name, category: document.type, searchableText: text || null, searchableChunks: chunks.length ? jsonValue(chunks) : undefined, searchableTextChars: text.length, reviewState: version.scanStatus === "owner_copy" ? "owner_copy" : document.reviewStatus, visibilityState: "ACTIVE" },
+        update: { propertyId: document.propertyId, documentVersionId: version.id, sourceType: sourceType(version.source), title: version.displayName || version.originalFilename || document.displayName || document.name, category: document.type, searchableText: text || null, searchableChunks: chunks.length ? jsonValue(chunks) : Prisma.JsonNull, searchableTextChars: text.length, reviewState: version.scanStatus === "owner_copy" ? "owner_copy" : document.reviewStatus, visibilityState: "ACTIVE", archivedAt: null, deletedAt: null },
       });
     }
     await tx.searchProjection.deleteMany({ where: { workspaceId, id: { notIn: desiredIds } } });

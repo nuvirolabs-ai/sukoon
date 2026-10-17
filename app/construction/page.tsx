@@ -1,9 +1,18 @@
-import { Suspense } from "react";
-import { ConstructionHome } from "@/components/ConstructionOS";
-export default function Page() {
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function ConstructionPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/estate?tab=journey");
+  }, [router]);
+
   return (
-    <Suspense>
-      <ConstructionHome />
-    </Suspense>
+    <div className="p-8 text-center text-xs text-ink-muted">
+      Loading Construction Hub...
+    </div>
   );
 }

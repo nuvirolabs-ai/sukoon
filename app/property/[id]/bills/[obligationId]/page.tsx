@@ -6,6 +6,7 @@ import { Disclosure, GroupedList, ListRow, Metric, SectionHeader, displayLabel, 
 import { ListSkeleton } from "@/components/motion/Skeleton";
 import { PaymentForm, PaymentHistory, ScheduleCorrection } from "@/components/ObligationsPanel";
 import { useStore } from "@/components/StoreProvider";
+import { NextBar, otherPaper } from "@/components/PlaceCover";
 
 type Occurrence = { id: string; cycleKey: string; dueDate: string; amountPaise: string | null; amount: number | null; currency: string; status: string; source: string; version: number };
 type Obligation = { id: string; propertyId: string; type: string; label: string; direction: string; amountPaise: string | null; amount: number | null; currency: string; dueDate: string; timezone: string; recurrenceType: string; recurrenceDay: number | null; notes: string | null; source: string; reminderConfig: { enabled?: boolean; beforeDays?: number[] } | null; active: boolean; version: number; occurrences?: Occurrence[] };
@@ -50,7 +51,7 @@ export default function PaymentDetailPage() {
   return (
     <div>
       <PageHead title={obligation.label} backHref={`/property/${id}?tab=bills`} backLabel="Bills" />
-      <div className="space-y-6 pb-8">
+      <div className="space-y-6 pb-8 pb-next">
         <div className="metric-group">
           <Metric label="Total" value={formatMoneyExact(total)} />
           <Metric label="Paid" value={formatMoneyExact(paid)} />
@@ -91,6 +92,11 @@ export default function PaymentDetailPage() {
             <div className="list-row"><span className="row-copy"><span className="row-title">{reminderDays != null ? `${reminderDays} day${reminderDays === 1 ? "" : "s"} before` : "No reminder"}</span></span></div>
           </GroupedList>
         </section>
+        {(() => {
+          const paper = otherPaper(s.docs, id);
+          const propertyName = s.properties.find((property) => property.id === id)?.name || "this property";
+          return paper ? <NextBar kicker={/tax receipt/i.test(paper.type) ? `Other paper on ${propertyName}` : `Also on ${propertyName}`} title={paper.displayName || paper.name} href={`/property/${id}/documents/${paper.id}`} action="Open" /> : null;
+        })()}
         <Disclosure title="More actions">
           <ScheduleCorrection obligation={obligation} onChanged={() => setRefresh((value) => value + 1)} />
           {occurrence ? <PaymentHistory occurrenceId={occurrence.id} onChanged={() => setRefresh((value) => value + 1)} /> : null}

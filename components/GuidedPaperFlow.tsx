@@ -44,6 +44,8 @@ function scanCopy(document?: UploadedDocument | null) {
       return { title: "Scanning is unavailable", detail: "This paper stays private until a scanner verdict is recorded." };
     case "failed":
       return { title: "The scanner could not finish", detail: "This paper stays private until the scan can complete." };
+    case "owner_copy":
+      return { title: "Added to your vault", detail: "Malware scanning is not connected on this preview. This is your copy, not a scan result." };
     default:
       return { title: "Scanning your paper", detail: "The original is private while the configured local scanner checks this version." };
   }

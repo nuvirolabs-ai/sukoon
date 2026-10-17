@@ -13,7 +13,7 @@ export default function Refer() {
         <div className="rounded-[22px] bg-forest text-white p-5 text-center">
           <p className="text-[13px] tracking-widest opacity-70">YOUR CODE</p>
           <p className="text-[32px] font-medium tracking-tight mt-1">{s.referralCode}</p>
-          <p className="text-[14px] opacity-80 mt-2">No reward is connected in this build.</p>
+          <p className="text-[14px] opacity-80 mt-2">Share Sukoon with someone who keeps property papers.</p>
         </div>
         <a href={waShare(msg)} target="_blank" className="flex h-12 items-center justify-center rounded-full bg-[#25D366] text-white text-[14px] font-semibold">Share on WhatsApp</a>
         <button onClick={() => { navigator.clipboard?.writeText(msg); }} className="h-11 w-full rounded-full border border-line text-[15px]">Copy invite</button>

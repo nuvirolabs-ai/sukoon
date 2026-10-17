@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { getWorkspaceForUser } from "@/lib/repository";
 import { LocalObjectStorageAdapter, type ObjectStoragePort } from "@/lib/providers";
+import { previewDocumentsEnabled, PostgresPreviewObjectStorage } from "@/lib/preview-documents";
 import { prisma } from "@/lib/prisma";
 import { authorizeVaultContext } from "@/lib/authz";
 import type { DocumentProcessingState, DocumentReviewStatus, DocumentScanStatus, DocumentSource, DocumentVersionSummary, DocType } from "@/lib/types";
@@ -149,6 +150,10 @@ function localObjectStorage(): ObjectStoragePort {
   return new LocalObjectStorageAdapter(process.env.NODE_ENV === "test" ? "test" : "local");
 }
 
+function activeObjectStorage(): ObjectStoragePort {
+  return previewDocumentsEnabled() ? new PostgresPreviewObjectStorage() : localObjectStorage();
+}
+
 export async function recordVaultHistory(tx: Prisma.TransactionClient, context: { workspaceId: string; propertyId: string | null; purchaseCandidateId: string | null }, event: { date: string; title: string; detail: string; kind: string }) {
   if (context.propertyId) return tx.timelineEvent.create({ data: { id: randomUUID(), workspaceId: context.workspaceId, propertyId: context.propertyId, ...event } });
   if (!context.purchaseCandidateId) throw new VaultInputError("INVALID_CONTEXT", "Document context required.");
@@ -238,7 +243,8 @@ export async function createDocumentForUser(input: {
     return { document: mapVaultDocument(existing), duplicate: true, version: workspace.version };
   }
 
-  const storage = input.storage ?? localObjectStorage();
+  const storage = input.storage ?? activeObjectStorage();
+  const ownerCopy = previewDocumentsEnabled();
   const documentId = input.replaceDocumentId ?? randomUUID().replaceAll("-", "");
   const versionId = randomUUID().replaceAll("-", "");
   const storageKey = `${input.userId}/${propertyId ?? purchaseCandidateId}/${documentId}/${versionId}.${checked.extension}`;
@@ -264,8 +270,8 @@ export async function createDocumentForUser(input: {
         sizeBytes: checked.sizeBytes,
         sha256: checked.sha256,
         storageKey,
-        scanStatus: "scan_pending",
-        processingState: "quarantined",
+        scanStatus: ownerCopy ? "owner_copy" : "scan_pending",
+        processingState: ownerCopy ? "ready" : "quarantined",
         reviewStatus: "awaiting_review",
         source: parent ? "user_replaced" : "user_uploaded",
         uploadedBy: input.userId,
@@ -291,8 +297,8 @@ export async function createDocumentForUser(input: {
         : await tx.propertyDoc.create({ data: { id: documentId, workspaceId: workspace.id, propertyId, purchaseCandidateId, type: input.category, ...(input.subtype === undefined ? {} : { subtype: input.subtype.slice(0, 120) }), name: displayName, ...documentCommon, uploadDate: now.toISOString().slice(0, 10), idempotencyKey: input.idempotencyKey, verified: false }, include: { versions: { orderBy: { version: "asc" } } } });
       await tx.documentVersion.create({ data: { id: versionId, workspaceId: workspace.id, documentId: row.id, version, ...common } });
       await tx.workspace.update({ where: { id: workspace.id }, data: { version: { increment: 1 } } });
-      await recordVaultHistory(tx, { workspaceId: workspace.id, propertyId, purchaseCandidateId }, { date: now.toISOString().slice(0, 10), title: parent ? `Document version added: ${input.category}` : `Document quarantined: ${input.category}`, detail: displayName, kind: "doc" });
-      await createScanJob(tx, { documentId: row.id, documentVersionId: versionId, workspaceId: workspace.id, propertyId, purchaseCandidateId });
+      await recordVaultHistory(tx, { workspaceId: workspace.id, propertyId, purchaseCandidateId }, { date: now.toISOString().slice(0, 10), title: parent ? `Document version added: ${input.category}` : ownerCopy ? `Document added: ${input.category}` : `Document quarantined: ${input.category}`, detail: displayName, kind: "doc" });
+      if (!ownerCopy) await createScanJob(tx, { documentId: row.id, documentVersionId: versionId, workspaceId: workspace.id, propertyId, purchaseCandidateId });
       const fresh = await tx.propertyDoc.findUniqueOrThrow({ where: { id: row.id }, include: { versions: { orderBy: { version: "asc" } } } });
       return { row: fresh, duplicate: false };
     }, { timeout: 15000 });
@@ -330,7 +336,7 @@ export async function archiveDocumentForUser(userId: string, documentId: string)
 export async function restoreDocumentForUser(userId: string, documentId: string) {
   const { workspace, row } = await findDocumentForUser(userId, documentId, true);
   if (row.deletedAt || !row.archivedAt) throw new VaultInputError("RESOURCE_NOT_FOUND", "Document not found.", 404);
-  const processingState = row.scanStatus === "clean" ? "ready" : "quarantined";
+  const processingState = row.scanStatus === "clean" || row.scanStatus === "owner_copy" ? "ready" : "quarantined";
   await prisma.$transaction(async (tx) => {
     await tx.propertyDoc.update({ where: { id: row.id }, data: { archivedAt: null, processingState } });
     await tx.workspace.update({ where: { id: workspace.id }, data: { version: { increment: 1 } } });
@@ -338,7 +344,7 @@ export async function restoreDocumentForUser(userId: string, documentId: string)
   return { document: mapVaultDocument(await findDocumentForUser(userId, documentId).then(({ row: fresh }) => fresh)), version: workspace.version + 1 };
 }
 
-export async function deleteDocumentForUser(userId: string, documentId: string, storage: ObjectStoragePort = localObjectStorage()) {
+export async function deleteDocumentForUser(userId: string, documentId: string, storage: ObjectStoragePort = activeObjectStorage()) {
   const { workspace, row } = await findDocumentForUser(userId, documentId);
   const versions = await prisma.documentVersion.findMany({ where: { workspaceId: workspace.id, documentId: row.id }, select: { storageKey: true } });
   await prisma.$transaction(async (tx) => {
@@ -349,13 +355,15 @@ export async function deleteDocumentForUser(userId: string, documentId: string, 
   return { version: workspace.version + 1 };
 }
 
-export async function getProtectedDocumentBytes(userId: string, documentId: string, storage: ObjectStoragePort = localObjectStorage(), versionId?: string) {
+export async function getProtectedDocumentBytes(userId: string, documentId: string, storage?: ObjectStoragePort, versionId?: string) {
+  const store = storage ?? activeObjectStorage();
   const { row } = await findDocumentForUser(userId, documentId);
   const version = versionId ? row.versions.find(v => v.id === versionId) : row.versions.find(v => v.version === row.version);
-  if (!version || version.scanStatus !== "clean" || (row.purchaseCandidateId && version.reviewStatus !== "confirmed")) throw new VaultInputError("DOCUMENT_NOT_READY", "This version requires a completed scan and applicable manual review.", 423);
+  const ownerCopy = version?.scanStatus === "owner_copy" && previewDocumentsEnabled();
+  if (!version || (version.scanStatus !== "clean" && !ownerCopy) || (!ownerCopy && row.purchaseCandidateId && version.reviewStatus !== "confirmed")) throw new VaultInputError("DOCUMENT_NOT_READY", "This version requires a completed scan and applicable manual review.", 423);
   if (version.version === row.version && (version.sha256 !== row.sha256 || version.storageKey !== row.storageKey || version.sizeBytes !== row.sizeBytes)) throw new VaultStorageError("Current document and version integrity metadata disagree.");
-  if (version.version === row.version && row.scanStatus !== "clean") throw new VaultInputError("DOCUMENT_NOT_READY", "Current scan verdict unavailable.", 423);
-  const stored = await storage.get(version.storageKey);
+  if (version.version === row.version && row.scanStatus !== version.scanStatus) throw new VaultInputError("DOCUMENT_NOT_READY", "Current scan verdict unavailable.", 423);
+  const stored = await store.get(version.storageKey);
   if (stored.outcome === "unavailable") throw new VaultStorageError("The private document object is unavailable.");
   if (sha256Hex(stored.value.bytes) !== version.sha256) throw new VaultStorageError("The private document failed its integrity check.");
   const fresh = await findDocumentForUser(userId, documentId); // Re-authorize after object retrieval.
