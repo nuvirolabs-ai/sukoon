@@ -24,8 +24,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   if (path === "/home-reference") return <>{children}</>;
   if (snapshot.status === "loading") return <div className="mx-auto max-w-[430px] bg-white min-h-dvh p-6 text-sm native-safe-screen">Loading Sukoon…</div>;
   if (snapshot.status === "unreachable") return <UnreachableState />;
-  if (snapshot.status === "signed-out") return <SignInForm />;
-  if (!snapshot.state || !snapshot.email) return <SignInForm error={snapshot.error} />;
+  // Auto-enter preview workspace when signed out (no login form shown)
+  if (snapshot.status === "signed-out") return <AutoPreviewEntry />;
+  if (!snapshot.state || !snapshot.email) return <AutoPreviewEntry />;
 
   const value: StoreContextValue = {
     s: snapshot.state,
@@ -39,6 +40,44 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     logout: signOut,
   };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/** Auto-enter preview workspace without showing login form. */
+function AutoPreviewEntry() {
+  const [failed, setFailed] = useState(false);
+  const attempted = useState(() => ({ done: false }))[0];
+
+  if (!attempted.done) {
+    attempted.done = true;
+    void (async () => {
+      try {
+        const res = await fetch("/api/auth/preview-workspace/enter", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+          credentials: "same-origin",
+        });
+        if (res.ok) {
+          retrySession();
+        } else {
+          setFailed(true);
+        }
+      } catch {
+        setFailed(true);
+      }
+    })();
+  }
+
+  if (failed) return <SignInForm />;
+
+  return (
+    <div className="mx-auto max-w-[430px] bg-white min-h-dvh p-6 text-sm native-safe-screen flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-[46px] tracking-wide leading-none" style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>SUK<span className="text-[#2563eb]">OO</span>N</p>
+        <p className="mt-3 text-sm text-ink-muted">Opening your property passport…</p>
+      </div>
+    </div>
+  );
 }
 
 function SignInForm({ error }: { error?: string }) {
