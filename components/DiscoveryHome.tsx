@@ -20,7 +20,7 @@ import {
   type ShortcutItem,
 } from "@/lib/favorites";
 import { useSelectedCity } from "@/lib/city";
-import { AtelierFavorites } from "@/components/AtelierFavorites";
+import { IOSFolderFavorites } from "@/components/IOSFolderFavorites";
 
 function profileMark(email: string, ownerName?: string) {
   const source = (ownerName || email.split("@")[0] || "You").replace(/[._-]+/g, " ").trim();
@@ -255,31 +255,33 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
   return (
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
       <div>
-        {/* 1. Header with Centered Sukoon Logo, City Selector & Profile */}
-        <header className="relative flex items-center justify-between mb-7 pt-2 min-h-[46px]">
+        {/* 1. Header with Centered Sukoon Logo, City Selector & Profile (Native Mobile Optimized) */}
+        <header className="relative flex items-center justify-between mb-7 pt-2.5 min-h-[48px] px-0.5">
           {/* Top Left: City Selector */}
           <button
             type="button"
             onClick={() => setCityModalOpen(true)}
             aria-label="Select City"
-            className="tap-scale flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs z-10"
+            className="tap-scale relative z-10 flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs shrink-0"
           >
             <MapPin size={11} className="text-[#1E5637] shrink-0" />
-            <span className="max-w-[70px] truncate">{city}</span>
+            <span className="max-w-[62px] truncate">{city}</span>
             <ChevronDown size={10} className="text-ink-muted shrink-0" />
           </button>
 
-          {/* Center Brand Identity - Centered with Mathematical Precision */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-auto">
-            <Image
-              src="/images/sukoon-brand-logo.png"
-              alt="Sukoon"
-              width={648}
-              height={122}
-              priority
-              className="h-7 w-auto object-contain mix-blend-multiply select-none"
-            />
-            <p className="sublogo-tracking text-[8px] font-semibold text-[#6E7B73] uppercase mt-1 leading-none tracking-[0.28em]">
+          {/* Center Brand Identity - Centered with Mathematical Precision & Safe Margins */}
+          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-24">
+            <div className="h-6.5 sm:h-7 flex items-center justify-center overflow-visible">
+              <Image
+                src="/images/sukoon-brand-logo.png"
+                alt="Sukoon"
+                width={342}
+                height={79}
+                priority
+                className="h-6.5 sm:h-7 w-auto object-contain select-none mix-blend-multiply"
+              />
+            </div>
+            <p className="sublogo-tracking text-[7.5px] sm:text-[8px] font-semibold text-[#6E7B73] uppercase mt-0.5 leading-none tracking-[0.24em] select-none whitespace-nowrap">
               Escape the Chaos
             </p>
           </div>
@@ -288,7 +290,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           <Link
             href="/profile"
             aria-label="User Profile"
-            className="tap-scale w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0 z-10"
+            className="tap-scale relative z-10 w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0"
           >
             {mark}
           </Link>
@@ -417,8 +419,8 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </div>
         </div>
 
-        {/* 4. My Favorites Section: Sculpted Atelier Tray */}
-        <AtelierFavorites
+        {/* 4. My Favorites Section: iPhone-Style App Folder */}
+        <IOSFolderFavorites
           favoriteItems={favoriteItems}
           onOpenCustomize={() => setCustomizeModal(true)}
           renderIcon={(type, className) => <ShortcutIcon type={type} className={className} />}
