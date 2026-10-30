@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { archiveDocumentForUser, VaultInputError } from "@/lib/vault-repository";
+import { hostedPrivateStorageClosed } from "@/lib/preview-documents";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
-  if (process.env.NODE_ENV === "production") return NextResponse.json({ error: { code: "STORAGE_PROVIDER_UNAVAILABLE", message: "Private object storage is not configured outside local development." } }, { status: 503 });
+  if (hostedPrivateStorageClosed()) return NextResponse.json({ error: { code: "STORAGE_PROVIDER_UNAVAILABLE", message: "Private object storage is not configured outside local development." } }, { status: 503 });
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return NextResponse.json({ error: { code: "AUTHENTICATION_REQUIRED", message: "Sign in required." } }, { status: 401 });
   const { id } = await context.params;

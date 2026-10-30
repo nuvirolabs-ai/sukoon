@@ -19,6 +19,19 @@ function createPrisma() {
   } } }) as unknown as PrismaClient;
 }
 
-export const prisma = globalForPrisma.sukoonPrisma ?? createPrisma();
+function livePrisma() {
+  if (!globalForPrisma.sukoonPrisma) globalForPrisma.sukoonPrisma = createPrisma();
+  return globalForPrisma.sukoonPrisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.sukoonPrisma = prisma;
+// A missing database must not crash the module graph. Queries still fail closed
+// on the first call. When DATABASE_URL is set, the client is created immediately.
+export const prisma: PrismaClient = process.env.DATABASE_URL
+  ? livePrisma()
+  : new Proxy({} as PrismaClient, {
+      get(_target, prop, receiver) {
+        const client = livePrisma();
+        const value = Reflect.get(client, prop, receiver);
+        return typeof value === "function" ? value.bind(client) : value;
+      },
+    });
