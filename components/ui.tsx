@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen } from "lucide-react";
+import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen, Search, User } from "lucide-react";
 import { cx } from "@/lib/utils";
 import { useStore } from "./StoreProvider";
 import { t } from "@/lib/i18n";
@@ -65,22 +65,22 @@ function BottomNav() {
   const tabs = [
     { href: "/", label: t("home", lang), active: path === "/", icon: <Home className={NAV_ICON} /> },
     {
-      href: "/estate",
-      label: t("estate", lang),
-      active: path.startsWith("/estate") || path.startsWith("/propert") || path.startsWith("/vault") || path.startsWith("/construction"),
-      icon: <Building2 className={NAV_ICON} />,
+      href: "/search",
+      label: "Search",
+      active: path.startsWith("/search"),
+      icon: <Search className={NAV_ICON} />,
     },
   ];
   const tabsAfter = [
-    {
-      href: "/market",
-      label: t("market", lang),
-      active: path.startsWith("/market") || path.startsWith("/buy-sell") || path.startsWith("/updates") || path.startsWith("/search"),
-      icon: <Compass className={NAV_ICON} />,
-    },
     place?.slot === "more"
       ? { href: place.href, label: place.label, active: true, icon: place.icon }
       : { href: "/more", label: t("more", lang), active: moreActive || path.startsWith("/more"), icon: <MoreHorizontal className={NAV_ICON} /> },
+    {
+      href: "/profile",
+      label: "Profile",
+      active: path.startsWith("/profile"),
+      icon: <User className={NAV_ICON} />,
+    },
   ];
   const item = (href: string, label: string, active: boolean, icon: React.ReactNode) => (
     <Link href={href} aria-current={active ? "page" : undefined} className={cx("nav-item", active && "is-active")}>
