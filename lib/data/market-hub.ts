@@ -104,6 +104,60 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
     image: "/places/place-plot.png",
   },
   {
+    id: "deal-omaxe-01",
+    title: "1,500 sq.ft Prime Residential Plot in Omaxe City 1",
+    location: "Omaxe City 1, AB Bypass Road, Indore",
+    city: "Indore",
+    priceFormatted: "₹67.50 Lakhs (₹4,500/sq.ft)",
+    pricePaise: 675000000n,
+    type: "Plot",
+    dimensions: "30 × 50",
+    areaSqft: 1500,
+    facing: "North-East Facing (Park Facing)",
+    reraApproved: true,
+    clearTitle: true,
+    postedDate: "Today, 11:30 AM",
+    postedBy: "Vikramaditya Rathore (Direct Channel Partner)",
+    agencyOrSeller: "Heritage Estates Bypass",
+    whatsappMessage: "Hello, I saw the 1500 sqft Plot in Omaxe City 1 for ₹67.50 Lakhs on Sukoon. Is it near the club house? Please send details.",
+    phone: "+91 98265 77110",
+    whatsapp: "919826577110",
+    highlights: [
+      "Prime Park Facing Plot in Sector B",
+      "Fully gated township with 24x7 security & clubhouse",
+      "Direct owner registry, clear title & zero encumbrance",
+      "Bank loan pre-approved from SBI & HDFC",
+    ],
+    image: "/places/place-plot.png",
+  },
+  {
+    id: "deal-dlf-01",
+    title: "2,000 sq.ft Corner Villa Plot in DLF Gardencity",
+    location: "DLF Gardencity, AB Bypass Road, Indore",
+    city: "Indore",
+    priceFormatted: "₹96.00 Lakhs (₹4,800/sq.ft)",
+    pricePaise: 960000000n,
+    type: "Plot",
+    dimensions: "40 × 50 Corner",
+    areaSqft: 2000,
+    facing: "East-North Corner",
+    reraApproved: true,
+    clearTitle: true,
+    postedDate: "Today, 08:45 AM",
+    postedBy: "Neha Saxena (Verified Associate)",
+    agencyOrSeller: "Greenfield Properties",
+    whatsappMessage: "Hello Neha, interested in the 2000 sqft Corner Plot in DLF Gardencity on Sukoon for ₹96L. Can we visit this afternoon?",
+    phone: "+91 98931 99220",
+    whatsapp: "919893199220",
+    highlights: [
+      "Ultra-wide 60 ft & 40 ft corner junction",
+      "IDA & T&CP approved township with underground utilities",
+      "Immediate registry & boundary demarcation done",
+      "Walking distance from international sports arena",
+    ],
+    image: "/places/place-plot.png",
+  },
+  {
     id: "deal-02",
     title: "3 BHK Modern Luxury Villa at Scheme 140 / Pipliyahana",
     location: "Scheme 140, Near World Cup Square, Indore",
@@ -183,6 +237,33 @@ export const DAILY_WHATSAPP_DEALS: WhatsAppDeal[] = [
       "Includes 1 Covered Basement Car Parking",
     ],
     image: "/places/place-flat.png",
+  },
+  {
+    id: "deal-05",
+    title: "1,200 sq.ft Residential Plot in Silicon City",
+    location: "Silicon City, Rau AB Road, Indore",
+    city: "Indore",
+    priceFormatted: "₹42.00 Lakhs (₹3,500/sq.ft)",
+    pricePaise: 420000000n,
+    type: "Plot",
+    dimensions: "24 × 50",
+    areaSqft: 1200,
+    facing: "West Facing",
+    reraApproved: true,
+    clearTitle: true,
+    postedDate: "Yesterday, 11:10 AM",
+    postedBy: "Mohanlal Sharma",
+    agencyOrSeller: "Rau Property Hub",
+    whatsappMessage: "Hello Mohanlal ji, saw the 1200 sqft plot in Silicon City for ₹42 Lakhs on Sukoon. Please share mutation receipt.",
+    phone: "+91 98261 44552",
+    whatsapp: "919826144552",
+    highlights: [
+      "Near IPS Academy and Emerald Heights School",
+      "Direct municipal tap water and concrete drainage",
+      "Ready for house construction",
+      "Clear title verified by Sukoon",
+    ],
+    image: "/places/place-plot.png",
   },
 ];
 
@@ -276,6 +357,32 @@ export const REGISTERED_ASSOCIATES: RegisteredAssociate[] = [
     whatsapp: "919425088339",
     verified: true,
   },
+  {
+    id: "assoc-04",
+    name: "Vikramaditya Rathore",
+    agency: "Heritage Estates Bypass",
+    reraNumber: "MPRERA-A-IND-2021-0812",
+    experienceYears: 14,
+    primeAreas: ["Omaxe City 1 & 2", "Indore Bypass", "Bicholi Mardana"],
+    dealsClosed: 124,
+    rating: 4.9,
+    phone: "+91 98265 77110",
+    whatsapp: "919826577110",
+    verified: true,
+  },
+  {
+    id: "assoc-05",
+    name: "Neha Saxena",
+    agency: "Greenfield Properties",
+    reraNumber: "MPRERA-A-IND-2024-1402",
+    experienceYears: 9,
+    primeAreas: ["DLF Gardencity", "Super Corridor", "Airport Road"],
+    dealsClosed: 76,
+    rating: 4.8,
+    phone: "+91 98931 99220",
+    whatsapp: "919893199220",
+    verified: true,
+  },
 ];
 
 // Bank Loan Details & Interest Comparison
@@ -321,6 +428,34 @@ export const BANK_LOAN_DETAILS: BankLoanDetail[] = [
       "High loan-to-value (LTV) up to 80% on registered values",
     ],
     contactSupport: "1800 1080",
+  },
+  {
+    id: "bank-bob",
+    bankName: "Bank of Baroda",
+    interestRateMin: 8.40,
+    interestRateMax: 9.20,
+    maxTenureYears: 30,
+    processingFee: "Zero processing fee under Baroda Monsoon / Festive Offer",
+    specialFeatures: [
+      "Special concession for Baroda Yoddha defense personnel",
+      "Linked to Baroda Repo Linked Lending Rate (BRLLR)",
+      "Top-up loan facility at standard home loan interest rates",
+    ],
+    contactSupport: "1800 5700",
+  },
+  {
+    id: "bank-union",
+    bankName: "Union Bank of India",
+    interestRateMin: 8.35,
+    interestRateMax: 9.05,
+    maxTenureYears: 30,
+    processingFee: "0.50% (Max ₹15,000)",
+    specialFeatures: [
+      "Competitive low entry interest rate for CIBIL > 750",
+      "Free personal accident insurance coverage with loan",
+      "Quick sanction for plot purchase + house construction",
+    ],
+    contactSupport: "1800 22 22 44",
   },
 ];
 
@@ -399,6 +534,88 @@ Buyer Signature: ____________________
 Witness 1: ____________________     Witness 2: ____________________`,
   },
   {
+    id: "draft-registry",
+    title: "Registry Agreement & Sale Deed Clauses",
+    titleSubtitle: "Conveyance Deed & Sub-Registrar Submission Draft",
+    category: "Sale",
+    estimatedTimeMin: 6,
+    description: "Statutory sale deed conveyance agreement draft with boundary schedule, khasra mutation declaration, and consideration clauses.",
+    variables: [
+      { key: "vendorName", label: "Vendor / Seller Full Name", defaultValue: "Vikas Trivedi", type: "text" },
+      { key: "vendeeName", label: "Vendee / Buyer Full Name", defaultValue: "Akshay Sharma", type: "text" },
+      { key: "khasraNumber", label: "Khasra / Survey Number", defaultValue: "Khasra No. 142/2/1", type: "text" },
+      { key: "subDistrict", label: "Sub-District / Tehsil", defaultValue: "Tehsil Indore, District Indore (M.P.)", type: "text" },
+      { key: "saleValue", label: "Total Sale Consideration (₹)", defaultValue: "5200000", type: "number" },
+      { key: "eastBoundary", label: "East Boundary", defaultValue: "Colony 30 Feet Cement Road", type: "text" },
+      { key: "westBoundary", label: "West Boundary", defaultValue: "Plot No. 15", type: "text" },
+      { key: "northBoundary", label: "North Boundary", defaultValue: "Plot No. 22", type: "text" },
+      { key: "southBoundary", label: "South Boundary", defaultValue: "Open Park Boundary", type: "text" },
+    ],
+    templateContent: `DEED OF ABSOLUTE SALE (REGISTRY CONVEYANCE)
+
+This Absolute Deed of Sale is executed before the Sub-Registrar of Assurances at {{subDistrict}}:
+
+BY AND BETWEEN:
+VENDOR (SELLER): {{vendorName}}, having PAN and Aadhaar, hereinafter called the First Party.
+AND
+VENDEE (BUYER): {{vendeeName}}, having PAN and Aadhaar, hereinafter called the Second Party.
+
+PROPERTY SCHEDULE & BOUNDARIES:
+All that piece and parcel of freehold land situated at {{khasraNumber}}, {{subDistrict}}, bounded as follows:
+- EAST: {{eastBoundary}}
+- WEST: {{westBoundary}}
+- NORTH: {{northBoundary}}
+- SOUTH: {{southBoundary}}
+
+OPERATIVE COVENANTS:
+1. CONSIDERATION: In consideration of the sum of ₹{{saleValue}}/- paid in full by the Vendee to the Vendor via Cheque/RTGS, the Vendor hereby conveys, transfers, and assigns absolute freehold rights and title to the Vendee forever.
+2. POSSESSION: Vacant, physical, and peaceful possession of the property has been delivered to the Vendee upon signing.
+3. INDEMNITY & TITLE: The Vendor declares that the property has unencumbered title, free from attachments, civil court decrees, taxes, mortgages, or government acquisitions.
+4. MUTATION (NAMANTARAN): The Vendor hereby consents to the mutation of the Vendee's name in Revenue and Municipal records without objection.
+
+In witness whereof, the parties have signed on this deed in the presence of witnesses.
+
+Vendor (Signature & Thumb): ____________________
+Vendee (Signature & Thumb): ____________________
+Witness 1: ____________________     Witness 2: ____________________`,
+  },
+  {
+    id: "draft-jahir-suchna",
+    title: "Jahir Suchna Doc (Public Notice)",
+    titleSubtitle: "Newspaper Notice of Title Search (अख़बारी ज़ाहिर सूचना)",
+    category: "Compliance",
+    estimatedTimeMin: 4,
+    description: "Statutory public notice template published in regional newspapers prior to property registry to invite third-party objections.",
+    variables: [
+      { key: "advocateName", label: "Advocate Full Name", defaultValue: "Adv. Rajesh Saxena (High Court Bar Association)", type: "text" },
+      { key: "clientName", label: "Purchaser / Client Name", defaultValue: "Akshay Sharma", type: "text" },
+      { key: "propertyDetail", label: "Property Full Description", defaultValue: "Plot No. 14, Sector B, Scheme 140, Indore (Area 1,500 sq.ft)", type: "text" },
+      { key: "sellerName", label: "Current Owner / Seller", defaultValue: "Vikas Trivedi S/o Ramesh Trivedi", type: "text" },
+      { key: "cityDistrict", label: "City / District", defaultValue: "Indore (M.P.)", type: "text" },
+      { key: "advocateContact", label: "Advocate Office Phone / WhatsApp", defaultValue: "+91 98260 11223", type: "text" },
+    ],
+    templateContent: `PUBLIC NOTICE / ज़ाहिर सूचना (TITLE CLEARANCE SEARCH)
+
+To all whomsoever it may concern:
+
+Be it known to the general public that our client, {{clientName}}, resident of {{cityDistrict}}, has entered into an Agreement to Sell to purchase the following immovable property:
+
+PROPERTY DESCRIPTION:
+{{propertyDetail}}, currently owned and possessed by {{sellerName}}.
+
+Our client is investigating the marketability and marketable freehold title of the above-mentioned property for final registry execution.
+
+Any bank, financial institution, private lender, family heir, coparcener, or any other person having any claim, charge, lien, mortgage, easement, court litigation, leasehold, or objection whatsoever against the said property is hereby called upon to lodge written objection with documentary proof at our office address below within 15 (fifteen) days from the publication of this notice.
+
+If no valid objection is received with certified documents within the stipulated period, it shall be deemed that the property has clear, marketable, and unencumbered title, and our client shall proceed with the execution and registration of the Sale Deed. Any subsequent claims shall be deemed waived and rejected.
+
+Date of Notice: {{publishedDate}}
+Issued Under Instructions of Client By:
+{{advocateName}}
+Office Address: Chamber No. 42, District Court Compound, {{cityDistrict}}
+Contact: {{advocateContact}}`,
+  },
+  {
     id: "draft-registry-checklist",
     title: "Property Registry Mandatory Checklist",
     titleSubtitle: "Sub-Registrar Office Statutory Documents",
@@ -424,5 +641,201 @@ Mandatory documents required at the Sub-Registrar Office for Deed Execution in {
 10. [ ] TDS Form 26QB acknowledgement receipt (for transactions exceeding ₹50 Lakhs under Section 194-IA)
 
 Note: Parties should report at the Sub-Registrar office 15 minutes before the booked SAMPADA slot.`,
+  },
+];
+
+// Multi-City Guideline Values across India
+export interface CityGuidelineGroup {
+  city: string;
+  state: string;
+  stampDutyNote: string;
+  rates: GuidelineRate[];
+}
+
+export const MULTI_CITY_GUIDELINE_RATES: CityGuidelineGroup[] = [
+  {
+    city: "Indore",
+    state: "Madhya Pradesh",
+    stampDutyNote: "MP Stamp Duty: 7.5% (5% Stamp Duty + 2% Janpad + 0.5% Upkar) + 3% Municipal Cess = 10.5% for Urban",
+    rates: INDORE_GUIDELINE_RATES,
+  },
+  {
+    city: "Bhopal",
+    state: "Madhya Pradesh",
+    stampDutyNote: "MP Stamp Duty: 10.5% in Bhopal Municipal Corporation (BMC) limit",
+    rates: [
+      {
+        id: "bhopal-01",
+        locality: "Arera Colony / E-1 to E-7",
+        zone: "Zone 1 (Bhopal Prime VIP Residential)",
+        residentialPlotRate: 6400,
+        commercialPlotRate: 12800,
+        flatBuiltUpRate: 4600,
+        notes: "High demand posh sector; premium circle rate calculation.",
+      },
+      {
+        id: "bhopal-02",
+        locality: "Hoshangabad Road (Bhopal-Hoshangabad Highway)",
+        zone: "Zone 5 (Growth Corridor & Malls)",
+        residentialPlotRate: 4200,
+        commercialPlotRate: 8500,
+        flatBuiltUpRate: 3600,
+        notes: "Major residential township hub with AIIMS Bhopal connectivity.",
+      },
+      {
+        id: "bhopal-03",
+        locality: "Kolar Road / Chuna Bhatti",
+        zone: "Zone 6 (Rapid Suburban Expansion)",
+        residentialPlotRate: 3800,
+        commercialPlotRate: 7200,
+        flatBuiltUpRate: 3200,
+        notes: "Four-lane expressway underway; rising capital valuation.",
+      },
+      {
+        id: "bhopal-04",
+        locality: "MP Nagar Zone 1 & Zone 2",
+        zone: "Zone 2 (Central Commercial District)",
+        residentialPlotRate: 8500,
+        commercialPlotRate: 18500,
+        flatBuiltUpRate: 6200,
+        notes: "Prime commercial, banking, and coaching hub of Madhya Pradesh.",
+      },
+    ],
+  },
+  {
+    city: "Ujjain",
+    state: "Madhya Pradesh",
+    stampDutyNote: "MP Stamp Duty: 10.5% (Special Simhastha infra development concessions in specific corridors)",
+    rates: [
+      {
+        id: "ujjain-01",
+        locality: "Mahakal Corridor / Hari Phatak Belt",
+        zone: "Zone 1 (Pilgrim Hospitality & Heritage)",
+        residentialPlotRate: 5200,
+        commercialPlotRate: 11500,
+        flatBuiltUpRate: 4000,
+        notes: "High commercial demand for hotels, resorts, and dharamshalas.",
+      },
+      {
+        id: "ujjain-02",
+        locality: "Sanwer Road / Indore-Ujjain Highway",
+        zone: "Zone 3 (Indore Metro Link Corridor)",
+        residentialPlotRate: 3600,
+        commercialPlotRate: 7400,
+        flatBuiltUpRate: 3100,
+        notes: "Proposed Indore-Ujjain rapid transit link appreciation belt.",
+      },
+      {
+        id: "ujjain-03",
+        locality: "Freeganj / Madhav Nagar",
+        zone: "Zone 2 (Central Ujjain Residential)",
+        residentialPlotRate: 4800,
+        commercialPlotRate: 9500,
+        flatBuiltUpRate: 3800,
+        notes: "Established residential core with wide railway connectivity.",
+      },
+    ],
+  },
+  {
+    city: "Pune",
+    state: "Maharashtra",
+    stampDutyNote: "Maharashtra Stamp Duty: 6% (5% Stamp Duty + 1% Local Body Tax) + 1% Metro Cess = 7%",
+    rates: [
+      {
+        id: "pune-01",
+        locality: "Hinjewadi / Rajiv Gandhi Infotech Park",
+        zone: "PCMC / PMRDA IT Hub",
+        residentialPlotRate: 7800,
+        commercialPlotRate: 15200,
+        flatBuiltUpRate: 6400,
+        notes: "IT hub with high rental yields and fast Metro construction.",
+      },
+      {
+        id: "pune-02",
+        locality: "Kharadi / EON Free Zone",
+        zone: "Eastern Pune IT District",
+        residentialPlotRate: 8600,
+        commercialPlotRate: 17500,
+        flatBuiltUpRate: 7200,
+        notes: "Near Pune International Airport and World Trade Centre.",
+      },
+      {
+        id: "pune-03",
+        locality: "Baner / Balewadi High Street",
+        zone: "Western Corridor (Mumbai Highway)",
+        residentialPlotRate: 9800,
+        commercialPlotRate: 19800,
+        flatBuiltUpRate: 8100,
+        notes: "Luxury lifestyle, premium restaurants, and tech headquarters.",
+      },
+    ],
+  },
+  {
+    city: "Bengaluru",
+    state: "Karnataka",
+    stampDutyNote: "Karnataka Stamp Duty: 5% + 10% Cess on Stamp Duty + 2% Urban Surcharge (~5.6% total)",
+    rates: [
+      {
+        id: "blr-01",
+        locality: "Whitefield / ITPL Main Road",
+        zone: "East Bengaluru IT Zone",
+        residentialPlotRate: 9200,
+        commercialPlotRate: 18800,
+        flatBuiltUpRate: 7500,
+        notes: "Purple Line Metro connected; high corporate leasing volume.",
+      },
+      {
+        id: "blr-02",
+        locality: "Sarjapur Road / ORR Junction",
+        zone: "South-East Tech Corridor",
+        residentialPlotRate: 8400,
+        commercialPlotRate: 16500,
+        flatBuiltUpRate: 6900,
+        notes: "Close to Bellandur tech parks and top international schools.",
+      },
+      {
+        id: "blr-03",
+        locality: "HSR Layout (Sectors 1 to 7)",
+        zone: "Prime Tech-Startup Hub",
+        residentialPlotRate: 12500,
+        commercialPlotRate: 24000,
+        flatBuiltUpRate: 9800,
+        notes: "Highest capital value residential sector in South Bengaluru.",
+      },
+    ],
+  },
+  {
+    city: "Delhi-NCR",
+    state: "Delhi / Haryana / UP",
+    stampDutyNote: "Haryana: 7% (Male), 5% (Female) | Delhi: 6% (Male), 4% (Female) | UP (Noida): 7%",
+    rates: [
+      {
+        id: "ncr-01",
+        locality: "Golf Course Extension Road (Gurgaon)",
+        zone: "Gurugram Premium Residential",
+        residentialPlotRate: 14500,
+        commercialPlotRate: 28500,
+        flatBuiltUpRate: 11500,
+        notes: "Ultra-luxury high rise condos and rapid transit corridors.",
+      },
+      {
+        id: "ncr-02",
+        locality: "Sector 150 (Noida Expressway)",
+        zone: "Sports City Green Belt",
+        residentialPlotRate: 7600,
+        commercialPlotRate: 14800,
+        flatBuiltUpRate: 6200,
+        notes: "Direct connectivity to upcoming Jewar International Airport.",
+      },
+      {
+        id: "ncr-03",
+        locality: "Dwarka Expressway (Sector 102-113)",
+        zone: "Northern Peripheral Expressway",
+        residentialPlotRate: 9500,
+        commercialPlotRate: 19000,
+        flatBuiltUpRate: 7800,
+        notes: "8-lane grade-separated access directly connecting IGI Airport.",
+      },
+    ],
   },
 ];

@@ -23,27 +23,57 @@ export interface ShortcutItem {
     | "details"
     | "portfolio"
     | "single-paper"
+    | "matchmaking"
+    | "trending"
+    | "power-docs"
     | "buy";
 }
 
 export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
   {
-    id: "guidelines",
-    title: "Guidelines",
-    subtitle: "Rules & Checklist",
-    href: "/buy-sell?section=listing",
-    color: "#1E5637",
+    id: "matchmaking",
+    title: "Matchmaker",
+    subtitle: "Buy / Sell Match",
+    href: "/buy-sell?section=matchmaking",
+    color: "#1E57A4",
     category: "Buy & Sell",
-    iconType: "guidelines",
+    iconType: "matchmaking",
   },
   {
     id: "post-deal",
     title: "Post a deal",
-    subtitle: "Sell or List Property",
-    href: "/buy-sell?section=sell",
+    subtitle: "Direct Seller Listing",
+    href: "/buy-sell?section=post-deals",
     color: "#B26315",
     category: "Buy & Sell",
     iconType: "post-deal",
+  },
+  {
+    id: "trending",
+    title: "Trending Deals",
+    subtitle: "Area & Society Deals",
+    href: "/buy-sell?section=trending",
+    color: "#1E5637",
+    category: "Buy & Sell",
+    iconType: "trending",
+  },
+  {
+    id: "power-docs",
+    title: "Power Docs",
+    subtitle: "EMI, Loans & Drafts",
+    href: "/buy-sell?section=power-docs",
+    color: "#553C9A",
+    category: "Buy & Sell",
+    iconType: "power-docs",
+  },
+  {
+    id: "guidelines",
+    title: "Guidelines",
+    subtitle: "Rules & Checklist",
+    href: "/buy-sell?section=power-docs",
+    color: "#1E5637",
+    category: "Buy & Sell",
+    iconType: "guidelines",
   },
   {
     id: "accounts",

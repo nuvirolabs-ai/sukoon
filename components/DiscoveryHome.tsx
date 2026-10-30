@@ -132,6 +132,31 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
           <circle cx="20" cy="22" r="3" />
         </svg>
       );
+    case "matchmaking":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M11 20a9 9 0 0 1 18 0M11 20l4-4M11 20l4 4M29 20l-4-4M29 20l-4 4" />
+          <path d="M20 7v6M20 27v6" />
+          <circle cx="20" cy="20" r="3" />
+        </svg>
+      );
+    case "trending":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M7 27l8-8 6 6 12-12" />
+          <path d="M25 13h8v8" />
+          <path d="M7 33h26" />
+        </svg>
+      );
+    case "power-docs":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M10 6h14l8 8v20H10z" />
+          <path d="M24 6v8h8" />
+          <path d="M16 18h10M16 23h10M16 28h5" />
+          <circle cx="27" cy="27" r="3" />
+        </svg>
+      );
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
