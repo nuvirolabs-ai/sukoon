@@ -1,18 +1,23 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowUpRight,
+  Building2,
   Check,
   ChevronDown,
+  FileText,
+  Hammer,
   MapPin,
   Plus,
   Search,
   Sparkles,
+  TrendingUp,
   X,
 } from "lucide-react";
-import { useStore } from "@/components/StoreProvider";
+import { useStore, useOptionalStore } from "@/components/StoreProvider";
 import { presentName } from "@/lib/ui-content";
 import {
   ALL_AVAILABLE_SHORTCUTS,
@@ -246,7 +251,45 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
   }
 }
 
+function SearchItemIcon({ icon, className }: { icon: string; className?: string }) {
+  switch (icon) {
+    case "building":
+      return <Building2 className={className} />;
+    case "doc":
+      return <FileText className={className} />;
+    case "construction":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">
+          <path d="M12 3v3" />
+          <circle cx="12" cy="5" r="1.5" />
+          <path d="m10.5 7.5-6 13.5M13.5 7.5l6 13.5" />
+          <path d="M7 16h10" />
+        </svg>
+      );
+    case "hammer":
+      return <Hammer className={className} />;
+    case "trending":
+      return <TrendingUp className={className} />;
+    case "sparkles":
+      return <Sparkles className={className} />;
+    default:
+      return <Search className={className} />;
+  }
+}
+
+interface SearchSuggestionItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: "Property" | "Vault Paper" | "Core Feature" | "Tool" | "Market";
+  href: string;
+  icon: "building" | "doc" | "construction" | "trending" | "sparkles" | "hammer";
+  keywords: string;
+}
+
 export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
+  const store = useOptionalStore();
+  const s = store?.s;
   const { favoriteItems, favoriteIds, toggleFavorite } = useFavorites();
   const [customizeModal, setCustomizeModal] = useState(false);
   const { city, changeCity, allCities } = useSelectedCity();
@@ -255,9 +298,169 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const allSearchItems = useMemo<SearchSuggestionItem[]>(() => {
+    const items: SearchSuggestionItem[] = [
+      // Core Features & Tools
+      {
+        id: "feat-vault",
+        title: "Vault",
+        subtitle: "Papers, Registry & Land Records",
+        category: "Core Feature",
+        href: "/vault",
+        icon: "doc",
+        keywords: "vault document paper registry sale deed namantaran khasra khatoni record file",
+      },
+      {
+        id: "feat-construction",
+        title: "Construction Journey",
+        subtitle: "0 to 1 Build, 28 Milestones & Progress",
+        category: "Core Feature",
+        href: "/construction",
+        icon: "construction",
+        keywords: "construction build milestones 0 to 1 contractor architect plan foundation slab site",
+      },
+      {
+        id: "feat-rates",
+        title: "Daily Material Rates",
+        subtitle: "Live Indore Rates for Cement, TMT Steel, Sand, Bricks",
+        category: "Tool",
+        href: "/construction",
+        icon: "hammer",
+        keywords: "rates daily material cement steel tmt sand bricks cost price mandi indore",
+      },
+      {
+        id: "feat-buysell",
+        title: "Buy & Sell Marketplace",
+        subtitle: "Verified Direct Listings & Deals",
+        category: "Core Feature",
+        href: "/buy-sell",
+        icon: "trending",
+        keywords: "buy sell marketplace property plot flat house land post deal direct listing",
+      },
+      {
+        id: "feat-matchmaker",
+        title: "Matchmaker",
+        subtitle: "Buy / Sell Match Algorithm",
+        category: "Tool",
+        href: "/buy-sell",
+        icon: "sparkles",
+        keywords: "matchmaker buyer seller match direct pair find property",
+      },
+      {
+        id: "feat-notary",
+        title: "Notary Draft Generator",
+        subtitle: "Affidavits, Rent Agreements & Undertakings",
+        category: "Tool",
+        href: "/drafts",
+        icon: "doc",
+        keywords: "notary draft affidavit undertaking stamp agreement rent power of attorney",
+      },
+      {
+        id: "feat-stocks",
+        title: "Indian Stock Market",
+        subtitle: "Nifty, Sensex, Realty Stocks & Indices",
+        category: "Market",
+        href: "/stocks",
+        icon: "trending",
+        keywords: "stocks share market nifty sensex realty dlf godrej oberoi bse nse",
+      },
+      {
+        id: "feat-insights",
+        title: "Insights & Legal Guides",
+        subtitle: "Property Diligence, Stamp Duty & Bye-laws",
+        category: "Core Feature",
+        href: "/updates",
+        icon: "sparkles",
+        keywords: "insights knowledge rules checklist guidelines stamp duty circle rate bye laws",
+      },
+      {
+        id: "feat-guidelines",
+        title: "Property Guidelines",
+        subtitle: "Step-by-Step Purchase & Due Diligence Checklist",
+        category: "Tool",
+        href: "/guideline",
+        icon: "doc",
+        keywords: "guidelines checklist due diligence rules legal verification",
+      },
+      {
+        id: "feat-bills",
+        title: "Property Tax & Utility Bills",
+        subtitle: "Municipal Tax, Electricity & Maintenance",
+        category: "Tool",
+        href: "/bills",
+        icon: "doc",
+        keywords: "tax property tax bill municipal electricity maintenance dues receipt",
+      },
+    ];
+
+    // Add User Properties
+    if (s?.properties?.length) {
+      for (const prop of s.properties) {
+        items.push({
+          id: `prop-${prop.id}`,
+          title: prop.name,
+          subtitle: `${prop.type.toUpperCase()} · ${prop.area}, ${prop.city}`,
+          category: "Property",
+          href: `/property/${prop.id}`,
+          icon: "building",
+          keywords: `${prop.name} ${prop.type} ${prop.area} ${prop.city} ${prop.address || ""}`.toLowerCase(),
+        });
+      }
+    }
+
+    // Add User Vault Documents
+    if (s?.docs?.length) {
+      for (const doc of s.docs) {
+        if (doc.deletedAt || doc.archivedAt) continue;
+        const propName = s.properties.find((p) => p.id === doc.propertyId)?.name;
+        const docTitle = doc.displayName || doc.name || doc.type;
+        items.push({
+          id: `doc-${doc.id}`,
+          title: docTitle,
+          subtitle: `${doc.type}${propName ? ` · ${propName}` : ""}`,
+          category: "Vault Paper",
+          href: "/vault",
+          icon: "doc",
+          keywords: `${docTitle} ${doc.type} ${doc.subtype || ""} ${propName || ""}`.toLowerCase(),
+        });
+      }
+    }
+
+    return items;
+  }, [s]);
+
+  const popularTags = ["Plot 108", "Property Tax", "Notary Draft", "Stock Market", "Cement Rates", "Matchmaker"];
+
+  const filteredSuggestions = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    const tokens = q.split(/\s+/).filter(Boolean);
+    return allSearchItems
+      .filter((item) => {
+        const fullText = `${item.title} ${item.subtitle} ${item.keywords}`.toLowerCase();
+        return tokens.every((tok) => fullText.includes(tok));
+      })
+      .slice(0, 6);
+  }, [allSearchItems, searchQuery]);
+
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
-      <div>
+    <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative overflow-hidden">
+      {/* Sukoon Infinity Atmospheric Background Glow (Warm Amber & Serene Twilight Indigo Duotone) */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        {/* Left Infinity Loop: Warm Golden Amber / Terracotta Glow (#F59523 & #EB6E30) */}
+        <div className="absolute -top-16 -left-20 w-80 h-80 rounded-full bg-gradient-to-br from-[#F59523]/16 via-[#EB6E30]/10 to-transparent blur-[85px]" />
+        
+        {/* Right Infinity Loop: Serene Twilight Slate-Indigo / Azure Blue Glow (#5B73B3 & #6D81B4) */}
+        <div className="absolute top-4 -right-20 w-88 h-88 rounded-full bg-gradient-to-bl from-[#5B73B3]/16 via-[#6D81B4]/10 to-transparent blur-[95px]" />
+        
+        {/* Subtle Mid-Page Harmonizing Intersection Aura */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-to-tr from-[#F59523]/5 via-transparent to-[#5B73B3]/6 blur-[110px]" />
+
+        {/* Lower Canvas Accent */}
+        <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full bg-gradient-to-t from-[#EB6E30]/6 via-[#5B73B3]/5 to-transparent blur-[100px]" />
+      </div>
+
+      <div className="relative z-10">
         {/* 1. Header with Centered Sukoon Logo, City Selector & Profile (Native Mobile Optimized) */}
         <header className="relative flex items-center justify-between mb-7 pt-2.5 min-h-[48px] px-0.5">
           {/* Top Left: City Selector */}
@@ -299,83 +502,243 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </Link>
         </header>
 
-        {/* 2. Expandable Apple Search Bar - Compact Pill that Expands */}
-        <section aria-label="Search" className="mb-7 flex justify-center">
-          {!searchExpanded ? (
-            /* Collapsed Small Apple Pill */
-            <button
-              type="button"
+        {/* 2. Expandable Apple Search Bar with Live Auto-Suggestions */}
+        <section aria-label="Search" className="mb-7 relative z-40 flex justify-center">
+          {searchExpanded && (
+            <div
+              className="fixed inset-0 z-30 bg-black/10 backdrop-blur-[1px]"
               onClick={() => {
-                setSearchExpanded(true);
-                setTimeout(() => searchInputRef.current?.focus(), 60);
+                setSearchExpanded(false);
+                setSearchQuery("");
               }}
-              aria-label="Open search"
-              className="tap-scale flex items-center justify-center gap-2 w-44 sm:w-52 py-2 px-4 rounded-full bg-white/95 hover:bg-white border border-[#E5DFD3] shadow-2xs hover:shadow-xs hover:border-forest/30 transition-all duration-200 cursor-pointer"
-            >
-              <Search className="w-3.5 h-3.5 text-[#6E7D73]" strokeWidth={2.2} />
-              <span className="text-[13px] font-medium text-[#6E7D73]">Search...</span>
-            </button>
-          ) : (
-            /* Expanded Full-Width Search Form */
-            <form
-              action="/search"
-              method="GET"
-              role="search"
-              className="relative flex items-center w-full bg-white rounded-full px-4 py-2.5 border border-forest/30 shadow-[0_4px_18px_rgba(27,61,47,0.08)] ring-2 ring-forest/10 transition-all duration-300 animate-in fade-in zoom-in-98"
-            >
-              <Search className="w-4 h-4 text-[#486354] flex-shrink-0 mr-2.5" strokeWidth={2.2} />
-              <input
-                ref={searchInputRef}
-                name="q"
-                type="search"
-                enterKeyHint="search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search properties, papers, construction, market..."
-                aria-label="Search"
-                autoFocus
-                className="w-full bg-transparent border-none p-0 text-[13.5px] text-[#22332A] placeholder-[#8E9D94] font-normal leading-normal truncate focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 !outline-none !shadow-none"
-                style={{ outline: "none", boxShadow: "none" }}
-              />
+            />
+          )}
 
-              {searchQuery.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    searchInputRef.current?.focus();
-                  }}
-                  className="p-1 rounded-full text-ink-muted hover:text-foreground shrink-0 mr-1"
-                  aria-label="Clear search"
-                >
-                  <X size={14} />
-                </button>
-              )}
-
+          <div className={`relative z-40 transition-all duration-300 ${searchExpanded ? "w-full" : "w-auto"}`}>
+            {!searchExpanded ? (
+              /* Collapsed Small Apple Pill */
               <button
                 type="button"
                 onClick={() => {
-                  setSearchQuery("");
-                  setSearchExpanded(false);
+                  setSearchExpanded(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 60);
                 }}
-                className="tap-scale ml-1.5 text-[11px] font-bold text-forest hover:opacity-80 px-2.5 py-1 rounded-full bg-sand/80 shrink-0"
+                aria-label="Open search"
+                className="tap-scale flex items-center justify-center gap-2 w-44 sm:w-52 py-2 px-4 rounded-full bg-white/95 hover:bg-white border border-[#E5DFD3] shadow-2xs hover:shadow-xs hover:border-forest/30 transition-all duration-200 cursor-pointer"
               >
-                Cancel
+                <Search className="w-3.5 h-3.5 text-[#6E7D73]" strokeWidth={2.2} />
+                <span className="text-[13px] font-medium text-[#6E7D73]">Search...</span>
               </button>
-            </form>
-          )}
+            ) : (
+              /* Expanded Search Bar + Live Auto-Suggestions Dropdown */
+              <div className="w-full">
+                <form
+                  action="/search"
+                  method="GET"
+                  role="search"
+                  className="relative flex items-center w-full bg-white rounded-full px-4 py-2.5 border border-forest/30 shadow-[0_4px_18px_rgba(27,61,47,0.08)] ring-2 ring-forest/10 transition-all duration-300"
+                >
+                  <Search className="w-4 h-4 text-[#486354] flex-shrink-0 mr-2.5" strokeWidth={2.2} />
+                  <input
+                    ref={searchInputRef}
+                    name="q"
+                    type="search"
+                    enterKeyHint="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        setSearchExpanded(false);
+                        setSearchQuery("");
+                      }
+                    }}
+                    placeholder="Search properties, papers, construction, market..."
+                    aria-label="Search"
+                    autoFocus
+                    className="w-full bg-transparent border-none p-0 text-[13.5px] text-[#22332A] placeholder-[#8E9D94] font-normal leading-normal truncate focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 !outline-none !shadow-none"
+                    style={{ outline: "none", boxShadow: "none" }}
+                  />
+
+                  {searchQuery.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        searchInputRef.current?.focus();
+                      }}
+                      className="p-1 rounded-full text-ink-muted hover:text-foreground shrink-0 mr-1"
+                      aria-label="Clear search"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSearchExpanded(false);
+                    }}
+                    className="tap-scale ml-1.5 text-[11px] font-bold text-forest hover:opacity-80 px-2.5 py-1 rounded-full bg-sand/80 shrink-0"
+                  >
+                    Cancel
+                  </button>
+                </form>
+
+                {/* Live Auto-Suggestions Floating Panel */}
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white/98 backdrop-blur-xl rounded-2xl border border-[#E2DBD0] shadow-[0_14px_36px_rgba(27,61,47,0.14)] p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[70vh] overflow-y-auto">
+                  {searchQuery.trim().length === 0 ? (
+                    /* When Query is Empty: Popular Searches & Suggested Shortcuts */
+                    <div>
+                      <div className="flex items-center justify-between mb-2 px-1">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase">
+                          Popular Searches
+                        </span>
+                        <span className="text-[10px] font-medium text-forest">Quick Tap</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 mb-3 px-0.5">
+                        {popularTags.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery(tag);
+                              searchInputRef.current?.focus();
+                            }}
+                            className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-sand/70 hover:bg-sand text-[#2C4136] border border-line/60 transition-colors"
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="border-t border-[#F0ECE1] pt-2">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase block mb-1.5 px-1">
+                          Suggested Shortcuts
+                        </span>
+                        <div className="space-y-1">
+                          {allSearchItems.slice(0, 4).map((item) => (
+                            <Link
+                              key={item.id}
+                              href={item.href}
+                              onClick={() => {
+                                setSearchExpanded(false);
+                                setSearchQuery("");
+                              }}
+                              className="flex items-center justify-between p-2 rounded-xl hover:bg-sand/60 transition group text-left"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="w-7 h-7 rounded-lg bg-mint/50 flex items-center justify-center text-forest shrink-0">
+                                  <SearchItemIcon icon={item.icon} className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-[12.5px] font-semibold text-[#1B2922] truncate group-hover:text-forest">
+                                    {item.title}
+                                  </p>
+                                  <p className="text-[10.5px] text-[#7C8B82] truncate">{item.subtitle}</p>
+                                </div>
+                              </div>
+                              <span className="text-[9.5px] font-medium px-1.5 py-0.5 rounded bg-sand/80 text-[#52665B] shrink-0 ml-2">
+                                {item.category}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* When Query is Typed: Live Filtered Auto-Suggestions */
+                    <div>
+                      <div className="flex items-center justify-between mb-2 px-1">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase">
+                          Auto-Suggestions ({filteredSuggestions.length})
+                        </span>
+                        <span className="text-[10px] text-ink-muted">Tap to open</span>
+                      </div>
+
+                      {filteredSuggestions.length > 0 ? (
+                        <div className="space-y-1">
+                          {filteredSuggestions.map((item) => (
+                            <Link
+                              key={item.id}
+                              href={item.href}
+                              onClick={() => {
+                                setSearchExpanded(false);
+                                setSearchQuery("");
+                              }}
+                              className="flex items-center justify-between p-2 rounded-xl hover:bg-sand/60 transition group text-left"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="w-7 h-7 rounded-lg bg-mint/50 flex items-center justify-center text-forest shrink-0">
+                                  <SearchItemIcon icon={item.icon} className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-[12.5px] font-semibold text-[#1B2922] truncate group-hover:text-forest">
+                                    {item.title}
+                                  </p>
+                                  <p className="text-[10.5px] text-[#7C8B82] truncate">{item.subtitle}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                <span className="text-[9.5px] font-medium px-1.5 py-0.5 rounded bg-sand/80 text-[#52665B]">
+                                  {item.category}
+                                </span>
+                                <ArrowUpRight className="w-3.5 h-3.5 text-[#8E9D94] group-hover:text-forest transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                              </div>
+                            </Link>
+                          ))}
+
+                          <Link
+                            href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                            onClick={() => {
+                              setSearchExpanded(false);
+                              setSearchQuery("");
+                            }}
+                            className="mt-2 block w-full text-center py-2 px-3 rounded-xl bg-forest/8 hover:bg-forest/12 text-forest text-[11.5px] font-bold transition"
+                          >
+                            Search all records for &ldquo;{searchQuery}&rdquo; &rarr;
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className="py-4 text-center">
+                          <p className="text-[12.5px] text-[#486354] font-medium">
+                            No direct matches for &ldquo;{searchQuery}&rdquo;
+                          </p>
+                          <p className="text-[11px] text-[#7C8B82] mt-0.5 mb-3">
+                            Search the full vault and marketplace records
+                          </p>
+                          <Link
+                            href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                            onClick={() => {
+                              setSearchExpanded(false);
+                              setSearchQuery("");
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest text-white text-[11px] font-bold shadow-sm hover:opacity-90 transition"
+                          >
+                            <Search className="w-3 h-3" />
+                            Full Search for &ldquo;{searchQuery}&rdquo;
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </section>
 
         {/* 3. Core Features Section: 2 Rows, No Big Boxes, Clean Icons Only */}
         <section aria-label="Core Features">
-          {/* Section Header Label */}
-          <div className="flex items-center justify-between mb-5 px-1">
-            <h2 className="text-[11px] font-bold tracking-[0.08em] text-[#697A71] uppercase">
-              Choose What You Want To Do
-            </h2>
-            <span className="flex items-center text-[11px] font-semibold text-[#486354] tracking-tight">
-              <Sparkles className="w-3.5 h-3.5 mr-1 text-[#486354]" />
-              4 Core Features
+          {/* Section Header Label: Non-colliding, elegant mobile-first header */}
+          <div className="flex items-center justify-between mb-4 px-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[#3D6650] text-[11px] leading-none select-none">✦</span>
+              <h2 className="text-[11px] font-bold tracking-[0.1em] text-[#697A71] uppercase">
+                Core Modules
+              </h2>
+            </div>
+            <span className="text-[10px] font-semibold text-[#486354] px-2 py-0.5 rounded-full bg-mint/50 border border-forest/15">
+              4 Features
             </span>
           </div>
 
@@ -459,7 +822,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#DDD6C8] to-transparent" />
           </div>
-          <div className="relative px-3.5 bg-canvas flex items-center gap-2">
+          <div className="relative px-3.5 py-0.5 rounded-full bg-[#FAF7F2]/80 backdrop-blur-xs flex items-center gap-2">
             <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
             <span className="text-[10px] text-[#7A8E82] font-serif italic tracking-widest uppercase">
               ✦

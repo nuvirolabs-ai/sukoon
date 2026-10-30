@@ -403,3 +403,7 @@ export function useStore() {
   if (!value) throw new Error("useStore outside provider");
   return value;
 }
+
+export function useOptionalStore() {
+  return useContext(Ctx);
+}
