@@ -50,7 +50,7 @@ export function IOSFolderFavorites({
   return (
     <section aria-label="My Favorites" className="mb-4">
       {/* Apple Frosted Glass Card Container */}
-      <div className="bg-gradient-to-b from-white/92 via-white/84 to-[#FAF6F0]/90 backdrop-blur-xl rounded-[26px] p-4 sm:p-4.5 border border-white/80 shadow-[0_8px_32px_rgba(30,45,60,0.06)]">
+      <div className="bg-gradient-to-b from-white/95 via-white/90 to-[#F5F0E6]/90 backdrop-blur-md rounded-[26px] p-4 sm:p-4.5 border border-[#E5DFD2] shadow-[0_4px_24px_rgba(27,61,47,0.04)]">
         {/* Header Row: Subtle Jewel Indicator + Count + Customize */}
         <div className="flex items-center justify-between mb-3.5 px-1">
           <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ export function IOSFolderFavorites({
             className="tap-scale group flex flex-col items-center text-center focus:outline-none"
           >
             {/* iOS Folder Squircle */}
-            <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-gradient-to-br from-[#EAE3D6] to-[#DDD4C3] border border-white/80 shadow-xs p-1.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-sm">
+            <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-gradient-to-br from-[#EAE3D6] to-[#DDD4C3] border border-white/80 shadow-[0_4px_14px_rgba(27,61,47,0.08),0_1px_3px_rgba(0,0,0,0.04)] p-1.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(27,61,47,0.14)]">
               {/* 2x2 Mini Preview Grid */}
               <div className="grid grid-cols-2 gap-1 w-full h-full">
                 {previewItems.map((item) => (
@@ -124,7 +124,7 @@ export function IOSFolderFavorites({
             >
               {/* iOS White App Squircle */}
               <div
-                className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white border border-[#E8E2D5] shadow-xs flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-sm"
+                className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white border border-[#E8E2D5] shadow-[0_4px_14px_rgba(27,61,47,0.08),0_1px_3px_rgba(0,0,0,0.04)] flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(27,61,47,0.14)]"
                 style={{ color: item.color }}
               >
                 {renderIcon(item.iconType, "w-6.5 h-6.5")}

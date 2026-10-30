@@ -444,26 +444,8 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
   }, [allSearchItems, searchQuery]);
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative overflow-hidden">
-      {/* Sukoon Dynamic Live Style Wallpaper (Warm Golden Amber, Terracotta & Honey Silk Atmosphere) */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        {/* Layer 1: Ambient Living Sunlit Amber Aura (Floating & Pulsing) */}
-        <div className="absolute -top-16 -left-20 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-[#F59523]/35 via-[#F8B34A]/26 to-[#EB6E30]/18 blur-[80px] animate-live-amber" />
-
-        {/* Layer 2: Sunset Terracotta & Peach Coral Aura (Floating & Rotating) */}
-        <div className="absolute top-0 -right-20 w-[440px] h-[440px] rounded-full bg-gradient-to-bl from-[#EB6E30]/32 via-[#F58D4E]/25 to-[#F59523]/16 blur-[85px] animate-live-sunset" />
-
-        {/* Layer 3: Central Liquid Honey Silk Orb (Breathing & Drifting) */}
-        <div className="absolute top-[32%] left-[15%] w-[420px] h-[360px] rounded-full bg-gradient-to-tr from-[#F8C87A]/32 via-[#F59523]/22 to-[#F38E22]/15 blur-[90px] animate-live-honey" />
-
-        {/* Layer 4: Lower Horizon Golden Sunset Wave (Gentle Undulation) */}
-        <div className="absolute -bottom-16 right-[-10%] w-[480px] h-[380px] rounded-full bg-gradient-to-tl from-[#EB6E30]/28 via-[#F8A838]/22 to-[#F59523]/14 blur-[95px] animate-live-dusk" />
-
-        {/* Layer 5: Soft Central Luminous Highlight (Gives Depth to Frosted Glass Cards) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full bg-radial from-white/40 via-[#FDF5E6]/25 to-transparent blur-[100px] pointer-events-none" />
-      </div>
-
-      <div className="relative z-10">
+    <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
+      <div>
         {/* 1. Header with Centered Sukoon Logo, City Selector & Profile (Native Mobile Optimized) */}
         <header className="relative flex items-center justify-between mb-7 pt-2.5 min-h-[48px] px-0.5">
           {/* Top Left: City Selector */}
@@ -750,10 +732,10 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             {/* Feature 1: Vault */}
             <Link
               href="/vault"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-2"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
             >
-              <div className="w-14 h-14 flex items-center justify-center text-[#1E5637] mb-2 transition-all duration-200 group-hover:scale-105">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(30,86,55,0.18),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#1E5637] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(30,86,55,0.28)]">
+                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(30,86,55,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
                   <rect height="28" rx="2" width="26" x="7" y="6" />
                   <path d="M13 6V30" />
                   <path d="M18 13h10M18 18h7" />
@@ -761,17 +743,17 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                   <path d="M24 25v2M24 29.5v3M26.5 31h-2.5" />
                 </svg>
               </div>
-              <span className="text-[14px] font-bold text-[#1B2922] leading-tight block">Vault</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">Papers &amp; Records</span>
+              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Vault</span>
+              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Papers &amp; Records</span>
             </Link>
 
             {/* Feature 2: Construction */}
             <Link
               href="/construction"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-2"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
             >
-              <div className="w-14 h-14 flex items-center justify-center text-[#B26315] mb-2 transition-all duration-200 group-hover:scale-105">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(178,99,21,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#B26315] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(178,99,21,0.30)]">
+                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(178,99,21,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
                   <path d="M20 5v4" />
                   <circle cx="20" cy="9" r="2.5" />
                   <path d="m18 11.5-9 22.5M22 11.5l9 22.5" />
@@ -780,17 +762,17 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                   <path d="M20 23.5V34" />
                 </svg>
               </div>
-              <span className="text-[14px] font-bold text-[#1B2922] leading-tight block">Construction</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">0 to 1 Build</span>
+              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Construction</span>
+              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">0 to 1 Build</span>
             </Link>
 
             {/* Feature 3: Buy & Sell */}
             <Link
               href="/buy-sell"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-2"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
             >
-              <div className="w-14 h-14 flex items-center justify-center text-[#1E57A4] mb-2 transition-all duration-200 group-hover:scale-105">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(30,87,164,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#1E57A4] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(30,87,164,0.30)]">
+                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(30,87,164,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
                   <path d="M6 16.5 20 6l14 10.5" />
                   <path d="M9 14.5V33h22V14.5" />
                   <path d="M15 33V22h10v11" />
@@ -799,23 +781,23 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                   <path d="M27 14v4M29 16h-2" />
                 </svg>
               </div>
-              <span className="text-[14px] font-bold text-[#1B2922] leading-tight block">Buy &amp; Sell</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">Marketplace</span>
+              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Buy &amp; Sell</span>
+              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Marketplace</span>
             </Link>
 
             {/* Feature 4: Insights (New Name for Knowledge) */}
             <Link
               href="/updates"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-2"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
             >
-              <div className="w-14 h-14 flex items-center justify-center text-[#553C9A] mb-2 transition-all duration-200 group-hover:scale-105">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(85,60,154,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#553C9A] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(85,60,154,0.30)]">
+                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(85,60,154,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
                   <path d="M20 13v20M20 13C17 10 9 10 6 12v20c3-2 11-2 14 1M20 13c3-3 11-3 14-1v20c-3-2-11-2-14 1" />
                   <path d="M20 4v4M14 6l2 2M26 6l-2 2" />
                 </svg>
               </div>
-              <span className="text-[14px] font-bold text-[#1B2922] leading-tight block">Insights</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">Guides &amp; News</span>
+              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Insights</span>
+              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Guides &amp; News</span>
             </Link>
           </div>
         </section>
@@ -825,7 +807,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#DDD6C8] to-transparent" />
           </div>
-          <div className="relative px-3.5 py-0.5 rounded-full bg-[#FAF7F2]/80 backdrop-blur-xs flex items-center gap-2">
+          <div className="relative px-3.5 py-0.5 rounded-full bg-canvas flex items-center gap-2">
             <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
             <span className="text-[10px] text-[#7A8E82] font-serif italic tracking-widest uppercase">
               ✦

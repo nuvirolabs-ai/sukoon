@@ -37,14 +37,7 @@ html, body {
 }
 body {
   font-family: var(--font-sans);
-  background-color: #faf4eb;
-  background-image:
-    radial-gradient(ellipse 80% 60% at 8% 8%, rgba(245, 149, 35, 0.20) 0%, transparent 65%),
-    radial-gradient(ellipse 75% 60% at 92% 12%, rgba(235, 110, 48, 0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 70% 50% at 20% 70%, rgba(248, 196, 110, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 55% at 85% 90%, rgba(235, 110, 48, 0.16) 0%, transparent 60%),
-    linear-gradient(160deg, #FDF7EE 0%, #FAF3E6 50%, #F5EAE0 100%);
-  background-attachment: fixed;
+  background: var(--color-canvas);
   min-width: 320px;
 }
 
@@ -105,96 +98,6 @@ textarea {
 }
 .shadow-soft {
   box-shadow: 0 6px 20px rgba(27, 61, 47, 0.07);
-}
-
-/* =========================================================================
-   Apple Dynamic Live Wallpaper Animations (Sukoon Brand Warm Atmosphere)
-   ========================================================================= */
-
-@keyframes live-drift-amber {
-  0% {
-    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
-  }
-  33% {
-    transform: translate3d(48px, 36px, 0px) scale(1.16) rotate(14deg);
-  }
-  66% {
-    transform: translate3d(-35px, 64px, 0px) scale(0.92) rotate(-9deg);
-  }
-  100% {
-    transform: translate3d(28px, -24px, 0px) scale(1.1) rotate(20deg);
-  }
-}
-
-@keyframes live-drift-sunset {
-  0% {
-    transform: translate3d(0px, 0px, 0px) scale(1.04) rotate(0deg);
-  }
-  33% {
-    transform: translate3d(-52px, 44px, 0px) scale(0.9) rotate(-16deg);
-  }
-  66% {
-    transform: translate3d(38px, -38px, 0px) scale(1.2) rotate(12deg);
-  }
-  100% {
-    transform: translate3d(-24px, 28px, 0px) scale(1) rotate(-12deg);
-  }
-}
-
-@keyframes live-drift-honey {
-  0% {
-    transform: translate3d(0px, 0px, 0px) scale(0.95);
-    opacity: 0.75;
-  }
-  50% {
-    transform: translate3d(32px, -48px, 0px) scale(1.24);
-    opacity: 0.95;
-  }
-  100% {
-    transform: translate3d(-42px, 32px, 0px) scale(1.02);
-    opacity: 0.8;
-  }
-}
-
-@keyframes live-drift-dusk {
-  0% {
-    transform: translate3d(0px, 0px, 0px) scale(1) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(-45px, -52px, 0px) scale(1.15) rotate(18deg);
-  }
-  100% {
-    transform: translate3d(48px, 22px, 0px) scale(0.88) rotate(-14deg);
-  }
-}
-
-.animate-live-amber {
-  animation: live-drift-amber 22s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.animate-live-sunset {
-  animation: live-drift-sunset 26s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.animate-live-honey {
-  animation: live-drift-honey 18s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.animate-live-dusk {
-  animation: live-drift-dusk 24s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-live-amber,
-  .animate-live-sunset,
-  .animate-live-honey,
-  .animate-live-dusk {
-    animation: none !important;
-  }
 }
 
 /* Consumer system: calm surfaces, readable hierarchy and shared disclosure. */
