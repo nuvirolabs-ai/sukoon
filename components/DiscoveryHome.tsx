@@ -21,7 +21,7 @@ import {
   type ShortcutItem,
 } from "@/lib/favorites";
 import { useSelectedCity } from "@/lib/city";
-import { VintageBookFavorites } from "@/components/VintageBookFavorites";
+import { AtelierFavorites } from "@/components/AtelierFavorites";
 
 function profileMark(email: string, ownerName?: string) {
   const source = (ownerName || email.split("@")[0] || "You").replace(/[._-]+/g, " ").trim();
@@ -411,10 +411,11 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </div>
         </section>
 
-        {/* 4. My Favorites Section: Vintage Book Style (Sukoon Field Journal) */}
-        <VintageBookFavorites
+        {/* 4. My Favorites Section: Sculpted Atelier Tray */}
+        <AtelierFavorites
           favoriteItems={favoriteItems}
           onOpenCustomize={() => setCustomizeModal(true)}
+          renderIcon={(type, className) => <ShortcutIcon type={type} className={className} />}
         />
       </div>
 
