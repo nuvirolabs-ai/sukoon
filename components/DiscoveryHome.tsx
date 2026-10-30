@@ -157,6 +157,53 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
           <circle cx="27" cy="27" r="3" />
         </svg>
       );
+    case "news":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M8 8h22a2 2 0 0 1 2 2v22a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z" />
+          <path d="M12 14h8M12 18h8M12 22h16M12 26h16M24 14h4v4h-4z" />
+        </svg>
+      );
+    case "blogs":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M8 8h16a4 4 0 0 1 4 4v20a4 4 0 0 0-4-4H8z" />
+          <path d="M8 8v20a4 4 0 0 1 4-4h16" />
+          <path d="M14 14h8M14 18h6M14 22h4" />
+        </svg>
+      );
+    case "dos-donts":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M20 6l13 5v8c0 9-6 15-13 17C13 34 7 28 7 19v-8z" />
+          <path d="M15 19l3 3 7-7" />
+        </svg>
+      );
+    case "podcasts":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <rect height="22" rx="4" width="28" x="6" y="9" />
+          <path d="M17 15l9 5-9 5z" />
+        </svg>
+      );
+    case "vastu":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="14" />
+          <polygon points="20,10 23,17 20,20 17,17" fill="currentColor" opacity="0.3" />
+          <polygon points="20,30 17,23 20,20 23,23" fill="currentColor" opacity="0.3" />
+          <path d="M20 7v26M7 20h26" />
+        </svg>
+      );
+    case "trends":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M6 30h28M8 24l8-8 6 4 10-12" />
+          <path d="M26 8h6v6" />
+          <rect height="8" rx="1" width="5" x="12" y="22" />
+          <rect height="12" rx="1" width="5" x="20" y="18" />
+        </svg>
+      );
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">

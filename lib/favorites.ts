@@ -26,10 +26,17 @@ export interface ShortcutItem {
     | "matchmaking"
     | "trending"
     | "power-docs"
-    | "buy";
+    | "buy"
+    | "news"
+    | "blogs"
+    | "dos-donts"
+    | "podcasts"
+    | "vastu"
+    | "trends";
 }
 
 export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
+  // --- Buy & Sell Hub Shortcuts ---
   {
     id: "matchmaking",
     title: "Matchmaker",
@@ -76,68 +83,16 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
     iconType: "guidelines",
   },
   {
-    id: "accounts",
-    title: "Expense Notebook",
-    subtitle: "Construction Accounts",
-    href: "/construction?section=accounts",
-    color: "#1E5637",
-    category: "Construction",
-    iconType: "accounts",
-  },
-  {
-    id: "rates",
-    title: "Material Rates",
-    subtitle: "Daily Mandi & Estimator",
-    href: "/construction?section=rates",
-    color: "#B26315",
-    category: "Construction",
-    iconType: "rates",
-  },
-  {
-    id: "journey",
-    title: "0 to 1 Build",
-    subtitle: "28-Step Roadmap",
-    href: "/construction?section=journey",
-    color: "#B26315",
-    category: "Construction",
-    iconType: "journey",
-  },
-  {
-    id: "site",
-    title: "Site Work Log",
-    subtitle: "Inspection Checklist",
-    href: "/construction?section=site",
+    id: "buy",
+    title: "Buy Verified",
+    subtitle: "Direct Deals Stream",
+    href: "/buy-sell?section=buy",
     color: "#1E57A4",
-    category: "Construction",
-    iconType: "site",
+    category: "Buy & Sell",
+    iconType: "buy",
   },
-  {
-    id: "dictionary",
-    title: "Property Terms",
-    subtitle: "Real Estate Dictionary",
-    href: "/updates?section=dictionary",
-    color: "#553C9A",
-    category: "Insights",
-    iconType: "dictionary",
-  },
-  {
-    id: "drafts",
-    title: "Legal Drafting",
-    subtitle: "Agreements & Contracts",
-    href: "/updates?section=drafts",
-    color: "#1E5637",
-    category: "Insights",
-    iconType: "drafts",
-  },
-  {
-    id: "media",
-    title: "Audio & Blogs",
-    subtitle: "Expert Podcasts",
-    href: "/updates?section=media",
-    color: "#553C9A",
-    category: "Insights",
-    iconType: "media",
-  },
+
+  // --- Vault Hub Shortcuts ---
   {
     id: "docs",
     title: "My Docs",
@@ -174,14 +129,126 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
     category: "Vault",
     iconType: "single-paper",
   },
+
+  // --- Construction Shortcuts ---
   {
-    id: "buy",
-    title: "Buy Verified",
-    subtitle: "Direct Deals Stream",
-    href: "/buy-sell?section=buy",
+    id: "accounts",
+    title: "Expense Notebook",
+    subtitle: "Construction Accounts",
+    href: "/construction?section=accounts",
+    color: "#1E5637",
+    category: "Construction",
+    iconType: "accounts",
+  },
+  {
+    id: "rates",
+    title: "Material Rates",
+    subtitle: "Daily Mandi & Estimator",
+    href: "/construction?section=rates",
+    color: "#B26315",
+    category: "Construction",
+    iconType: "rates",
+  },
+  {
+    id: "journey",
+    title: "0 to 1 Build",
+    subtitle: "28-Step Roadmap",
+    href: "/construction?section=journey",
+    color: "#B26315",
+    category: "Construction",
+    iconType: "journey",
+  },
+  {
+    id: "site",
+    title: "Site Work Log",
+    subtitle: "Inspection Checklist",
+    href: "/construction?section=site",
     color: "#1E57A4",
-    category: "Buy & Sell",
-    iconType: "buy",
+    category: "Construction",
+    iconType: "site",
+  },
+
+  // --- Insights Shortcuts (All 7 Features) ---
+  {
+    id: "news",
+    title: "City News",
+    subtitle: "Live Daily Updates",
+    href: "/updates?section=news",
+    color: "#1E57A4",
+    category: "Insights",
+    iconType: "news",
+  },
+  {
+    id: "blogs",
+    title: "Daily Blogs",
+    subtitle: "Market Guides & Articles",
+    href: "/updates?section=blogs",
+    color: "#B26315",
+    category: "Insights",
+    iconType: "blogs",
+  },
+  {
+    id: "dictionary",
+    title: "Terminologies",
+    subtitle: "Real Estate Dictionary",
+    href: "/updates?section=dictionary",
+    color: "#553C9A",
+    category: "Insights",
+    iconType: "dictionary",
+  },
+  {
+    id: "dos-donts",
+    title: "Do's & Don'ts",
+    subtitle: "Buyer Checkpoints",
+    href: "/updates?section=dos-donts",
+    color: "#1E5637",
+    category: "Insights",
+    iconType: "dos-donts",
+  },
+  {
+    id: "podcasts",
+    title: "Podcasts & Videos",
+    subtitle: "YouTube Audio & Guides",
+    href: "/updates?section=podcasts",
+    color: "#DC2626",
+    category: "Insights",
+    iconType: "podcasts",
+  },
+  {
+    id: "vastu",
+    title: "Vastu Knowledge",
+    subtitle: "Directional & Room Guide",
+    href: "/updates?section=vastu",
+    color: "#D97706",
+    category: "Insights",
+    iconType: "vastu",
+  },
+  {
+    id: "trends",
+    title: "City Trends",
+    subtitle: "Big Developer Tracker",
+    href: "/updates?section=trends",
+    color: "#0D9488",
+    category: "Insights",
+    iconType: "trends",
+  },
+  {
+    id: "drafts",
+    title: "Legal Drafting",
+    subtitle: "Agreements & Contracts",
+    href: "/buy-sell?section=power-docs",
+    color: "#1E5637",
+    category: "Insights",
+    iconType: "drafts",
+  },
+  {
+    id: "media",
+    title: "Audio & Blogs",
+    subtitle: "Expert Podcasts",
+    href: "/updates?section=podcasts",
+    color: "#553C9A",
+    category: "Insights",
+    iconType: "media",
   },
 ];
 
