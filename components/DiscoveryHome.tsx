@@ -296,23 +296,23 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </Link>
         </header>
 
-        {/* 2. Search Bar */}
-        <section aria-label="Search" className="mb-8">
+        {/* 2. Search Bar - Slim, Apple Spotlight Capsule */}
+        <section aria-label="Search" className="mb-7">
           <form
             action="/search"
             method="GET"
             role="search"
-            className="relative flex items-center w-full bg-white rounded-2xl px-4 py-3.5 border border-[#ECE8DE] shadow-[0_2px_8px_-2px_rgba(0,0,0,0.03)] focus-within:ring-2 focus-within:ring-[#1E3328]/20 focus-within:border-[#1E3328]/40 transition-all duration-200"
+            className="relative flex items-center w-full bg-white/95 rounded-full px-4.5 py-2.5 border border-[#E5DFD3] shadow-[0_2px_10px_rgba(27,61,47,0.03)] focus-within:ring-2 focus-within:ring-[#1E3328]/15 focus-within:border-[#1E3328]/40 focus-within:shadow-[0_4px_16px_rgba(27,61,47,0.06)] transition-all duration-200"
           >
             {/* Magnifying Glass Icon */}
-            <Search className="w-5 h-5 text-[#88958E] flex-shrink-0 mr-3" strokeWidth={2} />
+            <Search className="w-4.5 h-4.5 text-[#7C8B82] flex-shrink-0 mr-2.5" strokeWidth={2} />
             <input
               name="q"
               type="search"
               enterKeyHint="search"
               placeholder="Search properties, papers, construction, market..."
               aria-label="Search"
-              className="w-full bg-transparent border-none p-0 text-sm text-[#22332A] placeholder-[#95A099] focus:ring-0 focus:outline-none font-normal leading-relaxed truncate"
+              className="w-full bg-transparent border-none p-0 text-[13.5px] text-[#22332A] placeholder-[#8E9D94] focus:ring-0 focus:outline-none font-normal leading-normal truncate"
             />
           </form>
         </section>

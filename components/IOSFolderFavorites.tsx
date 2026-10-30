@@ -12,10 +12,10 @@ interface IOSFolderFavoritesProps {
 }
 
 /**
- * iPhone-Style App Folder for My Favorites:
- * - On the home screen: Renders an authentic iOS app folder squircle with a 2x2 mini-grid of app icons.
- * - On tap: Opens a full-screen blurred iOS folder modal (identical to the native iPhone app folder experience).
- * - Inside the folder: 3-column grid of white iOS app squircles with clean labels and quick access.
+ * Designer-Engineered iOS App Folder & Favorites Suite:
+ * - Solves the blank page issue by framing favorites inside an Apple Frosted Glass Card (`rounded-[26px]`).
+ * - Features the interactive iOS App Folder squircle (with 2x2 mini live app previews) alongside the top 3 quick-launch apps in a 4-column shelf.
+ * - On tap, the folder expands into the signature full-screen blurred iPhone folder modal with a 3-column app grid.
  */
 export function IOSFolderFavorites({
   favoriteItems,
@@ -24,7 +24,7 @@ export function IOSFolderFavorites({
 }: IOSFolderFavoritesProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Close folder on Escape key
+  // Close folder on Escape key & manage scroll lock
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setIsOpen(false);
@@ -41,74 +41,139 @@ export function IOSFolderFavorites({
     };
   }, [isOpen]);
 
-  // First 4 items to show inside the closed folder icon
+  // First 4 items for the closed folder's 2x2 preview grid
   const previewItems = favoriteItems.slice(0, 4);
+
+  // Up to 3 top apps to show alongside the folder on the home screen shelf
+  const quickApps = favoriteItems.slice(0, 3);
 
   return (
     <section aria-label="My Favorites" className="mb-4">
-      {/* Header Row: Section Label + Customize */}
-      <div className="flex items-center justify-between mb-4 px-1">
-        <div className="flex items-center gap-2">
-          <span className="text-[#3D6650] text-[12px] leading-none select-none">✦</span>
-          <h2 className="text-[11px] font-bold tracking-[0.12em] text-[#5A6E63] uppercase">
-            My Favorites
-          </h2>
-          <span className="px-2 py-0.5 rounded-full bg-sand/80 border border-[#DDD6C8] text-[10px] font-semibold text-[#3D5A4A]">
-            {favoriteItems.length} {favoriteItems.length === 1 ? "App" : "Apps"}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          onClick={onOpenCustomize}
-          className="tap-scale inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white text-forest border border-[#D8D0C2] text-[11px] font-bold shadow-2xs hover:shadow-xs transition-all"
-        >
-          <SlidersHorizontal size={11} className="text-forest/80" />
-          <span>Customize</span>
-        </button>
-      </div>
-
-      {/* Closed iOS Folder Icon on Home Screen */}
-      <div className="flex flex-col items-center justify-center py-2">
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open My Favorites Folder"
-          className="tap-scale group flex flex-col items-center focus:outline-none"
-        >
-          {/* iOS Frosted Glass Folder Squircle */}
-          <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-[22px] bg-[#EFE9DF]/80 backdrop-blur-md border border-white/70 shadow-[0_4px_16px_rgba(27,61,47,0.06)] p-2.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-md">
-            {/* 2x2 Mini App Previews Grid Inside the Folder */}
-            <div className="grid grid-cols-2 gap-1.5 w-full h-full">
-              {previewItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="w-full h-full rounded-[6px] bg-white shadow-2xs flex items-center justify-center overflow-hidden"
-                  style={{ color: item.color }}
-                >
-                  {renderIcon(item.iconType, "w-3.5 h-3.5")}
-                </div>
-              ))}
-              {/* Fill remaining slots if fewer than 4 */}
-              {Array.from({ length: Math.max(0, 4 - previewItems.length) }).map((_, i) => (
-                <div
-                  key={`empty-${i}`}
-                  className="w-full h-full rounded-[6px] bg-white/50 border border-dashed border-[#D2C8B8] flex items-center justify-center text-[#9AA8A0]"
-                >
-                  <Plus size={10} />
-                </div>
-              ))}
-            </div>
+      {/* Apple Frosted Glass Card Container */}
+      <div className="bg-gradient-to-b from-white/90 via-white/80 to-[#F5F0E6]/85 backdrop-blur-md rounded-[26px] p-4 sm:p-4.5 border border-[#E5DFD2] shadow-[0_4px_24px_rgba(27,61,47,0.03)]">
+        {/* Header Row: Subtle Jewel Indicator + Count + Customize */}
+        <div className="flex items-center justify-between mb-3.5 px-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[#3D6650] text-[12px] leading-none select-none">✦</span>
+            <h2 className="text-[11px] font-bold tracking-[0.12em] text-[#5A6E63] uppercase">
+              My Favorites
+            </h2>
+            <span className="px-2 py-0.5 rounded-full bg-[#EFE9DF] border border-[#DDD6C8] text-[10px] font-semibold text-[#3D5A4A]">
+              {favoriteItems.length} {favoriteItems.length === 1 ? "App" : "Apps"}
+            </span>
           </div>
 
-          {/* Folder Label */}
-          <span className="text-[13px] font-bold text-[#1B2922] mt-2 block group-hover:text-forest transition-colors text-center">
-            My Favorites
+          <button
+            type="button"
+            onClick={onOpenCustomize}
+            className="tap-scale inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white hover:bg-[#FAF8F5] text-forest border border-[#D8D0C2] text-[11px] font-bold shadow-2xs hover:shadow-xs transition-all"
+          >
+            <SlidersHorizontal size={11} className="text-forest/80" />
+            <span>Customize</span>
+          </button>
+        </div>
+
+        {/* 4-Column iOS App Shelf: Interactive Folder + Top 3 Quick Apps */}
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 items-start">
+          {/* 1. THE iPHONE APP FOLDER (Interactive) */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open My Favorites Folder"
+            className="tap-scale group flex flex-col items-center text-center focus:outline-none"
+          >
+            {/* iOS Folder Squircle */}
+            <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-gradient-to-br from-[#EAE3D6] to-[#DDD4C3] border border-white/80 shadow-xs p-1.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-sm">
+              {/* 2x2 Mini Preview Grid */}
+              <div className="grid grid-cols-2 gap-1 w-full h-full">
+                {previewItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="w-full h-full rounded-[4px] bg-white shadow-2xs flex items-center justify-center overflow-hidden"
+                    style={{ color: item.color }}
+                  >
+                    {renderIcon(item.iconType, "w-2.5 h-2.5")}
+                  </div>
+                ))}
+                {Array.from({ length: Math.max(0, 4 - previewItems.length) }).map((_, i) => (
+                  <div
+                    key={`empty-${i}`}
+                    className="w-full h-full rounded-[4px] bg-white/40 flex items-center justify-center text-[#9AA8A0]"
+                  >
+                    <Plus size={8} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Folder Label */}
+            <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest transition-colors">
+              Favorites
+            </span>
+            <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
+              Open folder
+            </span>
+          </button>
+
+          {/* 2, 3, 4. DIRECT QUICK-LAUNCH APPS */}
+          {quickApps.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none"
+            >
+              {/* iOS White App Squircle */}
+              <div
+                className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white border border-[#E8E2D5] shadow-xs flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-sm"
+                style={{ color: item.color }}
+              >
+                {renderIcon(item.iconType, "w-6.5 h-6.5")}
+              </div>
+
+              {/* App Title */}
+              <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest transition-colors">
+                {item.title}
+              </span>
+              <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
+                {item.subtitle}
+              </span>
+            </Link>
+          ))}
+
+          {/* If user has fewer than 3 quick apps, show Add Shortcut button */}
+          {quickApps.length < 3 && (
+            <button
+              type="button"
+              onClick={onOpenCustomize}
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none"
+            >
+              <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white/50 border border-dashed border-[#D2C8B8] hover:border-forest/50 hover:bg-white shadow-2xs flex items-center justify-center text-[#7C8B82] group-hover:text-forest transition-all">
+                <Plus size={18} />
+              </div>
+              <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest">
+                Add
+              </span>
+              <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
+                New app
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* Bottom Subtle Folder Hint */}
+        <div className="mt-3.5 pt-2.5 border-t border-[#EAE3D6] flex items-center justify-between text-[10px] text-[#76877D] px-1">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#3D6650]/60" />
+            <span>Tap <strong>Favorites folder</strong> to view full suite</span>
           </span>
-          <span className="text-[10.5px] font-medium text-[#7C8B82] leading-tight block text-center mt-0.5">
-            Tap to open folder
-          </span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className="tap-scale text-[#3D6650] font-semibold hover:underline"
+          >
+            Expand ↗
+          </button>
+        </div>
       </div>
 
       {/* EXPANDED FULL-SCREEN BLURRED iPHONE FOLDER MODAL */}
