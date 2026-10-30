@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Check,
@@ -255,41 +256,42 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
       <div>
         {/* 1. Header with Centered Sukoon Logo, City Selector & Profile */}
-        <header className="relative flex items-center justify-between mb-7 pt-2">
-          {/* Invisible spacer on the left to ensure absolute center alignment of logo */}
-          <div aria-hidden="true" className="w-10 h-10 invisible" />
+        <header className="relative flex items-center justify-between mb-7 pt-2 min-h-[46px]">
+          {/* Top Left: City Selector */}
+          <button
+            type="button"
+            onClick={() => setCityModalOpen(true)}
+            aria-label="Select City"
+            className="tap-scale flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs z-10"
+          >
+            <MapPin size={11} className="text-[#1E5637] shrink-0" />
+            <span className="max-w-[70px] truncate">{city}</span>
+            <ChevronDown size={10} className="text-ink-muted shrink-0" />
+          </button>
 
-          {/* Center Brand Identity */}
-          <div className="text-center flex-1">
-            <h1 className="logo-font text-2xl font-extrabold text-[#1B2D24] tracking-[0.14em] uppercase leading-none">
-              Sukoon
-            </h1>
-            <p className="sublogo-tracking text-[9px] font-semibold text-[#6E7B73] uppercase mt-1.5 leading-none">
+          {/* Center Brand Identity - Centered with Mathematical Precision */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-auto">
+            <Image
+              src="/images/sukoon-brand-logo.png"
+              alt="Sukoon"
+              width={648}
+              height={122}
+              priority
+              className="h-7 w-auto object-contain mix-blend-multiply select-none"
+            />
+            <p className="sublogo-tracking text-[8px] font-semibold text-[#6E7B73] uppercase mt-1 leading-none tracking-[0.28em]">
               Escape the Chaos
             </p>
           </div>
 
-          {/* Top Right: City Selector & User Profile Avatar Badge */}
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setCityModalOpen(true)}
-              aria-label="Select City"
-              className="tap-scale flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs"
-            >
-              <MapPin size={11} className="text-[#1E5637] shrink-0" />
-              <span className="max-w-[70px] truncate">{city}</span>
-              <ChevronDown size={10} className="text-ink-muted shrink-0" />
-            </button>
-
-            <Link
-              href="/profile"
-              aria-label="User Profile"
-              className="tap-scale w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0"
-            >
-              {mark}
-            </Link>
-          </div>
+          {/* Top Right: User Profile Avatar Badge */}
+          <Link
+            href="/profile"
+            aria-label="User Profile"
+            className="tap-scale w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0 z-10"
+          >
+            {mark}
+          </Link>
         </header>
 
         {/* 2. Search Bar */}
