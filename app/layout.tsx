@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Cinzel } from "next/font/google";
+import { Inter, Cinzel, Alex_Brush } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/StoreProvider";
 import { Shell } from "@/components/ui";
@@ -9,6 +9,7 @@ import { NativeRuntime } from "@/components/NativeRuntime";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["700", "800"], display: "swap", variable: "--font-cinzel" });
+const alexBrush = Alex_Brush({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-alex-brush" });
 
 export const metadata: Metadata = {
   title: "SUKOON — Escape the chaos",
@@ -21,7 +22,7 @@ export const viewport: Viewport = { themeColor: "#f7f3eb", viewportFit: "cover",
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${cinzel.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${cinzel.variable} ${alexBrush.variable}`} suppressHydrationWarning>
       <body className="min-h-full bg-canvas text-foreground">
         <script dangerouslySetInnerHTML={{ __html: "try{var p=location.pathname;document.documentElement.classList.toggle('is-inner',p!=='/'&&p!=='/home-reference')}catch(e){}" }} />
         <NativeRuntime />

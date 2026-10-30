@@ -292,8 +292,8 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
   },
 ];
 
-const STORAGE_KEY = "sukoon_home_favorites_v2";
-const DEFAULT_FAVORITE_IDS = ["guidelines", "post-deal"];
+const STORAGE_KEY = "sukoon_home_favorites_v3";
+const DEFAULT_FAVORITE_IDS = ["matchmaking", "post-deal", "trending", "power-docs"];
 
 export function getFavoriteIds(): string[] {
   if (typeof window === "undefined") return DEFAULT_FAVORITE_IDS;

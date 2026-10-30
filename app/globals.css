@@ -52,6 +52,12 @@ body {
   font-family: var(--font-cinzel), 'Cinzel', 'Playfair Display', Georgia, serif;
   letter-spacing: 0.14em;
 }
+.vintage-script {
+  font-family: var(--font-alex-brush), 'Alex Brush', 'Dancing Script', 'Snell Roundhand', 'Brush Script MT', cursive;
+}
+.vintage-book-font {
+  font-family: var(--font-cinzel), 'Cinzel', 'Playfair Display', Georgia, serif;
+}
 .sublogo-tracking {
   letter-spacing: 0.32em;
 }

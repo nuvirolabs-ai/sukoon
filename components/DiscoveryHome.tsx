@@ -21,6 +21,7 @@ import {
   type ShortcutItem,
 } from "@/lib/favorites";
 import { useSelectedCity } from "@/lib/city";
+import { VintageBookFavorites } from "@/components/VintageBookFavorites";
 
 function profileMark(email: string, ownerName?: string) {
   const source = (ownerName || email.split("@")[0] || "You").replace(/[._-]+/g, " ").trim();
@@ -410,68 +411,11 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </div>
         </section>
 
-        {/* 4. My Favorites Section: Custom shortcut icons */}
-        <section aria-label="My Favorites" className="mt-8 mb-4">
-          <div className="flex items-center justify-between mb-5 px-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[11px] font-bold tracking-[0.08em] text-[#697A71] uppercase">
-                My Favorites
-              </h2>
-              <span className="px-1.5 py-0.5 rounded-full bg-[#EEECE6] text-[10px] font-semibold text-[#486354]">
-                {favoriteItems.length} {favoriteItems.length === 1 ? "Shortcut" : "Shortcuts"}
-              </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setCustomizeModal(true)}
-              className="tap-scale inline-flex items-center gap-1 text-[11px] font-bold text-forest hover:opacity-80 px-2 py-0.5 rounded-full bg-mint/50 border border-forest/20"
-            >
-              <Plus size={12} /> Customize
-            </button>
-          </div>
-
-          {/* Compact Snug Calm Boxes for Shortcuts */}
-          <div className="grid grid-cols-2 gap-2 px-1 py-1">
-            {favoriteItems.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="tap-scale group flex flex-col items-center text-center py-2 px-2.5 rounded-xl bg-white border border-[#E7E3D9] hover:border-forest/40 shadow-2xs hover:shadow-xs transition-all"
-              >
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center mb-1 transition-transform duration-200 group-hover:scale-105"
-                  style={{ backgroundColor: `${item.color}14`, color: item.color }}
-                >
-                  <ShortcutIcon type={item.iconType} className="w-5 h-5" />
-                </div>
-                <span className="text-[12px] font-bold text-[#1B2922] leading-tight block truncate max-w-full">
-                  {item.title}
-                </span>
-                <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-0.5 truncate max-w-full">
-                  {item.subtitle}
-                </span>
-              </Link>
-            ))}
-
-            {/* Compact Snug Dashed Add Shortcut Card */}
-            <button
-              type="button"
-              onClick={() => setCustomizeModal(true)}
-              className="tap-scale group flex flex-col items-center justify-center text-center py-2 px-2.5 rounded-xl bg-[#FAF8F5]/80 border border-dashed border-[#D5D0C6] hover:border-forest/50 hover:bg-[#F5F2EC] transition-all"
-            >
-              <div className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-ink-muted mb-1 group-hover:text-forest group-hover:scale-105 transition">
-                <Plus size={16} />
-              </div>
-              <span className="text-[12px] font-bold text-[#1B2922] leading-tight block group-hover:text-forest">
-                Add Shortcut
-              </span>
-              <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-0.5">
-                Pick feature
-              </span>
-            </button>
-          </div>
-        </section>
+        {/* 4. My Favorites Section: Vintage Book Style (Sukoon Field Journal) */}
+        <VintageBookFavorites
+          favoriteItems={favoriteItems}
+          onOpenCustomize={() => setCustomizeModal(true)}
+        />
       </div>
 
       {/* CUSTOMIZE FAVORITES MODAL */}
