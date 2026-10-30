@@ -445,19 +445,22 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
 
   return (
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative overflow-hidden">
-      {/* Sukoon Infinity Atmospheric Background Glow (Warm Amber & Serene Twilight Indigo Duotone) */}
+      {/* Sukoon Dynamic Live Style Wallpaper (Warm Golden Amber, Terracotta & Honey Silk Atmosphere) */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        {/* Left Infinity Loop: Warm Golden Amber / Terracotta Glow (#F59523 & #EB6E30) */}
-        <div className="absolute -top-12 -left-16 w-88 h-88 rounded-full bg-gradient-to-br from-[#F59523]/35 via-[#EB6E30]/24 to-transparent blur-[70px]" />
-        
-        {/* Right Infinity Loop: Serene Twilight Slate-Indigo / Azure Blue Glow (#4A6BB8 & #6370A4) */}
-        <div className="absolute top-2 -right-16 w-92 h-92 rounded-full bg-gradient-to-bl from-[#4A6BB8]/36 via-[#6370A4]/26 to-transparent blur-[75px]" />
-        
-        {/* Mid-Page Harmonizing Duotone Wave */}
-        <div className="absolute top-[38%] -left-12 w-[380px] h-72 rounded-full bg-gradient-to-r from-[#F59523]/22 via-[#EB6E30]/15 to-[#5B73B3]/24 blur-[80px]" />
+        {/* Layer 1: Ambient Living Sunlit Amber Aura (Floating & Pulsing) */}
+        <div className="absolute -top-16 -left-20 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-[#F59523]/35 via-[#F8B34A]/26 to-[#EB6E30]/18 blur-[80px] animate-live-amber" />
 
-        {/* Lower Canvas Accent Glow */}
-        <div className="absolute -bottom-10 right-0 w-96 h-80 rounded-full bg-gradient-to-tl from-[#4A6BB8]/28 via-[#F59523]/18 to-transparent blur-[85px]" />
+        {/* Layer 2: Sunset Terracotta & Peach Coral Aura (Floating & Rotating) */}
+        <div className="absolute top-0 -right-20 w-[440px] h-[440px] rounded-full bg-gradient-to-bl from-[#EB6E30]/32 via-[#F58D4E]/25 to-[#F59523]/16 blur-[85px] animate-live-sunset" />
+
+        {/* Layer 3: Central Liquid Honey Silk Orb (Breathing & Drifting) */}
+        <div className="absolute top-[32%] left-[15%] w-[420px] h-[360px] rounded-full bg-gradient-to-tr from-[#F8C87A]/32 via-[#F59523]/22 to-[#F38E22]/15 blur-[90px] animate-live-honey" />
+
+        {/* Layer 4: Lower Horizon Golden Sunset Wave (Gentle Undulation) */}
+        <div className="absolute -bottom-16 right-[-10%] w-[480px] h-[380px] rounded-full bg-gradient-to-tl from-[#EB6E30]/28 via-[#F8A838]/22 to-[#F59523]/14 blur-[95px] animate-live-dusk" />
+
+        {/* Layer 5: Soft Central Luminous Highlight (Gives Depth to Frosted Glass Cards) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full bg-radial from-white/40 via-[#FDF5E6]/25 to-transparent blur-[100px] pointer-events-none" />
       </div>
 
       <div className="relative z-10">
