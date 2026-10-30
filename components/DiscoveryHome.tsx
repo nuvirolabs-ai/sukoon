@@ -448,16 +448,16 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
       {/* Sukoon Infinity Atmospheric Background Glow (Warm Amber & Serene Twilight Indigo Duotone) */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         {/* Left Infinity Loop: Warm Golden Amber / Terracotta Glow (#F59523 & #EB6E30) */}
-        <div className="absolute -top-16 -left-20 w-80 h-80 rounded-full bg-gradient-to-br from-[#F59523]/16 via-[#EB6E30]/10 to-transparent blur-[85px]" />
+        <div className="absolute -top-12 -left-16 w-88 h-88 rounded-full bg-gradient-to-br from-[#F59523]/35 via-[#EB6E30]/24 to-transparent blur-[70px]" />
         
-        {/* Right Infinity Loop: Serene Twilight Slate-Indigo / Azure Blue Glow (#5B73B3 & #6D81B4) */}
-        <div className="absolute top-4 -right-20 w-88 h-88 rounded-full bg-gradient-to-bl from-[#5B73B3]/16 via-[#6D81B4]/10 to-transparent blur-[95px]" />
+        {/* Right Infinity Loop: Serene Twilight Slate-Indigo / Azure Blue Glow (#4A6BB8 & #6370A4) */}
+        <div className="absolute top-2 -right-16 w-92 h-92 rounded-full bg-gradient-to-bl from-[#4A6BB8]/36 via-[#6370A4]/26 to-transparent blur-[75px]" />
         
-        {/* Subtle Mid-Page Harmonizing Intersection Aura */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-gradient-to-tr from-[#F59523]/5 via-transparent to-[#5B73B3]/6 blur-[110px]" />
+        {/* Mid-Page Harmonizing Duotone Wave */}
+        <div className="absolute top-[38%] -left-12 w-[380px] h-72 rounded-full bg-gradient-to-r from-[#F59523]/22 via-[#EB6E30]/15 to-[#5B73B3]/24 blur-[80px]" />
 
-        {/* Lower Canvas Accent */}
-        <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full bg-gradient-to-t from-[#EB6E30]/6 via-[#5B73B3]/5 to-transparent blur-[100px]" />
+        {/* Lower Canvas Accent Glow */}
+        <div className="absolute -bottom-10 right-0 w-96 h-80 rounded-full bg-gradient-to-tl from-[#4A6BB8]/28 via-[#F59523]/18 to-transparent blur-[85px]" />
       </div>
 
       <div className="relative z-10">

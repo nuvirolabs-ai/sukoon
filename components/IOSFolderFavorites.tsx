@@ -50,7 +50,7 @@ export function IOSFolderFavorites({
   return (
     <section aria-label="My Favorites" className="mb-4">
       {/* Apple Frosted Glass Card Container */}
-      <div className="bg-gradient-to-b from-white/90 via-white/80 to-[#F5F0E6]/85 backdrop-blur-md rounded-[26px] p-4 sm:p-4.5 border border-[#E5DFD2] shadow-[0_4px_24px_rgba(27,61,47,0.03)]">
+      <div className="bg-gradient-to-b from-white/92 via-white/84 to-[#FAF6F0]/90 backdrop-blur-xl rounded-[26px] p-4 sm:p-4.5 border border-white/80 shadow-[0_8px_32px_rgba(30,45,60,0.06)]">
         {/* Header Row: Subtle Jewel Indicator + Count + Customize */}
         <div className="flex items-center justify-between mb-3.5 px-1">
           <div className="flex items-center gap-2">
