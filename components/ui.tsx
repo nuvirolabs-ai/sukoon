@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen, Search, User } from "lucide-react";
+import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen, Search, User, TrendingUp, Sparkles } from "lucide-react";
 import { cx } from "@/lib/utils";
 import { useStore } from "./StoreProvider";
 import { t } from "@/lib/i18n";
@@ -61,20 +61,25 @@ function BottomNav() {
       document.documentElement.classList.remove("is-inner");
     };
   }, [placeKey, inner]);
-  const moreActive = !place && (path.startsWith("/more") || path.startsWith("/drafts") || path.startsWith("/pricing"));
-  const tabs = [
-    { href: "/", label: t("home", lang), active: path === "/", icon: <Home className={NAV_ICON} /> },
+  const navTabs = [
     {
-      href: "/search",
-      label: "Search",
-      active: path.startsWith("/search"),
-      icon: <Search className={NAV_ICON} />,
+      href: "/",
+      label: t("home", lang),
+      active: path === "/" || path === "/home-reference",
+      icon: <Home className={NAV_ICON} />,
     },
-  ];
-  const tabsAfter = [
-    place?.slot === "more"
-      ? { href: place.href, label: place.label, active: true, icon: place.icon }
-      : { href: "/more", label: t("more", lang), active: moreActive || path.startsWith("/more"), icon: <MoreHorizontal className={NAV_ICON} /> },
+    {
+      href: "/stocks",
+      label: "Stock market",
+      active: path.startsWith("/stocks") || path.startsWith("/market"),
+      icon: <TrendingUp className={NAV_ICON} />,
+    },
+    {
+      href: "/my-sukoon",
+      label: "My Sukoon",
+      active: path.startsWith("/my-sukoon"),
+      icon: <Sparkles className={NAV_ICON} />,
+    },
     {
       href: "/profile",
       label: "Profile",
@@ -86,20 +91,14 @@ function BottomNav() {
     <Link href={href} aria-current={active ? "page" : undefined} className={cx("nav-item", active && "is-active")}>
       <span aria-hidden="true" className="nav-item__pill" />
       <span className="nav-item__icon">{icon}</span>
-      <span className="nav-item__label nav-label">{label}</span>
+      <span className="nav-item__label nav-label whitespace-nowrap text-[11px] font-semibold">{label}</span>
     </Link>
   );
   return (
     <nav aria-label="Main navigation" className="bottom-navigation">
-      {place ? <div className="dock-place"><strong>{place.label}</strong>{place.slot === "more" ? <Link href="/more">All sections</Link> : null}</div> : null}
+      {place ? <div className="dock-place"><strong>{place.label}</strong></div> : null}
       <div className="nav-items">
-        {tabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
-        <div className="nav-fab">
-          <Link href="/property/new" aria-label="Add property">
-            <Plus className="h-7 w-7" />
-          </Link>
-        </div>
-        {tabsAfter.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
+        {navTabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
       </div>
     </nav>
   );

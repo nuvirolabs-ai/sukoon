@@ -246,6 +246,13 @@ function BuySellContent() {
     cityDistrict: "Indore (M.P.)",
     advocateContact: "+91 98260 11223",
     publishedDate: "30-10-2026",
+    deponentName: "Akshay Sharma",
+    fatherOrSpouseName: "Late Shri R. K. Sharma",
+    deponentAge: "42",
+    deponentAddress: "Scheme 54, Vijay Nagar, Indore (M.P.)",
+    purposeOfAffidavit: "Namantaran (Mutation), Title Clearance & Municipal Record Update",
+    notaryCity: "Indore (M.P.)",
+    affidavitDate: "30-10-2026",
   });
   const [copiedDraft, setCopiedDraft] = useState(false);
 
@@ -1310,13 +1317,14 @@ function BuySellContent() {
                 </p>
               </div>
 
-              {/* 4 Draft Pickers */}
+              {/* 5 Draft Pickers */}
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: "draft-rental", title: "Rental Agreement", sub: "11-Month Tenancy" },
                   { id: "draft-sale-agreement", title: "Buy / Sell Agreement", sub: "Bayana / Advance" },
                   { id: "draft-registry", title: "Registry Agreement", sub: "Sale Deed Clauses" },
                   { id: "draft-jahir-suchna", title: "Jahir Suchna Doc", sub: "Public Title Notice" },
+                  { id: "draft-notary", title: "Notary", sub: "Affidavit & Undertaking" },
                 ].map((d) => (
                   <button
                     key={d.id}

@@ -32,6 +32,70 @@ import {
 
 const STORAGE_KEY = "sukoon_construction_journey_v2";
 
+// Construction Worker with Yellow Safety Hat showing Thumbs Up (Completed)
+export function WorkerThumbsUp({ className = "w-7 h-7" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* Background calm green disc */}
+      <circle cx="18" cy="18" r="17" fill="#E8F5EE" stroke="#A3D9B5" strokeWidth="1.5" />
+      {/* Worker Safety Vest / Shoulders */}
+      <path d="M8 32 C8 25, 12 23.5, 18 23.5 C24 23.5, 28 25, 28 32" fill="#1B4332" />
+      <path d="M12.5 28 L14 23.5 M23.5 28 L22 23.5" stroke="#86EFAC" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Worker Face */}
+      <ellipse cx="18" cy="19" rx="5.5" ry="6" fill="#FDE68A" />
+      {/* Eyes */}
+      <circle cx="16" cy="19" r="0.9" fill="#1F2937" />
+      <circle cx="20" cy="19" r="0.9" fill="#1F2937" />
+      {/* Cheerful Smile */}
+      <path d="M16.5 22 Q18 23.5 19.5 22" stroke="#B45309" strokeWidth="1.1" strokeLinecap="round" />
+      {/* Yellow Safety Hard Hat Dome */}
+      <path d="M11 16 C11 9.5, 25 9.5, 25 16 Z" fill="#FACC15" stroke="#CA8A04" strokeWidth="1.2" />
+      {/* Hard Hat Top Ridge / Crest */}
+      <path d="M16.5 10 C16.5 8.8, 19.5 8.8, 19.5 10 L19 15 L17 15 Z" fill="#FEF08A" />
+      {/* Hard Hat Brim */}
+      <path d="M9 16 C9 15.5, 27 15.5, 27 16 C27 17.5, 9 17.5, 9 16 Z" fill="#D97706" />
+      {/* Thumbs Up Hand Badge */}
+      <g transform="translate(19.5, 17.5)">
+        <circle cx="7" cy="7" r="6.5" fill="#15803D" stroke="#FFFFFF" strokeWidth="1.2" />
+        <path d="M6.2 4 C6.2 3.3, 6.7 3, 7.2 3 C7.6 3, 7.8 3.3, 7.8 4 L7.8 6 L9.5 6 C10.1 6, 10.5 6.4, 10.5 7 L9.8 9.5 C9.7 9.8, 9.4 10, 9 10 L6.2 10 L6.2 4 Z" fill="#FFFFFF" />
+        <rect x="4.5" y="6" width="1.3" height="4" rx="0.4" fill="#FFFFFF" />
+      </g>
+    </svg>
+  );
+}
+
+// Construction Worker with Yellow Safety Hat showing Thumbs Down (Incomplete / Pending)
+export function WorkerThumbsDown({ className = "w-7 h-7" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+      {/* Background neutral slate disc */}
+      <circle cx="18" cy="18" r="17" fill="#F1F5F9" stroke="#CBD5E1" strokeWidth="1.5" />
+      {/* Worker Safety Vest / Shoulders */}
+      <path d="M8 32 C8 25, 12 23.5, 18 23.5 C24 23.5, 28 25, 28 32" fill="#475569" />
+      <path d="M12.5 28 L14 23.5 M23.5 28 L22 23.5" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Worker Face */}
+      <ellipse cx="18" cy="19" rx="5.5" ry="6" fill="#FDE68A" fillOpacity="0.95" />
+      {/* Eyes */}
+      <circle cx="16" cy="19" r="0.9" fill="#1F2937" />
+      <circle cx="20" cy="19" r="0.9" fill="#1F2937" />
+      {/* Attentive / neutral mouth */}
+      <path d="M16.5 22.5 Q18 21.5 19.5 22.5" stroke="#64748B" strokeWidth="1.1" strokeLinecap="round" />
+      {/* Yellow Safety Hard Hat Dome */}
+      <path d="M11 16 C11 9.5, 25 9.5, 25 16 Z" fill="#FACC15" stroke="#CA8A04" strokeWidth="1.2" />
+      {/* Hard Hat Top Ridge / Crest */}
+      <path d="M16.5 10 C16.5 8.8, 19.5 8.8, 19.5 10 L19 15 L17 15 Z" fill="#FEF08A" />
+      {/* Hard Hat Brim */}
+      <path d="M9 16 C9 15.5, 27 15.5, 27 16 C27 17.5, 9 17.5, 9 16 Z" fill="#D97706" />
+      {/* Thumbs Down Hand Badge */}
+      <g transform="translate(19.5, 17.5)">
+        <circle cx="7" cy="7" r="6.5" fill="#64748B" stroke="#FFFFFF" strokeWidth="1.2" />
+        <path d="M6.2 10 C6.2 10.7, 6.7 11, 7.2 11 C7.6 11, 7.8 10.7, 7.8 10 L7.8 8 L9.5 8 C10.1 8, 10.5 7.6, 10.5 7 L9.8 4.5 C9.7 4.2, 9.4 4, 9 4 L6.2 4 L6.2 10 Z" fill="#FFFFFF" />
+        <rect x="4.5" y="4" width="1.3" height="4" rx="0.4" fill="#FFFFFF" />
+      </g>
+    </svg>
+  );
+}
+
 export function ConstructionJourneyView() {
   const [stages, setStages] = useState<ConstructionStageStep[]>(() => {
     if (typeof window !== "undefined") {
@@ -433,22 +497,18 @@ export function ConstructionJourneyView() {
                           className="p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-sand/20 transition"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            {/* Checkbox Button: Thumbs Up for done, Thumbs Down for incomplete */}
+                            {/* Checkbox Button: Worker with Yellow Safety Hat showing Thumbs Up (done) or Thumbs Down (incomplete) */}
                             <button
                               type="button"
                               onClick={(e) => handleToggleComplete(step.id, e)}
-                              className="shrink-0 focus:outline-none tap-scale"
-                              title={step.isCompleted ? "Mark incomplete (Thumbs Down)" : "Mark done (Thumbs Up)"}
+                              className="shrink-0 focus:outline-none tap-scale group"
+                              title={step.isCompleted ? "Completed (Worker Thumbs Up) - Click to mark incomplete" : "Incomplete (Worker Thumbs Down) - Click to mark done"}
                               aria-label={`Mark step ${step.stepNumber} complete`}
                             >
                               {step.isCompleted ? (
-                                <div className="w-6 h-6 rounded-full bg-[#E8F2EC] text-[#1E5637] border border-[#A7CEB7] flex items-center justify-center shadow-2xs hover:opacity-90 transition">
-                                  <ThumbsUp size={13} className="fill-[#1E5637]/20" />
-                                </div>
+                                <WorkerThumbsUp className="w-8 h-8 drop-shadow-2xs group-hover:scale-105 transition-transform" />
                               ) : (
-                                <div className="w-6 h-6 rounded-full bg-sand/40 hover:bg-sand text-[#7C8B82] border border-line flex items-center justify-center transition">
-                                  <ThumbsDown size={13} />
-                                </div>
+                                <WorkerThumbsDown className="w-8 h-8 opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all" />
                               )}
                             </button>
 
@@ -459,8 +519,8 @@ export function ConstructionJourneyView() {
                                   Step {step.stepNumber}
                                 </span>
                                 {step.isCompleted && (
-                                  <span className="text-[9px] font-bold text-[#1E5637] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.2 rounded-md inline-flex items-center gap-0.5">
-                                    <ThumbsUp size={9} /> Completed
+                                  <span className="text-[9px] font-bold text-[#1E5637] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.5 rounded-md inline-flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Completed
                                   </span>
                                 )}
                                 {isNextActive && (
@@ -563,20 +623,20 @@ export function ConstructionJourneyView() {
                                 <button
                                   type="button"
                                   onClick={(e) => handleToggleComplete(step.id, e)}
-                                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-2 ${
                                     step.isCompleted
-                                      ? "bg-sand/60 text-[#7C8B82] hover:bg-sand border border-line"
+                                      ? "bg-sand/60 text-[#475569] hover:bg-sand border border-line"
                                       : "bg-forest text-white hover:opacity-90 shadow-2xs"
                                   }`}
                                 >
                                   {step.isCompleted ? (
                                     <>
-                                      <ThumbsDown size={13} />
+                                      <WorkerThumbsDown className="w-5 h-5 shrink-0" />
                                       <span>Mark Incomplete</span>
                                     </>
                                   ) : (
                                     <>
-                                      <ThumbsUp size={13} />
+                                      <WorkerThumbsUp className="w-5 h-5 shrink-0" />
                                       <span>Mark as Done</span>
                                     </>
                                   )}

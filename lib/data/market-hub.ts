@@ -616,6 +616,51 @@ Office Address: Chamber No. 42, District Court Compound, {{cityDistrict}}
 Contact: {{advocateContact}}`,
   },
   {
+    id: "draft-notary",
+    title: "Notary Affidavit & Agreement",
+    titleSubtitle: "Sworn Property Undertaking & Declaration (नोटरी शपथ पत्र)",
+    category: "Compliance",
+    estimatedTimeMin: 3,
+    description: "Notarized affidavit and declaration template before an authorized Notary Public for mutation, NOC, property title, or possession undertaking.",
+    variables: [
+      { key: "deponentName", label: "Deponent (Applicant) Full Name", defaultValue: "Akshay Sharma", type: "text" },
+      { key: "fatherOrSpouseName", label: "Father / Spouse Name", defaultValue: "Late Shri R. K. Sharma", type: "text" },
+      { key: "deponentAge", label: "Age (Years)", defaultValue: "42", type: "number" },
+      { key: "deponentAddress", label: "Residential Address", defaultValue: "Scheme 54, Vijay Nagar, Indore (M.P.)", type: "text" },
+      { key: "propertyDescription", label: "Property / Plot Description", defaultValue: "Plot No. 14, Sector B, Scheme 140, Indore (Area 1,500 sq.ft)", type: "text" },
+      { key: "purposeOfAffidavit", label: "Purpose / Undertaking", defaultValue: "Namantaran (Mutation), Title Clearance & Municipal Record Update", type: "text" },
+      { key: "notaryCity", label: "Notary City / Place", defaultValue: "Indore (M.P.)", type: "text" },
+      { key: "affidavitDate", label: "Date of Oath Execution", defaultValue: "30-10-2026", type: "text" },
+    ],
+    templateContent: `GENERAL NOTARIZED AFFIDAVIT & PROPERTY DECLARATION
+(Before the Notary Public, {{notaryCity}})
+
+I, {{deponentName}}, aged about {{deponentAge}} years, S/o / W/o / D/o {{fatherOrSpouseName}}, resident of {{deponentAddress}}, do hereby solemnly affirm and state on oath as under:
+
+1. CITIZENSHIP & TITLE STATUS: That I am a permanent citizen of India and legally competent to execute this sworn affidavit. I am the sole, lawful, and undisputed owner in physical and peaceful possession of the immovable property situated at {{propertyDescription}}.
+
+2. CLEAR & FREEHOLD TITLE: That the said property is completely free from all encumbrances, charges, liens, mortgages, bank attachments, government acquisition proceedings, civil disputes, or adverse claims of any kind whatsoever.
+
+3. PURPOSE OF DECLARATION: That this sworn notarized affidavit is executed specifically for the purpose of: {{purposeOfAffidavit}}.
+
+4. NO PRIOR ENCUMBRANCE: That I have not created any third-party interest, prior agreement to sell, or equitable mortgage in respect of the said property, and I possess full marketable rights over the same.
+
+5. INDEMNITY & LIABILITY: That if any statement or averment made herein is discovered to be incorrect, fraudulent, or misrepresented, I shall remain personally liable under all applicable Indian laws (including Section 199 and 200 of the Indian Penal Code) and shall fully indemnify all concerned authorities, purchasers, and registrar offices against any loss or damage.
+
+VERIFICATION:
+I, the deponent above-named, do hereby verify and state on solemn affirmation at {{notaryCity}} on this date {{affidavitDate}} that the contents of paragraphs 1 to 5 of this affidavit are true and correct to the best of my knowledge, information, and belief, and nothing material has been concealed or misstated.
+
+DEPONENT (Signature & Thumb Impression)
+Name: {{deponentName}}
+Aadhaar / ID: ____________________
+
+ATTESTED & NOTARIZED BEFORE ME:
+Identified by Advocate: ____________________
+Notary Public (Govt. of India / State)
+Notary Seal & Registration No.: ____________________
+Date of Notarization: {{affidavitDate}}`,
+  },
+  {
     id: "draft-registry-checklist",
     title: "Property Registry Mandatory Checklist",
     titleSubtitle: "Sub-Registrar Office Statutory Documents",
