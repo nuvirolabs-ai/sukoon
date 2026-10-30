@@ -132,27 +132,9 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
 
   // --- Construction Shortcuts ---
   {
-    id: "accounts",
-    title: "Expense Notebook",
-    subtitle: "Construction Accounts",
-    href: "/construction?section=accounts",
-    color: "#1E5637",
-    category: "Construction",
-    iconType: "accounts",
-  },
-  {
-    id: "rates",
-    title: "Material Rates",
-    subtitle: "Daily Mandi & Estimator",
-    href: "/construction?section=rates",
-    color: "#B26315",
-    category: "Construction",
-    iconType: "rates",
-  },
-  {
     id: "journey",
-    title: "0 to 1 Build",
-    subtitle: "28-Step Roadmap",
+    title: "Build journey",
+    subtitle: "28 Steps & Roadmap",
     href: "/construction?section=journey",
     color: "#B26315",
     category: "Construction",
@@ -160,12 +142,30 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
   },
   {
     id: "site",
-    title: "Site Work Log",
-    subtitle: "Inspection Checklist",
+    title: "Site visit minutes",
+    subtitle: "Notes for Architect & Team",
     href: "/construction?section=site",
     color: "#1E57A4",
     category: "Construction",
     iconType: "site",
+  },
+  {
+    id: "accounts",
+    title: "Expenses notebook",
+    subtitle: "Smart Material Folders",
+    href: "/construction?section=accounts",
+    color: "#1E5637",
+    category: "Construction",
+    iconType: "accounts",
+  },
+  {
+    id: "rates",
+    title: "Material rates",
+    subtitle: "Daily Mandi & City Rates",
+    href: "/construction?section=rates",
+    color: "#553C9A",
+    category: "Construction",
+    iconType: "rates",
   },
 
   // --- Insights Shortcuts (All 7 Features) ---

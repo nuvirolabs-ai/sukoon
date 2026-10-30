@@ -18,6 +18,9 @@ import {
   ShieldCheck,
   Info,
   Edit3,
+  Copy,
+  ExternalLink,
+  X,
 } from "lucide-react";
 import {
   INITIAL_CONSTRUCTION_STAGES,
@@ -25,7 +28,7 @@ import {
   type ConstructionStageStep,
 } from "@/lib/data/construction-journey";
 
-const STORAGE_KEY = "sukoon_construction_journey_v1";
+const STORAGE_KEY = "sukoon_construction_journey_v2";
 
 export function ConstructionJourneyView() {
   const [stages, setStages] = useState<ConstructionStageStep[]>(() => {
@@ -48,18 +51,33 @@ export function ConstructionJourneyView() {
   // Filter state
   const [filterMode, setFilterMode] = useState<"all" | "pending" | "completed">("all");
   const [activePhaseFilter, setActivePhaseFilter] = useState<string>("all");
+
+  // Accordion state: All phases expanded by default
   const [expandedPhases, setExpandedPhases] = useState<Record<string, boolean>>({
     "phase-0": true,
     "phase-1": true,
     "phase-2": true,
     "phase-3": true,
-    "phase-4": false,
-    "phase-5": false,
+    "phase-4": true,
+    "phase-5": true,
   });
+
+  // Minimal step accordion state: By default steps are collapsed; user clicks to expand details
+  const [expandedStepIds, setExpandedStepIds] = useState<Record<string, boolean>>({});
+
+  const toggleStepExpand = (stepId: string) => {
+    setExpandedStepIds((prev) => ({
+      ...prev,
+      [stepId]: !prev[stepId],
+    }));
+  };
 
   // Editing notes state
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState("");
+
+  // Share report modal
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -81,7 +99,8 @@ export function ConstructionJourneyView() {
   }, [stages]);
 
   // Toggle stage completion
-  const handleToggleComplete = (id: string) => {
+  const handleToggleComplete = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     const today = new Date().toISOString().split("T")[0];
     setStages((prev) =>
       prev.map((s) => {
@@ -90,7 +109,7 @@ export function ConstructionJourneyView() {
           return {
             ...s,
             isCompleted: nextCompleted,
-            completionDate: nextCompleted ? (s.completionDate || today) : undefined,
+            completionDate: nextCompleted ? s.completionDate || today : undefined,
           };
         }
         return s;
@@ -153,36 +172,74 @@ export function ConstructionJourneyView() {
     });
   }, [stages, filterMode, activePhaseFilter]);
 
-  // Share text for WhatsApp
-  const shareText = `Sukoon Home Construction Progress Report:
-${completedCount}/${totalCount} Steps Completed (${progressPercent}% Complete).
-Current Stage: Step ${currentStep.stepNumber} - ${currentStep.title}
-Estimated Target Date: ${currentStep.targetDueDate || "Pending"}
-Track your home build zero-to-one on Sukoon: https://sukoon-hazel.vercel.app/estate?tab=journey`;
+  // Consolidated Share Report (Clean, structured bulleted format)
+  const consolidatedReport = useMemo(() => {
+    const completedPhasesList = CONSTRUCTION_PHASES.filter((p) => {
+      const pSteps = stages.filter((s) => s.phaseId === p.id);
+      return pSteps.length > 0 && pSteps.every((s) => s.isCompleted);
+    });
+
+    const pendingPhasesList = CONSTRUCTION_PHASES.filter((p) => {
+      const pSteps = stages.filter((s) => s.phaseId === p.id);
+      return pSteps.some((s) => !s.isCompleted);
+    });
+
+    const lines: string[] = [
+      "🏗️ SUKOON BUILD PROGRESS REPORT",
+      "━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "📍 Site: Super Corridor Plot 108 (Indore)",
+      `📊 Overall Status: ${completedCount}/${totalCount} Steps Completed (${progressPercent}%)`,
+      "",
+      "▶️ CURRENT ACTIVE MILESTONE:",
+      `• Step ${currentStep.stepNumber}: ${currentStep.title}`,
+      `• Target Due Date: ${currentStep.targetDueDate || "Scheduled this week"}`,
+      "",
+      "🟡 COMPLETED PHASES:",
+    ];
+
+    if (completedPhasesList.length > 0) {
+      completedPhasesList.forEach((p) => {
+        lines.push(`✓ ${p.title} (All Milestones Done)`);
+      });
+    } else {
+      lines.push(`• ${completedCount} individual steps completed across active phases.`);
+    }
+
+    lines.push("");
+    lines.push("⏳ UPCOMING NEXT:");
+    pendingPhasesList.slice(0, 3).forEach((p) => {
+      lines.push(`• ${p.title}`);
+    });
+
+    lines.push("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    lines.push("Track your home build: https://sukoonproptech.com/construction?section=journey");
+
+    return lines.join("\n");
+  }, [stages, completedCount, totalCount, progressPercent, currentStep]);
 
   return (
     <div className="space-y-4">
-      {/* Toast message popup */}
+      {/* Toast popup */}
       {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-forest text-white text-xs font-bold rounded-full shadow-lg transition-all animate-bounce">
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-[#1B2922] text-white text-xs font-bold rounded-full shadow-lg transition-all animate-in fade-in">
           {toastMessage}
         </div>
       )}
 
       {/* Hero Overview Card */}
-      <div className="p-5 rounded-2xl bg-gradient-to-br from-forest to-[#142e23] text-white shadow-md relative overflow-hidden">
+      <div className="p-5 rounded-3xl bg-gradient-to-br from-[#1E5637] to-[#133A24] text-white shadow-md relative overflow-hidden">
         <div className="flex items-start justify-between mb-3">
           <div>
-            <div className="flex items-center gap-1.5 text-mint text-[11px] font-bold uppercase tracking-wider">
-              <Hammer size={14} />
+            <div className="flex items-center gap-1.5 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+              <Hammer size={13} />
               <span>Zero-to-One Home Build Guide</span>
             </div>
-            <h2 className="text-2xl font-black mt-1">Super Corridor Plot 108</h2>
+            <h2 className="text-xl font-serif font-bold mt-1 text-white">Super Corridor Plot 108</h2>
             <p className="text-xs text-white/80 mt-0.5">
-              3,200 sq.ft Duplex Home • 28 Master Milestones
+              3,200 sq.ft Duplex Villa • 28 Master Milestones
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-black text-mint">
+          <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-black text-amber-300">
             {progressPercent}% Complete
           </span>
         </div>
@@ -191,356 +248,388 @@ Track your home build zero-to-one on Sukoon: https://sukoon-hazel.vercel.app/est
         <div className="space-y-1.5 pt-2">
           <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
             <div
-              className="bg-mint h-full rounded-full transition-all duration-500"
+              className="bg-amber-400 h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <div className="flex justify-between text-[11px] text-white/70">
+          <div className="flex justify-between text-[11px] text-white/80">
             <span>{completedCount} of {totalCount} steps finished</span>
             <span>{totalCount - completedCount} steps remaining</span>
           </div>
         </div>
 
-        {/* Currently in Progress Highlight Strip */}
-        <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs">
-          <div>
-            <span className="text-[10px] text-mint uppercase font-bold block">
-              Currently in Progress
-            </span>
-            <span className="font-bold text-white">
-              Step {currentStep.stepNumber}: {currentStep.title}
-            </span>
-          </div>
-          <a
-            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-mint text-forest font-bold text-xs flex items-center gap-1.5 hover:bg-white transition"
+        {/* Share Report & Reset Buttons */}
+        <div className="flex items-center justify-between pt-4 mt-3 border-t border-white/15 text-xs">
+          <button
+            type="button"
+            onClick={() => setShareModalOpen(true)}
+            className="tap-scale px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold inline-flex items-center gap-1.5 backdrop-blur-xs transition"
           >
             <Share2 size={13} />
-            <span>Share Report</span>
-          </a>
-        </div>
-      </div>
-
-      {/* Easy Guidance Explanation Banner for Non-Educated / First-Time Home Builders */}
-      <div className="p-3.5 rounded-xl bg-champagne/40 border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5">
-        <Info size={18} className="text-amber-800 shrink-0 mt-0.5" />
-        <div className="leading-relaxed">
-          <strong>How this guide works:</strong> Every house is built in 6 phases from raw earth (0) to key handover (1).
-          Tap any step to <strong>tick it as done</strong>, or set your <strong>target dates</strong> so your contractor never delays work.
-        </div>
-      </div>
-
-      {/* Filter and Phase Selectors */}
-      <div className="space-y-2">
-        {/* Completion status filters */}
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setFilterMode("all")}
-              className={`px-3 py-1 rounded-full font-bold transition ${
-                filterMode === "all"
-                  ? "bg-forest text-white"
-                  : "bg-white text-ink-muted border border-line"
-              }`}
-            >
-              All ({totalCount})
-            </button>
-            <button
-              onClick={() => setFilterMode("pending")}
-              className={`px-3 py-1 rounded-full font-bold transition ${
-                filterMode === "pending"
-                  ? "bg-forest text-white"
-                  : "bg-white text-ink-muted border border-line"
-              }`}
-            >
-              Pending ({totalCount - completedCount})
-            </button>
-            <button
-              onClick={() => setFilterMode("completed")}
-              className={`px-3 py-1 rounded-full font-bold transition ${
-                filterMode === "completed"
-                  ? "bg-forest text-white"
-                  : "bg-white text-ink-muted border border-line"
-              }`}
-            >
-              Done ({completedCount})
-            </button>
-          </div>
+            <span>Consolidated Shareable Report</span>
+          </button>
 
           <button
+            type="button"
             onClick={handleReset}
-            className="text-[11px] font-semibold text-ink-muted hover:text-red-700 flex items-center gap-1"
-            title="Reset to default guide"
+            className="text-[11px] text-white/70 hover:text-white inline-flex items-center gap-1"
           >
-            <RotateCcw size={12} />
-            <span>Reset</span>
+            <RotateCcw size={11} /> Reset
           </button>
         </div>
+      </div>
 
-        {/* Phase Pills Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 text-xs">
+      {/* Filter Tabs */}
+      <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <div className="flex items-center gap-1 bg-sand/60 p-1 rounded-2xl border border-line">
           <button
-            onClick={() => setActivePhaseFilter("all")}
-            className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition ${
-              activePhaseFilter === "all"
-                ? "bg-mint text-forest font-bold"
-                : "bg-white text-ink-muted border border-line"
+            type="button"
+            onClick={() => setFilterMode("all")}
+            className={`px-3 py-1 rounded-xl font-bold transition ${
+              filterMode === "all" ? "bg-white text-forest shadow-2xs" : "text-ink-muted"
             }`}
           >
-            All 6 Phases
+            All ({totalCount})
           </button>
-          {CONSTRUCTION_PHASES.map((phase) => (
+          <button
+            type="button"
+            onClick={() => setFilterMode("pending")}
+            className={`px-3 py-1 rounded-xl font-bold transition ${
+              filterMode === "pending" ? "bg-white text-forest shadow-2xs" : "text-ink-muted"
+            }`}
+          >
+            Pending ({totalCount - completedCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterMode("completed")}
+            className={`px-3 py-1 rounded-xl font-bold transition ${
+              filterMode === "completed" ? "bg-white text-amber-600 shadow-2xs" : "text-ink-muted"
+            }`}
+          >
+            Completed ({completedCount})
+          </button>
+        </div>
+
+        {/* Quick Phase Jump */}
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+          <button
+            type="button"
+            onClick={() => setActivePhaseFilter("all")}
+            className={`px-2.5 py-1 rounded-xl text-[11px] font-bold whitespace-nowrap border ${
+              activePhaseFilter === "all"
+                ? "bg-forest text-white border-forest"
+                : "bg-white text-ink-muted border-line"
+            }`}
+          >
+            All Phases
+          </button>
+          {CONSTRUCTION_PHASES.map((p) => (
             <button
-              key={phase.id}
-              onClick={() => setActivePhaseFilter(phase.id)}
-              className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition ${
-                activePhaseFilter === phase.id
-                  ? "bg-mint text-forest font-bold"
-                  : "bg-white text-ink-muted border border-line"
+              key={p.id}
+              type="button"
+              onClick={() => setActivePhaseFilter(p.id)}
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-bold whitespace-nowrap border ${
+                activePhaseFilter === p.id
+                  ? "bg-forest text-white border-forest"
+                  : "bg-white text-ink-muted border-line"
               }`}
             >
-              {phase.title.split(":")[0]}
+              {p.tag}
             </button>
           ))}
         </div>
       </div>
 
       {/* Phase Groups & Steps List */}
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {CONSTRUCTION_PHASES.map((phase) => {
           const phaseSteps = filteredStages.filter((s) => s.phaseId === phase.id);
           if (phaseSteps.length === 0) return null;
 
-          const isExpanded = expandedPhases[phase.id] ?? true;
+          const isPhaseExpanded = expandedPhases[phase.id] ?? true;
           const phaseDoneCount = stages.filter((s) => s.phaseId === phase.id && s.isCompleted).length;
           const phaseTotal = stages.filter((s) => s.phaseId === phase.id).length;
+          const isPhaseFullyDone = phaseDoneCount === phaseTotal;
 
           return (
-            <div key={phase.id} className="bg-white rounded-2xl border border-line shadow-xs overflow-hidden">
-              {/* Phase Group Header Accordion */}
+            <div
+              key={phase.id}
+              className={`rounded-2xl border transition-all overflow-hidden ${
+                isPhaseFullyDone
+                  ? "bg-amber-50/20 border-amber-300/80 shadow-2xs"
+                  : "bg-white border-line shadow-2xs"
+              }`}
+            >
+              {/* Phase Header Accordion */}
               <button
+                type="button"
                 onClick={() =>
-                  setExpandedPhases((prev) => ({ ...prev, [phase.id]: !isExpanded }))
+                  setExpandedPhases((prev) => ({ ...prev, [phase.id]: !isPhaseExpanded }))
                 }
-                className="w-full p-4 flex items-center justify-between text-left bg-canvas/30 hover:bg-canvas/60 transition border-b border-line/60"
+                className="w-full p-3.5 flex items-center justify-between text-left hover:bg-sand/30 transition border-b border-line/60"
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-forest text-white">
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        isPhaseFullyDone
+                          ? "bg-amber-500 text-white"
+                          : "bg-forest text-white"
+                      }`}
+                    >
                       {phase.tag}
                     </span>
-                    <h3 className="text-sm font-bold text-forest">{phase.title}</h3>
+                    <h3
+                      className={`text-xs font-bold ${
+                        isPhaseFullyDone ? "text-amber-800" : "text-[#1B2922]"
+                      }`}
+                    >
+                      {phase.title}
+                    </h3>
                   </div>
-                  <p className="text-xs text-ink-muted mt-0.5">{phase.subtitle}</p>
+                  <p className="text-[11px] text-ink-muted mt-0.5">{phase.subtitle}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-forest">
+                  <span
+                    className={`text-xs font-bold ${
+                      isPhaseFullyDone ? "text-amber-600" : "text-forest"
+                    }`}
+                  >
                     {phaseDoneCount}/{phaseTotal} Done
                   </span>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  {isPhaseExpanded ? (
+                    <ChevronUp size={16} className="text-ink-muted" />
+                  ) : (
+                    <ChevronDown size={16} className="text-ink-muted" />
+                  )}
                 </div>
               </button>
 
-              {/* Steps inside phase */}
-              {isExpanded && (
-                <div className="divide-y divide-line">
+              {/* Minimal Steps Accordion */}
+              {isPhaseExpanded && (
+                <div className="divide-y divide-line/60">
                   {phaseSteps.map((step) => {
+                    const isStepExpanded = Boolean(expandedStepIds[step.id]);
                     const isNextActive = !step.isCompleted && step.id === currentStep.id;
 
                     return (
                       <div
                         key={step.id}
-                        className={`p-4 transition ${
+                        className={`transition-colors ${
                           step.isCompleted
-                            ? "bg-white"
+                            ? "bg-amber-50/15"
                             : isNextActive
-                            ? "bg-amber-50/40 border-l-4 border-amber-500"
+                            ? "bg-emerald-50/30 border-l-3 border-emerald-600"
                             : "bg-white"
                         }`}
                       >
-                        {/* Top Row: Checkbox, Step Number, Title */}
-                        <div className="flex items-start justify-between gap-3">
-                          <button
-                            onClick={() => handleToggleComplete(step.id)}
-                            className="flex items-start gap-3 text-left group cursor-pointer focus:outline-none"
-                            aria-label={`Mark step ${step.stepNumber} ${step.isCompleted ? "incomplete" : "complete"}`}
-                          >
-                            <div className="mt-0.5 shrink-0 transition transform active:scale-90">
+                        {/* Compact Step Row (Click to toggle details down) */}
+                        <div
+                          onClick={() => toggleStepExpand(step.id)}
+                          className="p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-sand/20 transition"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            {/* Checkbox Button */}
+                            <button
+                              type="button"
+                              onClick={(e) => handleToggleComplete(step.id, e)}
+                              className="shrink-0 focus:outline-none"
+                              aria-label={`Mark step ${step.stepNumber} complete`}
+                            >
                               {step.isCompleted ? (
-                                <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-                                  <CheckCircle2 size={18} />
+                                <div className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-2xs">
+                                  <CheckCircle2 size={15} />
                                 </div>
                               ) : (
-                                <div className="w-6 h-6 rounded-full border-2 border-forest/40 group-hover:border-forest flex items-center justify-center bg-white">
-                                  <Circle size={14} className="text-transparent" />
+                                <div className="w-5 h-5 rounded-full border-2 border-line hover:border-forest flex items-center justify-center bg-white">
+                                  <Circle size={10} className="text-transparent" />
                                 </div>
                               )}
-                            </div>
+                            </button>
 
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-canvas text-ink-muted">
+                            {/* Step Title & Indicators - NO STRIKETHROUGH, YELLOW ON COMPLETED */}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="text-[10px] font-bold text-ink-muted">
                                   Step {step.stepNumber}
                                 </span>
                                 {step.isCompleted && (
-                                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                                  <span className="text-[9px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-1.5 py-0.2 rounded-md">
                                     ✓ Completed
                                   </span>
                                 )}
                                 {isNextActive && (
-                                  <span className="text-[10px] font-black text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full animate-pulse">
-                                    ★ Next Action Due
+                                  <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded-md animate-pulse">
+                                    ★ Active Next
                                   </span>
                                 )}
-                                <span className="text-[10px] text-ink-muted flex items-center gap-1">
-                                  <Clock size={11} /> {step.estimatedDuration}
+                                <span className="text-[10px] text-ink-muted">
+                                  • {step.estimatedDuration}
                                 </span>
                               </div>
 
                               <h4
-                                className={`text-sm font-bold mt-1 leading-snug ${
-                                  step.isCompleted ? "text-forest line-through opacity-80" : "text-foreground"
+                                className={`text-xs leading-snug mt-0.5 font-bold ${
+                                  step.isCompleted
+                                    ? "text-amber-600 font-bold"
+                                    : "text-[#1B2922]"
                                 }`}
                               >
                                 {step.title}
                               </h4>
                             </div>
-                          </button>
-                        </div>
-
-                        {/* Layman Description (Super easy to understand) */}
-                        <p className="text-xs text-ink-muted mt-2 leading-relaxed pl-9">
-                          {step.laymanDescription}
-                        </p>
-
-                        {/* Why it matters note */}
-                        <div className="mt-2 pl-9">
-                          <div className="p-2.5 rounded-xl bg-canvas/40 border border-line/60 text-[11px] text-foreground leading-relaxed">
-                            <span className="font-bold text-forest">Why this matters: </span>
-                            <span>{step.whyItMatters}</span>
                           </div>
-                        </div>
 
-                        {/* Key Inspection Checklist */}
-                        {step.keyChecklist && step.keyChecklist.length > 0 && (
-                          <div className="mt-2 pl-9 space-y-1">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted block">
-                              What to check on site:
+                          {/* Expand Down Chevron */}
+                          <div className="flex items-center gap-1 shrink-0 text-ink-muted">
+                            <span className="text-[10px] font-medium hidden sm:inline">
+                              {isStepExpanded ? "Less" : "Details"}
                             </span>
-                            <ul className="space-y-0.5 text-[11px] text-ink-muted">
-                              {step.keyChecklist.map((item, idx) => (
-                                <li key={idx} className="flex items-center gap-1.5">
-                                  <span className="text-emerald-600 font-bold">•</span>
-                                  <span>{item}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* Critical Tip */}
-                        {step.criticalTip && (
-                          <div className="mt-2 pl-9">
-                            <p className="text-[10px] text-amber-800 font-medium italic">
-                              💡 <strong>Pro Tip:</strong> {step.criticalTip}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Date Picker & Action Controls */}
-                        <div className="mt-3.5 pl-9 pt-3 border-t border-line/50 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-                          {/* Completion Date Registration */}
-                          <div className="flex items-center gap-2">
-                            <label className="text-[11px] font-semibold text-ink-muted flex items-center gap-1">
-                              <Calendar size={13} className="text-forest" />
-                              <span>{step.isCompleted ? "Completed On:" : "Target Due Date:"}</span>
-                            </label>
-                            <input
-                              type="date"
-                              value={
-                                step.isCompleted
-                                  ? step.completionDate || ""
-                                  : step.targetDueDate || ""
-                              }
-                              onChange={(e) =>
-                                handleDateChange(
-                                  step.id,
-                                  step.isCompleted ? "completionDate" : "targetDueDate",
-                                  e.target.value
-                                )
-                              }
-                              className="text-xs px-2 py-1 rounded-md border border-line bg-canvas/30 focus:bg-white focus:outline-none focus:border-forest"
-                            />
-                          </div>
-
-                          {/* Quick Toggle Button */}
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              onClick={() => handleToggleComplete(step.id)}
-                              className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
-                                step.isCompleted
-                                  ? "bg-canvas text-forest hover:bg-line"
-                                  : "bg-forest text-white hover:opacity-95 shadow-xs"
-                              }`}
-                            >
-                              <CheckCircle2 size={13} />
-                              <span>{step.isCompleted ? "Mark Incomplete" : "Mark as Done"}</span>
-                            </button>
-
-                            {/* Note Editor Button */}
-                            <button
-                              onClick={() => {
-                                if (editingNoteId === step.id) {
-                                  setEditingNoteId(null);
-                                } else {
-                                  setEditingNoteId(step.id);
-                                  setTempNoteText(step.notes || "");
-                                }
-                              }}
-                              className="p-1 rounded-lg text-ink-muted hover:text-forest transition"
-                              title="Add / Edit Note"
-                            >
-                              <Edit3 size={15} />
-                            </button>
+                            {isStepExpanded ? (
+                              <ChevronUp size={15} />
+                            ) : (
+                              <ChevronDown size={15} />
+                            )}
                           </div>
                         </div>
 
-                        {/* Note Display & Edit Form */}
-                        {step.notes && editingNoteId !== step.id && (
-                          <div className="mt-2 pl-9">
-                            <div className="text-[11px] text-forest bg-mint/40 p-2 rounded-lg border border-mint flex items-start gap-1.5">
-                              <span className="font-bold">📝 Note:</span>
-                              <span className="flex-1">{step.notes}</span>
-                            </div>
-                          </div>
-                        )}
+                        {/* Expandable Step Details Panel */}
+                        {isStepExpanded && (
+                          <div className="px-4 pb-4 pt-1 space-y-2.5 text-xs border-t border-line/40 bg-sand/15 animate-in fade-in duration-150">
+                            {/* Layman Description */}
+                            <p className="text-xs text-[#2A3A30] leading-relaxed pl-8">
+                              {step.laymanDescription}
+                            </p>
 
-                        {editingNoteId === step.id && (
-                          <div className="mt-2.5 pl-9 space-y-1.5">
-                            <input
-                              type="text"
-                              value={tempNoteText}
-                              onChange={(e) => setTempNoteText(e.target.value)}
-                              placeholder="e.g. Contractor Sharma committed to finish by Friday..."
-                              className="w-full text-xs px-3 py-1.5 rounded-lg border border-line bg-canvas/40 focus:bg-white focus:outline-none focus:border-forest"
-                            />
-                            <div className="flex gap-1.5 justify-end">
-                              <button
-                                onClick={() => setEditingNoteId(null)}
-                                className="px-2.5 py-1 text-xs text-ink-muted rounded hover:bg-canvas"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={() => handleSaveNote(step.id)}
-                                className="px-3 py-1 text-xs font-bold text-white bg-forest rounded hover:opacity-90"
-                              >
-                                Save Note
-                              </button>
+                            {/* Why this matters */}
+                            <div className="pl-8">
+                              <div className="p-2.5 rounded-xl bg-white border border-line text-[11px] text-[#2A3A30] leading-relaxed">
+                                <strong className="text-forest">Why this matters: </strong>
+                                <span>{step.whyItMatters}</span>
+                              </div>
                             </div>
+
+                            {/* What to check on site */}
+                            {step.keyChecklist && step.keyChecklist.length > 0 && (
+                              <div className="pl-8 space-y-1">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted block">
+                                  What to verify on site:
+                                </span>
+                                <ul className="space-y-1 text-[11px] text-[#2A3A30]">
+                                  {step.keyChecklist.map((chk, i) => (
+                                    <li key={i} className="flex items-center gap-1.5">
+                                      <span className="text-forest font-bold">•</span>
+                                      <span>{chk}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* Pro Tip */}
+                            {step.criticalTip && (
+                              <div className="pl-8">
+                                <p className="text-[11px] text-amber-900 bg-amber-50/70 border border-amber-200/60 p-2 rounded-xl">
+                                  💡 <strong>Pro Tip:</strong> {step.criticalTip}
+                                </p>
+                              </div>
+                            )}
+
+                            {/* Date Picker & Quick Actions */}
+                            <div className="pl-8 pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-line/50">
+                              <div className="flex items-center gap-2">
+                                <label className="text-[11px] font-semibold text-ink-muted flex items-center gap-1">
+                                  <Calendar size={12} className="text-forest" />
+                                  <span>{step.isCompleted ? "Completed on:" : "Target date:"}</span>
+                                </label>
+                                <input
+                                  type="date"
+                                  value={
+                                    step.isCompleted
+                                      ? step.completionDate || ""
+                                      : step.targetDueDate || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleDateChange(
+                                      step.id,
+                                      step.isCompleted ? "completionDate" : "targetDueDate",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="text-xs px-2 py-1 rounded-lg border border-line bg-white focus:outline-none focus:border-forest"
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleToggleComplete(step.id, e)}
+                                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
+                                    step.isCompleted
+                                      ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                                      : "bg-forest text-white hover:opacity-90 shadow-2xs"
+                                  }`}
+                                >
+                                  <CheckCircle2 size={13} />
+                                  <span>{step.isCompleted ? "Mark Incomplete" : "Mark as Done"}</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (editingNoteId === step.id) {
+                                      setEditingNoteId(null);
+                                    } else {
+                                      setEditingNoteId(step.id);
+                                      setTempNoteText(step.notes || "");
+                                    }
+                                  }}
+                                  className="p-1.5 rounded-lg text-ink-muted hover:text-forest transition"
+                                  title="Add Note"
+                                >
+                                  <Edit3 size={14} />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Note Editor */}
+                            {editingNoteId === step.id ? (
+                              <div className="pl-8 space-y-1.5 pt-1">
+                                <input
+                                  type="text"
+                                  value={tempNoteText}
+                                  onChange={(e) => setTempNoteText(e.target.value)}
+                                  placeholder="e.g. Contractor Sharma committed to finish by Friday..."
+                                  className="w-full text-xs px-3 py-1.5 rounded-lg border border-line bg-white focus:outline-none focus:border-forest"
+                                />
+                                <div className="flex gap-1.5 justify-end">
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingNoteId(null)}
+                                    className="px-2.5 py-1 text-xs text-ink-muted rounded hover:bg-sand"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSaveNote(step.id)}
+                                    className="px-3 py-1 text-xs font-bold text-white bg-forest rounded-lg hover:opacity-90"
+                                  >
+                                    Save Note
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              step.notes && (
+                                <div className="pl-8 pt-1">
+                                  <div className="text-[11px] text-forest bg-emerald-50/70 p-2 rounded-lg border border-emerald-100">
+                                    <strong>📝 Site Note:</strong> {step.notes}
+                                  </div>
+                                </div>
+                              )
+                            )}
                           </div>
                         )}
                       </div>
@@ -552,6 +641,62 @@ Track your home build zero-to-one on Sukoon: https://sukoon-hazel.vercel.app/est
           );
         })}
       </div>
+
+      {/* Share Report Modal (Consolidated, Simple, Clean formatting) */}
+      {shareModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl relative space-y-4">
+            <button
+              type="button"
+              onClick={() => setShareModalOpen(false)}
+              className="absolute top-4 right-4 text-ink-muted hover:text-foreground p-1 rounded-full bg-sand/60"
+            >
+              <X size={18} />
+            </button>
+
+            <div>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">
+                Consolidated Report
+              </span>
+              <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+                Share Construction Progress
+              </h3>
+              <p className="text-xs text-ink-muted">
+                Clean formatted report for WhatsApp or client sharing.
+              </p>
+            </div>
+
+            {/* Preformatted Preview Box */}
+            <div className="bg-sand/30 border border-line rounded-2xl p-3.5 text-xs font-mono text-[#1B2922] whitespace-pre-wrap max-h-60 overflow-y-auto leading-relaxed">
+              {consolidatedReport}
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  if (navigator.clipboard) {
+                    navigator.clipboard.writeText(consolidatedReport);
+                    showToast("✓ Report copied to clipboard!");
+                  }
+                }}
+                className="tap-scale flex-1 py-2.5 rounded-xl border border-line text-xs font-bold text-forest hover:bg-forest/5 flex items-center justify-center gap-1.5"
+              >
+                <Copy size={14} /> Copy Report
+              </button>
+
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(consolidatedReport)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap-scale flex-1 py-2.5 rounded-xl bg-forest text-white text-xs font-bold shadow-2xs hover:opacity-95 flex items-center justify-center gap-1.5"
+              >
+                <Share2 size={14} /> Send on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

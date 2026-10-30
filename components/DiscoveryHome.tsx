@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Check,
+  ChevronDown,
+  MapPin,
   Plus,
   Search,
   SlidersHorizontal,
@@ -17,6 +19,7 @@ import {
   useFavorites,
   type ShortcutItem,
 } from "@/lib/favorites";
+import { useSelectedCity } from "@/lib/city";
 
 function profileMark(email: string, ownerName?: string) {
   const source = (ownerName || email.split("@")[0] || "You").replace(/[._-]+/g, " ").trim();
@@ -216,11 +219,13 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
 export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
   const { favoriteItems, favoriteIds, toggleFavorite } = useFavorites();
   const [customizeModal, setCustomizeModal] = useState(false);
+  const { city, changeCity, allCities } = useSelectedCity();
+  const [cityModalOpen, setCityModalOpen] = useState(false);
 
   return (
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
       <div>
-        {/* 1. Header with Centered Sukoon Logo and Profile */}
+        {/* 1. Header with Centered Sukoon Logo, City Selector & Profile */}
         <header className="relative flex items-center justify-between mb-7 pt-2">
           {/* Invisible spacer on the left to ensure absolute center alignment of logo */}
           <div aria-hidden="true" className="w-10 h-10 invisible" />
@@ -235,14 +240,27 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             </p>
           </div>
 
-          {/* User Profile Avatar Badge */}
-          <Link
-            href="/profile"
-            aria-label="User Profile"
-            className="tap-scale w-10 h-10 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none"
-          >
-            {mark}
-          </Link>
+          {/* Top Right: City Selector & User Profile Avatar Badge */}
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setCityModalOpen(true)}
+              aria-label="Select City"
+              className="tap-scale flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs"
+            >
+              <MapPin size={11} className="text-[#1E5637] shrink-0" />
+              <span className="max-w-[70px] truncate">{city}</span>
+              <ChevronDown size={10} className="text-ink-muted shrink-0" />
+            </button>
+
+            <Link
+              href="/profile"
+              aria-label="User Profile"
+              className="tap-scale w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0"
+            >
+              {mark}
+            </Link>
+          </div>
         </header>
 
         {/* 2. Search Bar */}
@@ -505,6 +523,64 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
               >
                 Done
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* City Selection Modal */}
+      {cityModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl relative space-y-3.5">
+            <button
+              type="button"
+              onClick={() => setCityModalOpen(false)}
+              className="absolute top-4 right-4 text-ink-muted hover:text-foreground p-1 rounded-full bg-sand/60"
+            >
+              <X size={18} />
+            </button>
+
+            <div>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 flex items-center gap-1 w-max">
+                <MapPin size={11} /> Select Location
+              </span>
+              <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1.5">
+                Choose Your City
+              </h3>
+              <p className="text-xs text-ink-muted">
+                Properties, daily material rates and market updates will customize for this city.
+              </p>
+            </div>
+
+            {/* Indian Cities Grid */}
+            <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+              {allCities.map((c) => {
+                const isSelected = city === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => {
+                      changeCity(c);
+                      setCityModalOpen(false);
+                    }}
+                    className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all ${
+                      isSelected
+                        ? "bg-forest text-white border-forest shadow-2xs font-bold"
+                        : "bg-white text-[#1B2922] border-line hover:border-forest/40"
+                    }`}
+                  >
+                    <span className="text-xs">{c}</span>
+                    {isSelected && <Check size={14} className="text-white" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="pt-1 text-center">
+              <span className="text-[10px] text-ink-muted">
+                Active City: <strong>{city}</strong>
+              </span>
             </div>
           </div>
         </div>
