@@ -22,6 +22,7 @@ import {
   INITIAL_QUICK_EXPENSES,
   type QuickExpense,
 } from "@/lib/data/construction-hub";
+import { PinToHomeButton } from "@/components/PinToHomeButton";
 
 type ConstructionSection = "journey" | "accounts" | "site" | "rates";
 
@@ -160,6 +161,10 @@ function ConstructionContent() {
       {/* SECTION 1: 0 TO 1 BUILD JOURNEY */}
       {section === "journey" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Home Building Roadmap</span>
+            <PinToHomeButton shortcutId="journey" />
+          </div>
           <ConstructionJourneyView />
         </section>
       )}
@@ -167,6 +172,10 @@ function ConstructionContent() {
       {/* SECTION 2: EXPENSE NOTEBOOK (ACCOUNTS) */}
       {section === "accounts" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Notebook &amp; Accounts</span>
+            <PinToHomeButton shortcutId="accounts" />
+          </div>
           {/* Running Total Card */}
           <div className="p-4 rounded-2xl bg-forest text-white shadow-sm flex items-center justify-between">
             <div>
@@ -306,6 +315,10 @@ function ConstructionContent() {
       {/* SECTION 3: SITE PROGRESS LOG */}
       {section === "site" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Daily Inspection Log</span>
+            <PinToHomeButton shortcutId="site" />
+          </div>
           <div className="p-4 rounded-2xl bg-white border border-line shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
               <div>
@@ -360,6 +373,10 @@ function ConstructionContent() {
       {/* SECTION 4: MATERIAL RATES & ESTIMATOR */}
       {section === "rates" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Market Rates</span>
+            <PinToHomeButton shortcutId="rates" />
+          </div>
           <div className="p-4 rounded-2xl bg-champagne/60 border border-amber-200 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase bg-amber-200 text-amber-900 px-2 py-0.5 rounded">

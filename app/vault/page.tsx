@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
+import { PinToHomeButton } from "@/components/PinToHomeButton";
 
 type VaultSection = "docs" | "details" | "portfolio" | "single";
 
@@ -195,13 +196,16 @@ function VaultContent() {
               <h2 className="text-sm font-bold text-foreground">All Stored Papers (5)</h2>
               <p className="text-[11px] text-ink-muted">Super Corridor Plot 108</p>
             </div>
-            <button
-              type="button"
-              onClick={() => setAddModal(true)}
-              className="px-3 py-1.5 rounded-full bg-forest text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs hover:opacity-95"
-            >
-              <Plus size={13} /> Add Paper
-            </button>
+            <div className="flex items-center gap-2">
+              <PinToHomeButton shortcutId="docs" />
+              <button
+                type="button"
+                onClick={() => setAddModal(true)}
+                className="px-3 py-1.5 rounded-full bg-forest text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs hover:opacity-95"
+              >
+                <Plus size={13} /> Add Paper
+              </button>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -259,6 +263,10 @@ function VaultContent() {
       {/* SECTION 2: PROPERTY DETAILS */}
       {section === "details" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Asset Detail</span>
+            <PinToHomeButton shortcutId="details" />
+          </div>
           <div className="p-4 rounded-2xl bg-white border border-line shadow-2xs space-y-3">
             <div className="flex items-center justify-between">
               <div>
@@ -305,6 +313,10 @@ function VaultContent() {
       {/* SECTION 3: PORTFOLIO OVERVIEW */}
       {section === "portfolio" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Portfolio</span>
+            <PinToHomeButton shortcutId="portfolio" />
+          </div>
           <div className="p-4 rounded-2xl bg-forest text-white shadow-sm space-y-2">
             <span className="text-[10px] uppercase tracking-wider text-white/80 font-bold">
               Total Portfolio Valuation
@@ -352,6 +364,10 @@ function VaultContent() {
       {/* SECTION 4: FIND SINGLE PAPER */}
       {section === "single" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Document Search</span>
+            <PinToHomeButton shortcutId="single-paper" />
+          </div>
           <div className="relative">
             <Search
               size={16}

@@ -24,6 +24,7 @@ import {
   MEDIA_RESOURCES,
 } from "@/lib/data/intelligence-hub";
 import { LEGAL_DRAFT_TEMPLATES } from "@/lib/data/market-hub";
+import { PinToHomeButton } from "@/components/PinToHomeButton";
 
 type KnowledgeSection = "dictionary" | "news" | "drafts" | "media";
 
@@ -95,13 +96,13 @@ function UpdatesContent() {
           <ArrowLeft size={16} /> Back to Home
         </Link>
         <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-          Sukoon Knowledge
+          Sukoon Insights
         </span>
       </div>
 
       <div className="mb-4">
         <h1 className="text-2xl font-serif font-bold text-foreground">
-          Real Estate Knowledge
+          Real Estate Insights
         </h1>
         <p className="text-xs text-ink-muted mt-0.5">
           Everything you need to understand Indian property with clarity
@@ -147,6 +148,10 @@ function UpdatesContent() {
       {/* SECTION 1: REAL ESTATE DICTIONARY */}
       {section === "dictionary" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Terminology Glossary</span>
+            <PinToHomeButton shortcutId="dictionary" />
+          </div>
           <div className="relative">
             <Search
               size={16}
@@ -290,6 +295,10 @@ function UpdatesContent() {
       {/* SECTION 3: LEGAL DRAFTING & FORMATS */}
       {section === "drafts" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Verified Formats</span>
+            <PinToHomeButton shortcutId="drafts" />
+          </div>
           <div className="p-3.5 rounded-2xl bg-white border border-line shadow-2xs space-y-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
               Standard Verified Legal Templates
@@ -400,6 +409,10 @@ function UpdatesContent() {
       {/* SECTION 4: BLOGS & PODCASTS */}
       {section === "media" && (
         <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Podcasts &amp; Audio</span>
+            <PinToHomeButton shortcutId="media" />
+          </div>
           <div className="p-3.5 rounded-2xl bg-white border border-line shadow-2xs space-y-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
               Real Estate Podcasts &amp; Audio Explainers

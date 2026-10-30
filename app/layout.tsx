@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Cinzel } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/components/StoreProvider";
 import { Shell } from "@/components/ui";
@@ -8,6 +8,7 @@ import { PageTransition } from "@/components/motion/PageTransition";
 import { NativeRuntime } from "@/components/NativeRuntime";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["700", "800"], display: "swap", variable: "--font-cinzel" });
 
 export const metadata: Metadata = {
   title: "SUKOON — Escape the chaos",
@@ -20,7 +21,7 @@ export const viewport: Viewport = { themeColor: "#f7f3eb", viewportFit: "cover",
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${cinzel.variable}`} suppressHydrationWarning>
       <body className="min-h-full bg-canvas text-foreground">
         <script dangerouslySetInnerHTML={{ __html: "try{var p=location.pathname;document.documentElement.classList.toggle('is-inner',p!=='/'&&p!=='/home-reference')}catch(e){}" }} />
         <NativeRuntime />

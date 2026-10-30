@@ -24,6 +24,7 @@ import {
   DAILY_WHATSAPP_DEALS,
   INDORE_GUIDELINE_RATES,
 } from "@/lib/data/market-hub";
+import { PinToHomeButton } from "@/components/PinToHomeButton";
 
 type BuySellSection = "buy" | "sell" | "add" | "listing";
 
@@ -146,7 +147,10 @@ function BuySellContent() {
             <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
               Verified Properties for Sale (Indore)
             </h2>
-            <span className="text-[10px] text-ink-muted">Title Guaranteed</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-ink-muted">Title Guaranteed</span>
+              <PinToHomeButton shortcutId="buy" />
+            </div>
           </div>
 
           <div className="space-y-2.5">
@@ -197,6 +201,10 @@ function BuySellContent() {
       {/* SECTION 2: SELL A PROPERTY */}
       {section === "sell" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Seller Portal</span>
+            <PinToHomeButton shortcutId="post-deal" />
+          </div>
           <div className="p-4 rounded-2xl bg-white border border-line shadow-2xs space-y-3">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-forest bg-mint px-2 py-0.5 rounded-full">
@@ -389,6 +397,10 @@ function BuySellContent() {
       {/* SECTION 4: SUBMIT A LISTING & GUIDELINE RATES */}
       {section === "listing" && (
         <section className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold text-ink-muted uppercase">Collector Circle Rates</span>
+            <PinToHomeButton shortcutId="guidelines" />
+          </div>
           <div className="p-4 rounded-2xl bg-white border border-line shadow-2xs space-y-2">
             <h2 className="text-xs font-bold uppercase tracking-wider text-forest">
               Official Collector Guideline Rates (Indore 2026)
