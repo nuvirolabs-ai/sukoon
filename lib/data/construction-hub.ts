@@ -56,12 +56,30 @@ export interface ConceptualPlan {
   vastuCompliant: boolean;
   floors: string;
   estimatedCost: string;
+  elevationStyle?: string;
+  elevationDescription?: string;
   description: string;
   features: string[];
   roomDetails: {
     groundFloor: string[];
     firstFloor?: string[];
   };
+}
+
+export interface CivilEngineerProfile {
+  id: string;
+  name: string;
+  firm: string;
+  experienceYears: number;
+  location: string;
+  specialization: string;
+  qualifications: string;
+  phone: string;
+  whatsapp: string;
+  rating: number;
+  verified: boolean;
+  avatarText: string;
+  projectsCompleted: number;
 }
 
 export interface QuickExpense {
@@ -314,39 +332,89 @@ export const AUTHORIZED_ARCHITECTS: ArchitectProfile[] = [
   },
 ];
 
-// 5 Standard Conceptual Floor Plans
+// Registered Civil Engineers & Structural Consultants Directory
+export const AUTHORIZED_CIVIL_ENGINEERS: CivilEngineerProfile[] = [
+  {
+    id: "eng-01",
+    name: "Er. Amit Sharma",
+    firm: "Apex Structural & Civil Consultants",
+    experienceYears: 16,
+    location: "Vijay Nagar / Scheme 54, Indore",
+    specialization: "RCC Frame Design, Seismic Soil Analysis & Bar Bending Audits",
+    qualifications: "M.Tech (Structural Engineering) IIT Roorkee • Chartered Engineer (IEI)",
+    phone: "+91 98260 55112",
+    whatsapp: "919826055112",
+    rating: 4.9,
+    verified: true,
+    avatarText: "AS",
+    projectsCompleted: 340,
+  },
+  {
+    id: "eng-02",
+    name: "Er. Rajesh Choudhary",
+    firm: "Choudhary & Associates Structural Engineers",
+    experienceYears: 22,
+    location: "Dewas Naka / Bypass, Indore",
+    specialization: "Foundation Stability, Heavy Raft Footings & Municipal Sanctions",
+    qualifications: "B.E. Civil (SGSITS Indore) • Govt Approved Structural Engineer",
+    phone: "+91 98931 44220",
+    whatsapp: "919893144220",
+    rating: 4.8,
+    verified: true,
+    avatarText: "RC",
+    projectsCompleted: 510,
+  },
+  {
+    id: "eng-03",
+    name: "Er. Priya Solanki",
+    firm: "Solanki Civil & Quality Testing Labs",
+    experienceYears: 11,
+    location: "Super Corridor / Airport Road, Indore",
+    specialization: "Concrete Cube Testing, Site Supervision & Water Proofing Audits",
+    qualifications: "M.Tech (Construction Management) • NABL Certified Quality Auditor",
+    phone: "+91 94251 77889",
+    whatsapp: "919425177889",
+    rating: 4.9,
+    verified: true,
+    avatarText: "PS",
+    projectsCompleted: 195,
+  },
+];
+
+// Standard Conceptual Floor Plans & 3D Elevation Concepts
 export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
   {
-    id: "plan-15-45",
-    dimensions: "15*45",
-    plotAreaSqft: 675,
-    builtUpSqft: 1150,
-    title: "15 × 45 Compact Smart Duplex (675 sq.ft)",
-    configuration: "2 BHK + Pooja + Car Porch",
-    facing: "East Facing (Vastu Compliant)",
+    id: "plan-15-50",
+    dimensions: "15*50",
+    plotAreaSqft: 750,
+    builtUpSqft: 1350,
+    title: "15 × 50 Smart Urban Duplex (750 sq.ft)",
+    configuration: "2 BHK + Study + Front Car Porch",
+    facing: "East Facing (Sunrise Alignment)",
     vastuCompliant: true,
     floors: "Ground + First Floor (G+1)",
-    estimatedCost: "₹21 - ₹24 Lakhs (Standard Finishing)",
-    description: "Engineered for compact urban plots with maximum ventilation, smart natural light shafts, and complete space optimization.",
+    estimatedCost: "₹24 - ₹28 Lakhs (Turnkey)",
+    elevationStyle: "Contemporary Vertical Louver & Glass Balcony",
+    elevationDescription: "Sleek vertical wooden-finish aluminium louvers with warm recessed LED cove lighting, maximizing natural daylight while preserving privacy.",
+    description: "Designed specifically for narrow urban plots. Open plan living with cross ventilation shafts and zero wasted corridor space.",
     features: [
-      "Front Car/Bike Parking Porch (10' x 14')",
-      "Ventilated Living Room with double height feeling",
-      "South-East Kitchen with utility wash area",
-      "Master bedroom with private balcony on first floor",
+      "Front Covered Sedan Parking Porch (10' x 15')",
+      "Double-height light well bringing natural sky light into living hall",
+      "Vastu-compliant South-East kitchen with separate utility area",
+      "Upper floor master bedroom with cantilevered front glass balcony",
     ],
     roomDetails: {
       groundFloor: [
-        "Parking Porch: 9'6\" x 13'0\"",
-        "Living Room: 13'6\" x 11'0\"",
-        "Kitchen (South-East): 7'0\" x 8'6\"",
-        "Common Washroom: 4'6\" x 6'0\"",
-        "Ground Bedroom: 10'0\" x 11'0\"",
-        "Rear Ventilation Shaft: 3'0\" x 4'0\"",
+        "Car Porch: 10'0\" x 15'0\"",
+        "Living Room: 13'6\" x 12'0\"",
+        "Kitchen (South-East): 8'0\" x 9'0\"",
+        "Ground Bedroom: 10'6\" x 11'0\"",
+        "Common Bath: 4'6\" x 6'6\"",
       ],
       firstFloor: [
-        "Master Bedroom: 13'6\" x 11'6\" (Attached Bath: 5'0\" x 7'0\")",
-        "Front Covered Balcony: 13'6\" x 4'0\"",
-        "Family Lounge: 9'0\" x 8'0\"",
+        "Master Bedroom: 13'6\" x 12'6\" (Attached Bath: 5'0\" x 7'0\")",
+        "Kids Bedroom / Study: 10'6\" x 10'0\"",
+        "Front Covered Balcony: 13'6\" x 4'6\"",
         "Open Terrace Access",
       ],
     },
@@ -355,34 +423,35 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     id: "plan-20-50",
     dimensions: "20*50",
     plotAreaSqft: 1000,
-    builtUpSqft: 1750,
+    builtUpSqft: 1850,
     title: "20 × 50 Prime Modern Villa (1,000 sq.ft)",
     configuration: "3 BHK + Drawing Room + Modular Kitchen",
     facing: "North-East Facing (Vastu Compliant)",
     vastuCompliant: true,
     floors: "Ground + First Floor (G+1)",
-    estimatedCost: "₹32 - ₹36 Lakhs (Premium Finishing)",
-    description: "The most popular Indian residential plot size. Balanced proportions, wide 20-foot frontage, spacious sedan car parking, and comfortable family living.",
+    estimatedCost: "₹34 - ₹38 Lakhs (Premium Finishing)",
+    elevationStyle: "Modern Minimalist Glass & Stone Cladding",
+    elevationDescription: "Exterior travertine stone cladding accent wall, frameless toughened glass railings, and a bold cantilevered roof canopy.",
+    description: "The most popular residential plot proportion across Indian cities. Wide 20-foot frontage, full SUV car parking, and generous family living zones.",
     features: [
-      "Large Covered Car Parking for Sedan / SUV",
-      "Separate Formal Drawing Room & Family Living Zone",
-      "Pooja Room in North-East direction",
-      "Large Master Bedroom with Walk-in Wardrobe space",
-      "Spacious Modular Kitchen with Breakfast Counter",
+      "Large Covered SUV Parking Porch (11' x 16')",
+      "Separate Formal Drawing Room & Private Family Living Lounge",
+      "Dedicated Pooja Room in North-East quadrant",
+      "Master Suite with walk-in closet space and terrace sit-out",
     ],
     roomDetails: {
       groundFloor: [
-        "Car Porch: 10'0\" x 15'0\"",
-        "Drawing Room: 12'6\" x 13'0\"",
-        "Family Living & Dining: 18'6\" x 11'6\"",
-        "Modular Kitchen (South-East): 8'6\" x 10'0\"",
-        "Pooja Room (North-East): 4'0\" x 5'0\"",
-        "Ground Bedroom: 11'0\" x 12'0\" (Attached Bath)",
+        "Car Porch: 11'0\" x 16'0\"",
+        "Formal Drawing Room: 12'6\" x 13'0\"",
+        "Family Living & Dining: 18'6\" x 12'0\"",
+        "Modular Kitchen (South-East): 8'6\" x 10'6\"",
+        "Pooja Room (North-East): 4'6\" x 5'0\"",
+        "Ground Bedroom: 11'6\" x 12'0\" (Attached Bath)",
       ],
       firstFloor: [
-        "Master Bedroom 1: 12'6\" x 14'0\" with Dresser & Bath",
-        "Bedroom 2: 11'0\" x 12'0\"",
-        "Family TV Lounge: 13'0\" x 10'0\"",
+        "Master Bedroom 1: 13'0\" x 14'6\" with Dresser & Bath",
+        "Bedroom 2: 11'6\" x 12'6\"",
+        "Family TV Lounge: 13'0\" x 10'6\"",
         "Front Balcony Deck: 18'6\" x 5'0\"",
       ],
     },
@@ -391,34 +460,109 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     id: "plan-30-50",
     dimensions: "30*50",
     plotAreaSqft: 1500,
-    builtUpSqft: 2500,
+    builtUpSqft: 2600,
     title: "30 × 50 Executive Garden Bungalow (1,500 sq.ft)",
-    configuration: "4 BHK + Servant Room + Front Lawn",
+    configuration: "4 BHK + Front Lawn + Servant Room",
     facing: "East Facing (Sunrise Alignment)",
     vastuCompliant: true,
     floors: "G+1 with Private Terrace Lounge",
-    estimatedCost: "₹48 - ₹55 Lakhs",
-    description: "Expansive 30-foot front elevation allowing grand entrance, 2-car driveway parking, lush green side setback, and luxurious courtyard feel.",
+    estimatedCost: "₹50 - ₹58 Lakhs",
+    elevationStyle: "Neo-Contemporary Geometric Villa Elevation",
+    elevationDescription: "Striking cubic volumes, wooden soffits beneath roof slabs, and floor-to-ceiling panoramic glass windows facing the garden lawn.",
+    description: "Expansive 30-foot front elevation providing grand curb appeal, 2-car driveway, lush front lawn, and open-plan kitchen.",
     features: [
-      "Dual Car Covered Parking + Front Garden Lawn",
-      "Central Brahmasthan Courtyard with skylight",
-      "Spacious Dining area connected to Open American Kitchen",
-      "Private Home Office / Study Room",
+      "Dual Car Covered Driveway + Landscaped Front Garden",
+      "Central Brahmasthan open courtyard with skylight pergola",
+      "Open American Kitchen with Breakfast Island & Utility",
+      "Private Home Office / Study on the upper floor",
     ],
     roomDetails: {
       groundFloor: [
-        "Dual Parking & Lawn: 14'0\" x 17'0\"",
+        "Dual Parking & Front Lawn: 14'0\" x 18'0\"",
         "Double Height Living Hall: 15'0\" x 18'0\"",
-        "Dining Room: 12'0\" x 12'0\"",
-        "Kitchen + Store + Utility: 10'0\" x 14'0\"",
+        "Dining Room: 12'0\" x 13'0\"",
+        "Kitchen + Store: 10'0\" x 14'0\"",
         "Guest Bedroom: 13'0\" x 13'0\"",
         "Pooja Mandir: 6'0\" x 6'0\"",
       ],
       firstFloor: [
-        "Master Suite with Balcony: 15'0\" x 16'0\"",
-        "Kids Bedroom: 13'0\" x 13'0\"",
-        "Study / Home Theatre Room: 12'0\" x 14'0\"",
-        "Open Terrace Gazebo space",
+        "Master Suite with Balcony: 15'0\" x 16'6\"",
+        "Kids Bedroom: 13'0\" x 13'6\"",
+        "Home Office / Gym Room: 12'0\" x 14'0\"",
+        "Open Terrace Gazebo: 14'0\" x 16'0\"",
+      ],
+    },
+  },
+  {
+    id: "plan-30-60",
+    dimensions: "30*60",
+    plotAreaSqft: 1800,
+    builtUpSqft: 3100,
+    title: "30 × 60 Premium Grand Duplex (1,800 sq.ft)",
+    configuration: "4 BHK + Home Theatre + Powder Room",
+    facing: "North-Facing (Prosperity Alignment)",
+    vastuCompliant: true,
+    floors: "Ground + First Floor (G+1)",
+    estimatedCost: "₹62 - ₹72 Lakhs",
+    elevationStyle: "Modern Scandinavian Concrete & Timber Elevation",
+    elevationDescription: "Exposed architectural concrete panels paired with warm teak timber cladding and black-framed aluminium glazing.",
+    description: "Deep 60-foot length allows an expansive private rear garden, large dining foyer, double living spaces, and dedicated home theatre.",
+    features: [
+      "Extra-long 20-foot porch accommodating 2 large SUVs",
+      "Acoustic Home Theatre / Entertainment Lounge",
+      "Private rear garden deck accessible from master bedroom",
+      "Solar rooftop panel integration with concealed inverter ducting",
+    ],
+    roomDetails: {
+      groundFloor: [
+        "Car Porch: 14'0\" x 20'0\"",
+        "Grand Living Foyer: 16'0\" x 18'0\"",
+        "Dining Space: 13'0\" x 13'0\"",
+        "Kitchen + Pantry: 11'0\" x 14'0\"",
+        "Guest Bedroom: 14'0\" x 14'0\"",
+        "Rear Garden Deck: 12'0\" x 14'0\"",
+      ],
+      firstFloor: [
+        "Master Bedroom: 16'0\" x 17'0\" (Walk-in Dresser & Luxury Bath)",
+        "Bedroom 2: 14'0\" x 14'0\"",
+        "Home Theatre: 13'0\" x 16'0\"",
+        "Covered Balcony Deck: 14'0\" x 6'0\"",
+      ],
+    },
+  },
+  {
+    id: "plan-50-40",
+    dimensions: "50*40",
+    plotAreaSqft: 2000,
+    builtUpSqft: 3200,
+    title: "50 × 40 Wide-Frontage Courtyard Villa (2,000 sq.ft)",
+    configuration: "4 BHK + Central Courtyard (Aangan) + 3-Car Parking",
+    facing: "East-Facing (Grand Frontage)",
+    vastuCompliant: true,
+    floors: "Ground + First Floor",
+    estimatedCost: "₹65 - ₹76 Lakhs",
+    elevationStyle: "Neo-Classical Classical Colonnade Facade",
+    elevationDescription: "Stately 50-foot wide neoclassical facade with double-height fluted round pillars, arched French windows, and wrought iron balustrades.",
+    description: "Rare 50-foot wide frontage allowing a majestic mansion appearance from the road. Built around an internal climate-controlled courtyard.",
+    features: [
+      "Stunning 50-foot wide street facade with grand porch",
+      "Central open courtyard (Aangan) providing all rooms with garden views",
+      "Side setback servant quarters with independent washroom",
+      "Separate formal drawing room and informal living wing",
+    ],
+    roomDetails: {
+      groundFloor: [
+        "Grand Portico: 18'0\" x 18'0\"",
+        "Formal Drawing Room: 16'0\" x 18'0\"",
+        "Central Courtyard: 14'0\" x 14'0\"",
+        "Dining & Island Kitchen: 14'0\" x 22'0\"",
+        "Master Guest Bedroom: 15'0\" x 16'0\"",
+      ],
+      firstFloor: [
+        "Master Bedroom 1: 16'0\" x 18'0\" with Dresser & Bath",
+        "Bedroom 2 & 3: 14'0\" x 15'0\" each with attached baths",
+        "Family Lounge: 16'0\" x 14'0\"",
+        "Panoramic Front Terrace: 20'0\" x 10'0\"",
       ],
     },
   },
@@ -433,7 +577,9 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     vastuCompliant: true,
     floors: "G+1 with Roof Deck",
     estimatedCost: "₹75 - ₹88 Lakhs",
-    description: "Designed for premium upscale colonies (Indore Bypass, Nipania, Scheme 140). High ceiling foyer, grand perimeter setbacks, and resort-style living.",
+    elevationStyle: "Modern Italian Travertine & Glass Facade",
+    elevationDescription: "High-end Italian travertine stone finish, motorized exterior pergolas, and ambient architectural wall grazing illumination.",
+    description: "Designed for prime upscale colonies (Indore Bypass, Nipania, Scheme 140). High ceiling foyer, grand perimeter setbacks, and resort-style living.",
     features: [
       "Grand Entrance Foyer with double ceiling height",
       "All 4 Bedrooms with en-suite luxury bathrooms and dressing areas",
@@ -467,6 +613,8 @@ export const CONCEPTUAL_PLANS: ConceptualPlan[] = [
     vastuCompliant: true,
     floors: "Stilt + Ground + First Floor",
     estimatedCost: "₹1.25 - ₹1.50 Crore",
+    elevationStyle: "Regal Classical Heritage Mansion Facade",
+    elevationDescription: "Stately 50-foot portico with classical Roman archways, carved stone cornices, and exterior mood lighting.",
     description: "Architectural masterpiece for large corner plots. Features internal elevator provision, private plunge pool/deck, 3-car parking, and royal classical facade.",
     features: [
       "Stately 50-Foot Portico & 3 Car Garage",

@@ -207,6 +207,35 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
           <rect height="12" rx="1" width="5" x="20" y="18" />
         </svg>
       );
+    case "dealers":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M6 14l14-7 14 7v18H6V14z" />
+          <path d="M6 14h28M15 32V20h10v12" />
+          <circle cx="20" cy="13" r="2.5" />
+        </svg>
+      );
+    case "architects":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <circle cx="20" cy="10" r="3" />
+          <path d="M18 13l-8 20M22 13l8 20M12 26h16" />
+        </svg>
+      );
+    case "engineers":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <path d="M10 32V12l10-6 10 6v20" />
+          <path d="M10 18h20M10 25h20M20 6v26" />
+        </svg>
+      );
+    case "plans":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <rect x="7" y="7" width="26" height="26" rx="2" />
+          <path d="M7 19h13v14M20 7v12M20 23h13" />
+        </svg>
+      );
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">

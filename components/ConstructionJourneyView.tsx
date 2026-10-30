@@ -4,6 +4,8 @@ import { useEffect, useState, useMemo } from "react";
 import {
   CheckCircle2,
   Circle,
+  ThumbsUp,
+  ThumbsDown,
   Calendar,
   Clock,
   ChevronDown,
@@ -194,7 +196,7 @@ export function ConstructionJourneyView() {
       `• Step ${currentStep.stepNumber}: ${currentStep.title}`,
       `• Target Due Date: ${currentStep.targetDueDate || "Scheduled this week"}`,
       "",
-      "🟡 COMPLETED PHASES:",
+      "🟢 COMPLETED PHASES:",
     ];
 
     if (completedPhasesList.length > 0) {
@@ -239,7 +241,7 @@ export function ConstructionJourneyView() {
               3,200 sq.ft Duplex Villa • 28 Master Milestones
             </p>
           </div>
-          <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-black text-amber-300">
+          <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-black text-emerald-200">
             {progressPercent}% Complete
           </span>
         </div>
@@ -248,7 +250,7 @@ export function ConstructionJourneyView() {
         <div className="space-y-1.5 pt-2">
           <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
             <div
-              className="bg-amber-400 h-full rounded-full transition-all duration-500"
+              className="bg-emerald-400 h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -304,7 +306,7 @@ export function ConstructionJourneyView() {
             type="button"
             onClick={() => setFilterMode("completed")}
             className={`px-3 py-1 rounded-xl font-bold transition ${
-              filterMode === "completed" ? "bg-white text-amber-600 shadow-2xs" : "text-ink-muted"
+              filterMode === "completed" ? "bg-white text-forest shadow-2xs" : "text-ink-muted"
             }`}
           >
             Completed ({completedCount})
@@ -357,7 +359,7 @@ export function ConstructionJourneyView() {
               key={phase.id}
               className={`rounded-2xl border transition-all overflow-hidden ${
                 isPhaseFullyDone
-                  ? "bg-amber-50/20 border-amber-300/80 shadow-2xs"
+                  ? "bg-[#F4F8F5] border-[#C5DDD0] shadow-2xs"
                   : "bg-white border-line shadow-2xs"
               }`}
             >
@@ -374,7 +376,7 @@ export function ConstructionJourneyView() {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         isPhaseFullyDone
-                          ? "bg-amber-500 text-white"
+                          ? "bg-forest text-white"
                           : "bg-forest text-white"
                       }`}
                     >
@@ -382,7 +384,7 @@ export function ConstructionJourneyView() {
                     </span>
                     <h3
                       className={`text-xs font-bold ${
-                        isPhaseFullyDone ? "text-amber-800" : "text-[#1B2922]"
+                        isPhaseFullyDone ? "text-[#1B2922]" : "text-[#1B2922]"
                       }`}
                     >
                       {phase.title}
@@ -394,7 +396,7 @@ export function ConstructionJourneyView() {
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-xs font-bold ${
-                      isPhaseFullyDone ? "text-amber-600" : "text-forest"
+                      isPhaseFullyDone ? "text-forest" : "text-forest"
                     }`}
                   >
                     {phaseDoneCount}/{phaseTotal} Done
@@ -419,7 +421,7 @@ export function ConstructionJourneyView() {
                         key={step.id}
                         className={`transition-colors ${
                           step.isCompleted
-                            ? "bg-amber-50/15"
+                            ? "bg-[#F4F8F5]/60"
                             : isNextActive
                             ? "bg-emerald-50/30 border-l-3 border-emerald-600"
                             : "bg-white"
@@ -431,33 +433,34 @@ export function ConstructionJourneyView() {
                           className="p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none hover:bg-sand/20 transition"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            {/* Checkbox Button */}
+                            {/* Checkbox Button: Thumbs Up for done, Thumbs Down for incomplete */}
                             <button
                               type="button"
                               onClick={(e) => handleToggleComplete(step.id, e)}
-                              className="shrink-0 focus:outline-none"
+                              className="shrink-0 focus:outline-none tap-scale"
+                              title={step.isCompleted ? "Mark incomplete (Thumbs Down)" : "Mark done (Thumbs Up)"}
                               aria-label={`Mark step ${step.stepNumber} complete`}
                             >
                               {step.isCompleted ? (
-                                <div className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-2xs">
-                                  <CheckCircle2 size={15} />
+                                <div className="w-6 h-6 rounded-full bg-[#E8F2EC] text-[#1E5637] border border-[#A7CEB7] flex items-center justify-center shadow-2xs hover:opacity-90 transition">
+                                  <ThumbsUp size={13} className="fill-[#1E5637]/20" />
                                 </div>
                               ) : (
-                                <div className="w-5 h-5 rounded-full border-2 border-line hover:border-forest flex items-center justify-center bg-white">
-                                  <Circle size={10} className="text-transparent" />
+                                <div className="w-6 h-6 rounded-full bg-sand/40 hover:bg-sand text-[#7C8B82] border border-line flex items-center justify-center transition">
+                                  <ThumbsDown size={13} />
                                 </div>
                               )}
                             </button>
 
-                            {/* Step Title & Indicators - NO STRIKETHROUGH, YELLOW ON COMPLETED */}
+                            {/* Step Title & Indicators - Calm soothing theme */}
                             <div className="min-w-0">
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="text-[10px] font-bold text-ink-muted">
                                   Step {step.stepNumber}
                                 </span>
                                 {step.isCompleted && (
-                                  <span className="text-[9px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-1.5 py-0.2 rounded-md">
-                                    ✓ Completed
+                                  <span className="text-[9px] font-bold text-[#1E5637] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.2 rounded-md inline-flex items-center gap-0.5">
+                                    <ThumbsUp size={9} /> Completed
                                   </span>
                                 )}
                                 {isNextActive && (
@@ -470,13 +473,7 @@ export function ConstructionJourneyView() {
                                 </span>
                               </div>
 
-                              <h4
-                                className={`text-xs leading-snug mt-0.5 font-bold ${
-                                  step.isCompleted
-                                    ? "text-amber-600 font-bold"
-                                    : "text-[#1B2922]"
-                                }`}
-                              >
+                              <h4 className="text-xs leading-snug mt-0.5 font-bold text-[#1B2922]">
                                 {step.title}
                               </h4>
                             </div>
@@ -531,7 +528,7 @@ export function ConstructionJourneyView() {
                             {/* Pro Tip */}
                             {step.criticalTip && (
                               <div className="pl-8">
-                                <p className="text-[11px] text-amber-900 bg-amber-50/70 border border-amber-200/60 p-2 rounded-xl">
+                                <p className="text-[11px] text-[#2A3A30] bg-[#F4F8F5] border border-[#C5DDD0] p-2 rounded-xl">
                                   💡 <strong>Pro Tip:</strong> {step.criticalTip}
                                 </p>
                               </div>
@@ -566,14 +563,23 @@ export function ConstructionJourneyView() {
                                 <button
                                   type="button"
                                   onClick={(e) => handleToggleComplete(step.id, e)}
-                                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
+                                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
                                     step.isCompleted
-                                      ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                                      ? "bg-sand/60 text-[#7C8B82] hover:bg-sand border border-line"
                                       : "bg-forest text-white hover:opacity-90 shadow-2xs"
                                   }`}
                                 >
-                                  <CheckCircle2 size={13} />
-                                  <span>{step.isCompleted ? "Mark Incomplete" : "Mark as Done"}</span>
+                                  {step.isCompleted ? (
+                                    <>
+                                      <ThumbsDown size={13} />
+                                      <span>Mark Incomplete</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ThumbsUp size={13} />
+                                      <span>Mark as Done</span>
+                                    </>
+                                  )}
                                 </button>
 
                                 <button

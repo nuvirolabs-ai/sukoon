@@ -32,7 +32,11 @@ export interface ShortcutItem {
     | "dos-donts"
     | "podcasts"
     | "vastu"
-    | "trends";
+    | "trends"
+    | "dealers"
+    | "architects"
+    | "engineers"
+    | "plans";
 }
 
 export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
@@ -166,6 +170,42 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
     color: "#553C9A",
     category: "Construction",
     iconType: "rates",
+  },
+  {
+    id: "dealers",
+    title: "Dealers",
+    subtitle: "Material Suppliers",
+    href: "/construction?section=dealers",
+    color: "#B26315",
+    category: "Construction",
+    iconType: "dealers",
+  },
+  {
+    id: "architects",
+    title: "Architects",
+    subtitle: "COA Listed Architects",
+    href: "/construction?section=architects",
+    color: "#0D7490",
+    category: "Construction",
+    iconType: "architects",
+  },
+  {
+    id: "engineers",
+    title: "Civil engineers",
+    subtitle: "Structural Consultants",
+    href: "/construction?section=engineers",
+    color: "#C05621",
+    category: "Construction",
+    iconType: "engineers",
+  },
+  {
+    id: "plans",
+    title: "Layout Plans",
+    subtitle: "3D Elevations & Custom",
+    href: "/construction?section=plans",
+    color: "#319795",
+    category: "Construction",
+    iconType: "plans",
   },
 
   // --- Insights Shortcuts (All 7 Features) ---
