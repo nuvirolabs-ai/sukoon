@@ -6,9 +6,11 @@ import { useSearchParams } from "next/navigation";
 import {
   AlertTriangle,
   ArrowLeft,
+  Bell,
   Building,
   Building2,
   Calendar,
+  Camera,
   Check,
   CheckCircle2,
   ChevronRight,
@@ -38,7 +40,7 @@ import {
 } from "lucide-react";
 import { useStore } from "@/components/StoreProvider";
 import { PinToHomeButton } from "@/components/PinToHomeButton";
-import type { DocType, Property } from "@/lib/types";
+import type { DocType, Property, PropertyType } from "@/lib/types";
 
 type VaultSection = "docs" | "portfolio" | "manage" | "single";
 
@@ -73,17 +75,21 @@ interface PropertyPaymentItem {
   propertyId: string;
   propertyName: string;
   utilityType:
+    | "Property Tax (Nagar Nigam)"
+    | "Diversion Tax (Revenue / Vyapavartan)"
+    | "Society Deposit & Maintenance"
+    | "Wealth Tax / Capital Asset Filing"
     | "Electricity (Discom)"
     | "Water Bill (IMC)"
-    | "Society Maintenance"
-    | "Property Tax (Nagar Nigam)"
     | "Piped Gas (PNG)"
-    | "Guard & Security";
+    | "Guard & Security"
+    | "Other Outflow";
   amount: number;
   dueDate: string;
   consumerNumber: string;
   status: "pending" | "paid";
   paidDate?: string;
+  timelyReminder?: boolean;
 }
 
 interface RepairAlert {
@@ -441,6 +447,96 @@ function VaultContent() {
     return properties.reduce((acc, p) => acc + (p.purchaseValue || 0), 0);
   }, [properties]);
 
+  const getPropertyPhoto = (prop: Property) => {
+    if (prop.photoUrl) return prop.photoUrl;
+    if (prop.type === "plot") return "/places/place-plot.png";
+    if (prop.type === "villa") return "/places/place-house.png";
+    return "/places/place-flat.png";
+  };
+
+  const handleUploadPropertyPhoto = (propertyId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        const photoData = reader.result;
+        update((state) => ({
+          ...state,
+          properties: state.properties.map((p) =>
+            p.id === propertyId ? { ...p, photoUrl: photoData } : p
+          ),
+        }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Add Property Details State (Matches screenshot & adds directly to Portfolio)
+  const [addPropertyModalOpen, setAddPropertyModalOpen] = useState(false);
+  const [newPropName, setNewPropName] = useState("");
+  const [newPropAddress, setNewPropAddress] = useState("");
+  const [newPropLocality, setNewPropLocality] = useState("");
+  const [newPropCity, setNewPropCity] = useState("Indore");
+  const [newPropJurisdiction, setNewPropJurisdiction] = useState("India · Madhya Pradesh · Indore");
+  const [newPropType, setNewPropType] = useState<PropertyType>("flat");
+  const [newPropValue, setNewPropValue] = useState("");
+  const [newPropArea, setNewPropArea] = useState("");
+  const [newPropPhoto, setNewPropPhoto] = useState<string | null>(null);
+  const [propSuccessMsg, setPropSuccessMsg] = useState("");
+
+  const handleNewPropPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setNewPropPhoto(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddProperty = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPropName.trim() || !newPropAddress.trim()) return;
+
+    const val = Number(newPropValue.replace(/[^0-9]/g, "")) || 5000000;
+    const area = Number(newPropArea.replace(/[^0-9]/g, "")) || 1500;
+
+    const newProperty: Property = {
+      id: "prop-vault-" + Date.now(),
+      name: newPropName.trim(),
+      address: newPropAddress.trim(),
+      area: newPropLocality.trim() || "Prime Corridor",
+      city: newPropCity.trim() || "Indore",
+      jurisdiction: newPropJurisdiction.trim() || "India · Madhya Pradesh · Indore",
+      type: newPropType,
+      carpetAreaSqft: area,
+      plotSizeSqft: newPropType === "plot" ? area : undefined,
+      purchaseValue: val,
+      ownerName: "Akshay Sharma",
+      createdAt: new Date().toISOString(),
+      status: "active",
+      photoUrl: newPropPhoto || undefined,
+    };
+
+    update((state) => ({
+      ...state,
+      properties: [newProperty, ...state.properties],
+    }));
+
+    setPropSuccessMsg(`"${newPropName}" added to your property vault portfolio!`);
+    setNewPropName("");
+    setNewPropAddress("");
+    setNewPropLocality("");
+    setNewPropValue("");
+    setNewPropArea("");
+    setNewPropPhoto(null);
+    setAddPropertyModalOpen(false);
+    setTimeout(() => setPropSuccessMsg(""), 5000);
+  };
+
   const handleStartEditPrice = (property: Property) => {
     setEditingPricePropertyId(property.id);
     setTempPriceInput(String(property.purchaseValue || 0));
@@ -550,7 +646,7 @@ function VaultContent() {
     } catch {}
   };
 
-  // Payments / Outflows
+  // Payments / Outflows with Timely Notifications (Wealth Tax, Property Tax, Society Deposit, Diversion Tax)
   const [payments, setPayments] = useState<PropertyPaymentItem[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -559,7 +655,51 @@ function VaultContent() {
     } catch {}
     return [
       {
-        id: "pay-01",
+        id: "pay-prop-tax",
+        propertyId: "prop-vn-house",
+        propertyName: "Vijay Nagar Residence",
+        utilityType: "Property Tax (Nagar Nigam)",
+        amount: 5400,
+        dueDate: "2026-11-20",
+        consumerNumber: "IMC Ward 34 #VN-42 (Nagar Nigam)",
+        status: "pending",
+        timelyReminder: true,
+      },
+      {
+        id: "pay-diversion",
+        propertyId: "prop-sc-108",
+        propertyName: "Super Corridor Plot 108",
+        utilityType: "Diversion Tax (Revenue / Vyapavartan)",
+        amount: 3850,
+        dueDate: "2026-12-05",
+        consumerNumber: "Tehsil Land Diversion File #DIV-2024-884",
+        status: "pending",
+        timelyReminder: true,
+      },
+      {
+        id: "pay-society",
+        propertyId: "prop-omaxe-villa",
+        propertyName: "Omaxe City Palm Villa",
+        utilityType: "Society Deposit & Maintenance",
+        amount: 2400,
+        dueDate: "2026-11-05",
+        consumerNumber: "Omaxe RWA #B-18 Sinking Fund",
+        status: "pending",
+        timelyReminder: true,
+      },
+      {
+        id: "pay-wealth-tax",
+        propertyId: "prop-sc-108",
+        propertyName: "Super Corridor Plot 108",
+        utilityType: "Wealth Tax / Capital Asset Filing",
+        amount: 8500,
+        dueDate: "2026-12-31",
+        consumerNumber: "Form 26QB Capital Asset Assessment 2026-27",
+        status: "pending",
+        timelyReminder: true,
+      },
+      {
+        id: "pay-electricity",
         propertyId: "prop-vn-house",
         propertyName: "Vijay Nagar Residence",
         utilityType: "Electricity (Discom)",
@@ -567,26 +707,7 @@ function VaultContent() {
         dueDate: "2026-11-10",
         consumerNumber: "IVRS #8841029104",
         status: "pending",
-      },
-      {
-        id: "pay-02",
-        propertyId: "prop-vn-house",
-        propertyName: "Vijay Nagar Residence",
-        utilityType: "Society Maintenance",
-        amount: 2200,
-        dueDate: "2026-11-05",
-        consumerNumber: "Scheme 54 Society RWA",
-        status: "pending",
-      },
-      {
-        id: "pay-03",
-        propertyId: "prop-sc-108",
-        propertyName: "Super Corridor Plot 108",
-        utilityType: "Property Tax (Nagar Nigam)",
-        amount: 4800,
-        dueDate: "2026-11-20",
-        consumerNumber: "IMC Ward 22 #SC-108",
-        status: "pending",
+        timelyReminder: true,
       },
     ];
   });
@@ -594,11 +715,22 @@ function VaultContent() {
   const [addPaymentModal, setAddPaymentModal] = useState(false);
   const [newPayPropertyId, setNewPayPropertyId] = useState(properties[0]?.id || "");
   const [newPayType, setNewPayType] = useState<PropertyPaymentItem["utilityType"]>(
-    "Electricity (Discom)"
+    "Property Tax (Nagar Nigam)"
   );
   const [newPayAmount, setNewPayAmount] = useState("");
-  const [newPayDueDate, setNewPayDueDate] = useState("2026-11-12");
+  const [newPayDueDate, setNewPayDueDate] = useState("2026-11-20");
   const [newPayConsumer, setNewPayConsumer] = useState("");
+  const [newPayTimelyReminder, setNewPayTimelyReminder] = useState(true);
+
+  const handleTogglePaymentReminder = (id: string) => {
+    const updated = payments.map((p) =>
+      p.id === id ? { ...p, timelyReminder: !p.timelyReminder } : p
+    );
+    setPayments(updated);
+    try {
+      localStorage.setItem("sukoon_vault_payments", JSON.stringify(updated));
+    } catch {}
+  };
 
   const handleAddPayment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -614,6 +746,7 @@ function VaultContent() {
       dueDate: newPayDueDate,
       consumerNumber: newPayConsumer || "Direct Assessment",
       status: "pending",
+      timelyReminder: newPayTimelyReminder,
     };
 
     const updated = [newPay, ...payments];
@@ -1041,20 +1174,55 @@ function VaultContent() {
 
                 <form onSubmit={handleUploadDocument} className="space-y-3 overflow-y-auto pr-1">
                   <div>
-                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
-                      Document Category
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[10px] font-bold text-ink-muted block">
+                        Document Category / Tag *
+                      </label>
+                      <span className="text-[10px] text-forest font-semibold">Tap quick tag below</span>
+                    </div>
+
+                    {/* Quick Pick Tag Pills */}
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {[
+                        "Chain link papers",
+                        "Measurement",
+                        "Building permission",
+                        "Additional info",
+                        "Title Deed",
+                        "Revenue Mutation",
+                        "Tax Receipt",
+                        "Sanction Map",
+                      ].map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => setUploadCategory(tag)}
+                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition border ${
+                            uploadCategory === tag
+                              ? "bg-forest text-white border-forest shadow-2xs"
+                              : "bg-sand/40 text-[#475569] border-line hover:border-forest/40"
+                          }`}
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+
                     <select
                       value={uploadCategory}
                       onChange={(e) => setUploadCategory(e.target.value)}
-                      className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest bg-white"
+                      className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest bg-white font-medium"
                     >
+                      <option value="Chain link papers">Chain link papers (Previous Deeds &amp; Title Chain)</option>
+                      <option value="Measurement">Measurement (Demarcation &amp; Tarmeem Map)</option>
+                      <option value="Building permission">Building permission (Nagar Nigam / Panchayat Sanction)</option>
+                      <option value="Additional info">Additional info (Notes, Affidavits &amp; Agreements)</option>
                       <option value="Title Deed">Title Deed / Registered Bikrinama</option>
                       <option value="Revenue Mutation">Revenue Mutation (Namantaran B-1)</option>
                       <option value="Tax Receipt">Municipal Property Tax (IMC Receipt)</option>
                       <option value="Sanction Map">T&amp;CP Town Planning Sanction Map</option>
                       <option value="Utility">Electricity / Water Connection</option>
-                      <option value="NOC">Building Permission NOC</option>
+                      <option value="NOC">NOC &amp; Clearances</option>
                       <option value="Other">Other Document / Affidavit</option>
                     </select>
                   </div>
@@ -1219,11 +1387,27 @@ function VaultContent() {
             </p>
           </div>
 
-          <div className="px-1 text-xs text-ink-muted font-bold">
-            Your Properties ({properties.length}) · Tap "Edit Price" to update valuation
+          {propSuccessMsg && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+              <span>{propSuccessMsg}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs text-ink-muted font-bold">
+              Your Properties ({properties.length}) · Tap &quot;Edit Price&quot; to update valuation
+            </span>
+            <button
+              type="button"
+              onClick={() => setAddPropertyModalOpen(true)}
+              className="tap-scale px-3 py-1.5 rounded-full bg-forest text-white text-[11px] font-bold inline-flex items-center gap-1 shadow-2xs hover:opacity-95"
+            >
+              <Plus size={12} /> Add Property Details
+            </button>
           </div>
 
-          {/* Properties List with Editable Price */}
+          {/* Properties List with Photos and Valuation */}
           <div className="space-y-3">
             {properties.map((prop) => {
               const isEditing = editingPricePropertyId === prop.id;
@@ -1234,78 +1418,320 @@ function VaultContent() {
               return (
                 <div
                   key={prop.id}
-                  className="p-4 rounded-2xl bg-white border border-line shadow-2xs space-y-3"
+                  className="rounded-2xl bg-white border border-line shadow-2xs overflow-hidden transition-all hover:border-forest/40"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-sand text-forest uppercase">
-                          {prop.type}
-                        </span>
-                        <span className="text-[10px] text-ink-muted">
-                          📍 {prop.area}, {prop.city}
-                        </span>
-                      </div>
-                      <h3 className="text-sm font-bold text-foreground">{prop.name}</h3>
-                      <p className="text-[11px] text-ink-muted">
-                        Area: {area.toLocaleString()} sq.ft · Freehold Title
-                      </p>
-                    </div>
+                  {/* Property Photo Banner with Type Tag & Change Photo */}
+                  <div className="relative w-full h-36 bg-sand/30 overflow-hidden group">
+                    <img
+                      src={getPropertyPhoto(prop)}
+                      alt={prop.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-                    <div className="text-right shrink-0">
-                      <span className="text-base font-bold text-forest">
-                        ₹{(val / 100000).toFixed(2)} Lakhs
-                      </span>
-                      <span className="text-[10px] block text-ink-muted">
-                        ₹{ratePerSqft.toLocaleString()}/sq.ft
-                      </span>
+                    {/* Property Type Badge */}
+                    <span className="absolute top-2.5 left-2.5 text-[9px] font-extrabold px-2 py-0.5 rounded-md bg-black/60 text-white backdrop-blur-xs uppercase tracking-wider">
+                      {prop.type}
+                    </span>
+
+                    {/* 1-Tap Upload / Change Property Photo */}
+                    <label className="absolute top-2.5 right-2.5 cursor-pointer px-2.5 py-1 rounded-lg bg-white/95 hover:bg-white text-[10px] font-bold text-forest shadow-xs backdrop-blur-xs flex items-center gap-1 transition">
+                      <Camera size={11} />
+                      <span>{prop.photoUrl ? "Change Photo" : "Upload Photo"}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleUploadPropertyPhoto(prop.id, e)}
+                        className="hidden"
+                      />
+                    </label>
+
+                    {/* Address on bottom of photo */}
+                    <div className="absolute bottom-2 left-2.5 right-2.5 text-white pointer-events-none">
+                      <p className="text-[10px] text-white/90 font-medium truncate">
+                        📍 {prop.area}, {prop.city}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Editable Price Field */}
-                  {isEditing ? (
-                    <div className="flex items-center gap-2 pt-2 border-t border-line/60">
-                      <input
-                        type="text"
-                        value={tempPriceInput}
-                        onChange={(e) => setTempPriceInput(e.target.value)}
-                        placeholder="e.g. 5200000"
-                        className="h-8 flex-1 rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
-                        autoFocus
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleSavePrice(prop.id)}
-                        className="px-3 py-1.5 rounded-xl bg-forest text-white text-xs font-bold shadow-2xs hover:opacity-95"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingPricePropertyId(null)}
-                        className="px-2.5 py-1.5 rounded-xl bg-sand text-ink-muted text-xs font-bold"
-                      >
-                        Cancel
-                      </button>
+                  {/* Card Body */}
+                  <div className="p-3.5 space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-bold text-foreground leading-snug">{prop.name}</h3>
+                        <p className="text-[11px] text-ink-muted mt-0.5">
+                          Area: {area.toLocaleString()} sq.ft · Freehold Title
+                        </p>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="text-base font-bold text-forest">
+                          ₹{(val / 100000).toFixed(2)} Lakhs
+                        </span>
+                        <span className="text-[10px] block text-ink-muted">
+                          ₹{ratePerSqft.toLocaleString()}/sq.ft
+                        </span>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-between pt-2 border-t border-line/60">
-                      <span className="text-[11px] text-forest font-semibold flex items-center gap-1">
-                        <ShieldCheck size={13} /> Clear Title in Vault
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleStartEditPrice(prop)}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-forest hover:opacity-80 px-2.5 py-1 rounded-lg bg-mint/50 border border-forest/20"
-                      >
-                        <Pencil size={11} /> Edit Valuation
-                      </button>
-                    </div>
-                  )}
+
+                    {/* Editable Price Field */}
+                    {isEditing ? (
+                      <div className="flex items-center gap-2 pt-2 border-t border-line/60">
+                        <input
+                          type="text"
+                          value={tempPriceInput}
+                          onChange={(e) => setTempPriceInput(e.target.value)}
+                          placeholder="e.g. 5200000"
+                          className="h-8 flex-1 rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
+                          autoFocus
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSavePrice(prop.id)}
+                          className="px-3 py-1.5 rounded-xl bg-forest text-white text-xs font-bold shadow-2xs hover:opacity-95"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditingPricePropertyId(null)}
+                          className="px-2.5 py-1.5 rounded-xl bg-sand text-ink-muted text-xs font-bold"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between pt-2 border-t border-line/60">
+                        <span className="text-[11px] text-forest font-semibold flex items-center gap-1">
+                          <ShieldCheck size={13} /> Clear Title in Vault
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleStartEditPrice(prop)}
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-forest hover:opacity-80 px-2.5 py-1 rounded-lg bg-mint/50 border border-forest/20"
+                        >
+                          <Pencil size={11} /> Edit Valuation
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })}
+
+            {/* Calm Dashed Add Property Card */}
+            <button
+              type="button"
+              onClick={() => setAddPropertyModalOpen(true)}
+              className="tap-scale w-full p-4 rounded-2xl bg-[#FAF8F5]/80 border border-dashed border-[#D5D0C6] hover:border-forest/50 hover:bg-[#F5F2EC] flex items-center justify-center gap-3 text-center transition-all group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-forest/10 text-forest flex items-center justify-center group-hover:scale-105 transition-transform">
+                <Plus size={20} />
+              </div>
+              <div className="text-left">
+                <h4 className="text-xs font-bold text-[#1B2922] group-hover:text-forest">
+                  + Add Property Details to Portfolio
+                </h4>
+                <p className="text-[10px] text-[#7C8B82]">
+                  Add a new plot, flat, villa or commercial asset with title &amp; valuation
+                </p>
+              </div>
+            </button>
           </div>
+
+          {/* ADD PROPERTY DETAILS MODAL (Matching Basics screenshot & live portfolio update) */}
+          {addPropertyModalOpen && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+              <div className="w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+                <div className="flex items-center justify-between border-b border-line pb-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-forest bg-mint px-2 py-0.5 rounded-full">
+                      Vault Portfolio
+                    </span>
+                    <h3 className="text-sm font-bold text-foreground mt-1">Add Property Details</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAddPropertyModalOpen(false)}
+                    className="p-1.5 text-ink-muted hover:text-foreground"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddProperty} className="space-y-3 overflow-y-auto pr-1 text-xs">
+                  <div>
+                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                      Property name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newPropName}
+                      onChange={(e) => setNewPropName(e.target.value)}
+                      placeholder="e.g. Home in Vijay Nagar or Plot 45 Scheme 78"
+                      className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                      Full address *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newPropAddress}
+                      onChange={(e) => setNewPropAddress(e.target.value)}
+                      placeholder="e.g. 1203, Skyline Residency, Scheme 54"
+                      className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                        Locality *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newPropLocality}
+                        onChange={(e) => setNewPropLocality(e.target.value)}
+                        placeholder="e.g. Vijay Nagar"
+                        className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newPropCity}
+                        onChange={(e) => setNewPropCity(e.target.value)}
+                        placeholder="e.g. Indore"
+                        className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                      Jurisdiction *
+                    </label>
+                    <input
+                      type="text"
+                      value={newPropJurisdiction}
+                      onChange={(e) => setNewPropJurisdiction(e.target.value)}
+                      className="h-9 w-full rounded-xl border border-line px-3 text-xs outline-none focus:border-forest"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                        Type *
+                      </label>
+                      <select
+                        value={newPropType}
+                        onChange={(e) => setNewPropType(e.target.value as any)}
+                        className="h-9 w-full rounded-xl border border-line px-2 text-xs outline-none focus:border-forest bg-white"
+                      >
+                        <option value="flat">Flat</option>
+                        <option value="plot">Plot</option>
+                        <option value="villa">Villa</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="agri">Agricultural</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                        Valuation (₹) *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newPropValue}
+                        onChange={(e) => setNewPropValue(e.target.value)}
+                        placeholder="e.g. 6500000"
+                        className="h-9 w-full rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                        Area (sq.ft) *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={newPropArea}
+                        onChange={(e) => setNewPropArea(e.target.value)}
+                        placeholder="e.g. 1500"
+                        className="h-9 w-full rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Photo Upload in Add Property Details */}
+                  <div>
+                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                      Property Photo (Optional)
+                    </label>
+                    {newPropPhoto ? (
+                      <div className="relative rounded-xl border border-[#C5DDD0] bg-[#F4F8F5] p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={newPropPhoto}
+                            alt="Property Photo"
+                            className="w-12 h-12 object-cover rounded-lg border border-[#A7CEB7]"
+                          />
+                          <span className="text-[11px] font-bold text-[#1E5637]">
+                            Photo Attached ✓
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setNewPropPhoto(null)}
+                          className="p-1 rounded-full bg-white border border-line text-ink-muted hover:text-rose-600"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer flex items-center justify-center gap-2 p-2.5 rounded-xl border border-dashed border-forest/50 bg-sand/20 hover:bg-sand/40 text-forest transition">
+                        <Camera size={14} />
+                        <span className="text-xs font-bold">Attach Photo / Camera</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleNewPropPhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="tap-scale w-full py-2.5 rounded-xl bg-forest text-white text-xs font-bold shadow-2xs hover:opacity-95 flex items-center justify-center gap-1.5"
+                  >
+                    <Check size={14} /> Save Property to Vault Portfolio
+                  </button>
+
+                  <div className="text-center pt-1 border-t border-line/60">
+                    <Link
+                      href="/property/new"
+                      className="text-[11px] font-bold text-forest hover:underline"
+                    >
+                      Or open full 4-step registration guide →
+                    </Link>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -1445,9 +1871,9 @@ function VaultContent() {
             <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <div>
-                  <h3 className="text-xs font-bold text-foreground">Property Bills &amp; Outflows</h3>
+                  <h3 className="text-xs font-bold text-foreground">Property Bills, Taxes &amp; Outflows</h3>
                   <p className="text-[10px] text-ink-muted">
-                    Electricity, water, society, maintenance dues.
+                    Property tax, Diversion tax, Society deposit, Wealth tax &amp; utilities.
                   </p>
                 </div>
                 <button
@@ -1455,8 +1881,19 @@ function VaultContent() {
                   onClick={() => setAddPaymentModal(true)}
                   className="tap-scale px-3 py-1.5 rounded-full bg-forest text-white text-[11px] font-bold flex items-center gap-1 shadow-2xs hover:opacity-95"
                 >
-                  <Plus size={12} /> Add Bill
+                  <Plus size={12} /> Add Bill / Tax
                 </button>
+              </div>
+
+              {/* Timely Due Date Notifications Banner */}
+              <div className="p-3.5 rounded-2xl bg-[#E8F5EE] border border-[#A3D9B5] text-[#1E5637] flex items-start gap-2.5 shadow-2xs">
+                <Bell size={16} className="mt-0.5 shrink-0 text-[#1E5637]" />
+                <div className="text-xs">
+                  <p className="font-bold">Timely Due Date Notifications Active</p>
+                  <p className="text-[11px] text-[#245838] mt-0.5 leading-relaxed">
+                    Automated reminders are active for your <strong>Property tax</strong>, <strong>Diversion tax</strong>, <strong>Society deposit</strong>, and <strong>Wealth tax</strong>. Sukoon delivers alerts to WhatsApp (+91 98260 11223) and SMS <strong>7 days</strong> and <strong>1 day</strong> prior to each deadline.
+                  </p>
+                </div>
               </div>
 
               <div className="space-y-2.5">
@@ -1465,17 +1902,22 @@ function VaultContent() {
                   return (
                     <div
                       key={pay.id}
-                      className={`p-3.5 rounded-2xl border transition shadow-2xs space-y-2 ${
+                      className={`p-3.5 rounded-2xl border transition shadow-2xs space-y-2.5 ${
                         isPaid ? "bg-[#F7FAF8] border-emerald-200" : "bg-white border-line"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <div className="flex items-center gap-1.5 mb-1">
+                          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                             <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-sand text-forest uppercase">
                               {pay.utilityType}
                             </span>
                             <span className="text-[10px] text-ink-muted">{pay.propertyName}</span>
+                            {pay.timelyReminder && !isPaid && (
+                              <span className="text-[9px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-md inline-flex items-center gap-0.5">
+                                <Bell size={9} /> Timely Alert: Active
+                              </span>
+                            )}
                           </div>
                           <h4 className="text-xs font-bold text-foreground">{pay.consumerNumber}</h4>
                           <p className="text-[10px] text-ink-muted flex items-center gap-1 mt-0.5">
@@ -1497,11 +1939,36 @@ function VaultContent() {
                         </div>
                       </div>
 
-                      {/* Interactive Tick Mark Button */}
-                      <div className="flex items-center justify-between pt-1.5 border-t border-line/60">
-                        <span className="text-[10px] text-ink-muted">
-                          {isPaid ? pay.paidDate : "Click tick mark once bill is cleared"}
-                        </span>
+                      {/* Interactive Controls & Timely Reminder Toggle */}
+                      <div className="flex items-center justify-between pt-2 border-t border-line/60 gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleTogglePaymentReminder(pay.id)}
+                            className={`tap-scale px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 transition ${
+                              pay.timelyReminder
+                                ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                                : "bg-sand/60 text-ink-muted border border-line"
+                            }`}
+                            title="Toggle timely WhatsApp & SMS notification"
+                          >
+                            <Bell size={11} className={pay.timelyReminder ? "text-emerald-700" : "text-ink-muted"} />
+                            <span>{pay.timelyReminder ? "Reminder Active" : "Set Reminder"}</span>
+                          </button>
+
+                          <a
+                            href={`https://wa.me/?text=${encodeURIComponent(
+                              `Sukoon Due Date Alert: ${pay.utilityType} of ₹${pay.amount.toLocaleString()} for ${pay.propertyName} is due on ${pay.dueDate}. Ref: ${pay.consumerNumber}`
+                            )}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1 rounded-lg border border-line text-ink-muted hover:text-forest"
+                            title="Send WhatsApp Alert"
+                          >
+                            <Share2 size={12} />
+                          </a>
+                        </div>
+
                         <button
                           type="button"
                           onClick={() => handleTogglePaymentStatus(pay.id)}
@@ -1741,19 +2208,22 @@ function VaultContent() {
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="text-[10px] font-bold text-ink-muted block mb-1">
-                        Utility Type
+                        Tax / Bill Type
                       </label>
                       <select
                         value={newPayType}
                         onChange={(e) => setNewPayType(e.target.value as any)}
-                        className="h-9 w-full rounded-xl border border-line px-2 text-xs outline-none focus:border-forest bg-white"
+                        className="h-9 w-full rounded-xl border border-line px-2 text-xs outline-none focus:border-forest bg-white font-medium"
                       >
+                        <option value="Property Tax (Nagar Nigam)">Property Tax (Nagar Nigam)</option>
+                        <option value="Diversion Tax (Revenue / Vyapavartan)">Diversion Tax (Revenue / Vyapavartan)</option>
+                        <option value="Society Deposit & Maintenance">Society Deposit &amp; Maintenance</option>
+                        <option value="Wealth Tax / Capital Asset Filing">Wealth Tax / Capital Asset Filing</option>
                         <option value="Electricity (Discom)">Electricity (Discom)</option>
                         <option value="Water Bill (IMC)">Water Bill (IMC)</option>
-                        <option value="Society Maintenance">Society Maintenance</option>
-                        <option value="Property Tax (Nagar Nigam)">Property Tax (Nagar Nigam)</option>
                         <option value="Piped Gas (PNG)">Piped Gas (PNG)</option>
                         <option value="Guard & Security">Guard &amp; Security</option>
+                        <option value="Other Outflow">Other Outflow</option>
                       </select>
                     </div>
                     <div>
@@ -1765,7 +2235,7 @@ function VaultContent() {
                         required
                         value={newPayAmount}
                         onChange={(e) => setNewPayAmount(e.target.value)}
-                        placeholder="e.g. 3500"
+                        placeholder="e.g. 5400"
                         className="h-9 w-full rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
                       />
                     </div>
@@ -1774,13 +2244,13 @@ function VaultContent() {
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="text-[10px] font-bold text-ink-muted block mb-1">
-                        Consumer # / K-Number
+                        Consumer # / Assessment File #
                       </label>
                       <input
                         type="text"
                         value={newPayConsumer}
                         onChange={(e) => setNewPayConsumer(e.target.value)}
-                        placeholder="e.g. IVRS #992144"
+                        placeholder="e.g. IMC Ward 34 #VN-42"
                         className="h-9 w-full rounded-xl border border-line px-2.5 text-xs outline-none focus:border-forest"
                       />
                     </div>
@@ -1795,6 +2265,23 @@ function VaultContent() {
                         className="h-9 w-full rounded-xl border border-line px-2 text-xs outline-none focus:border-forest"
                       />
                     </div>
+                  </div>
+
+                  {/* Timely Due Date Notification Checkbox */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#E8F5EE] border border-[#A3D9B5] text-xs">
+                    <div className="flex items-center gap-2">
+                      <Bell size={14} className="text-[#1E5637] shrink-0" />
+                      <div>
+                        <p className="font-bold text-[#1E5637]">Timely Notification</p>
+                        <p className="text-[10px] text-[#245838]">WhatsApp &amp; SMS alerts 7 days &amp; 1 day before due date</p>
+                      </div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={newPayTimelyReminder}
+                      onChange={(e) => setNewPayTimelyReminder(e.target.checked)}
+                      className="w-4 h-4 rounded text-forest focus:ring-forest"
+                    />
                   </div>
 
                   <button
@@ -1955,6 +2442,10 @@ function VaultContent() {
             {[
               "All",
               "Title Deed",
+              "Chain link papers",
+              "Measurement",
+              "Building permission",
+              "Additional info",
               "Revenue",
               "Tax Receipt",
               "Sanction Map",

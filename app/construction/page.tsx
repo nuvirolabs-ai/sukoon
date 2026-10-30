@@ -9,6 +9,7 @@ import {
   Award,
   Building,
   Calendar,
+  Camera,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -411,6 +412,7 @@ export interface SiteMinuteItem {
   isDone: boolean;
   notes?: string;
   createdAt: string;
+  imageUrl?: string;
 }
 
 const INITIAL_SITE_MINUTES: SiteMinuteItem[] = [
@@ -788,8 +790,22 @@ function ConstructionContent() {
   const [newMinuteRole, setNewMinuteRole] = useState<SiteMinuteItem["stakeholder"]>("Architect");
   const [newMinuteDueDate, setNewMinuteDueDate] = useState("2026-11-05");
   const [newMinutePriority, setNewMinutePriority] = useState<SiteMinuteItem["priority"]>("High");
+  const [newMinuteImage, setNewMinuteImage] = useState<string | null>(null);
+  const [previewMinuteImage, setPreviewMinuteImage] = useState<string | null>(null);
   const [addMinuteModalOpen, setAddMinuteModalOpen] = useState(false);
   const [shareMinutesModalOpen, setShareMinutesModalOpen] = useState(false);
+
+  const handleMinuteImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setNewMinuteImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const toggleMinuteDone = (id: string) => {
     const updated = siteMinutes.map((m) =>
@@ -811,6 +827,7 @@ function ConstructionContent() {
       stakeholder: newMinuteRole,
       priority: newMinutePriority,
       dueDate: newMinuteDueDate,
+      imageUrl: newMinuteImage || undefined,
       isDone: false,
       createdAt: new Date().toISOString().split("T")[0],
     };
@@ -822,6 +839,7 @@ function ConstructionContent() {
     } catch {}
 
     setNewMinuteTitle("");
+    setNewMinuteImage(null);
     setAddMinuteModalOpen(false);
     triggerToast(`✓ Added to-do for ${newMinuteRole}!`);
   };
@@ -1530,6 +1548,21 @@ function ConstructionContent() {
                       >
                         {item.title}
                       </p>
+
+                      {/* Attached Inspection Photo */}
+                      {item.imageUrl && (
+                        <div className="mt-2 inline-block rounded-xl overflow-hidden border border-line/80 shadow-2xs">
+                          <img
+                            src={item.imageUrl}
+                            alt="Inspection observation"
+                            className="w-28 h-20 object-cover hover:opacity-90 transition cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPreviewMinuteImage(item.imageUrl || null);
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1623,6 +1656,49 @@ function ConstructionContent() {
                     />
                   </div>
 
+                  {/* Photo Upload Option for Site Inspection */}
+                  <div>
+                    <label className="text-[10px] font-bold text-ink-muted block mb-1">
+                      Attach Site Inspection Photo (Optional)
+                    </label>
+                    {newMinuteImage ? (
+                      <div className="relative rounded-xl border border-[#C5DDD0] bg-[#F4F8F5] p-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img
+                            src={newMinuteImage}
+                            alt="Inspection Preview"
+                            className="w-12 h-12 object-cover rounded-lg border border-[#A7CEB7]"
+                          />
+                          <div className="min-w-0">
+                            <span className="text-[11px] font-bold text-[#1E5637] block truncate">
+                              ✓ Photo Attached
+                            </span>
+                            <span className="text-[9px] text-[#7C8B82]">Tap X to remove or replace</span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setNewMinuteImage(null)}
+                          className="p-1 rounded-full bg-white border border-line text-ink-muted hover:text-rose-600"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="cursor-pointer flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-[#1E57A4]/50 bg-sand/20 hover:bg-sand/40 text-[#1E57A4] transition">
+                        <Camera size={16} />
+                        <span className="text-xs font-bold">Attach Site Photo / Camera</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={handleMinuteImageUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
+
                   <div className="pt-2 flex gap-2">
                     <button
                       type="button"
@@ -1639,6 +1715,30 @@ function ConstructionContent() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Full Photo Preview Modal */}
+          {previewMinuteImage && (
+            <div
+              className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in"
+              onClick={() => setPreviewMinuteImage(null)}
+            >
+              <div className="relative max-w-lg w-full bg-black rounded-3xl overflow-hidden p-2 text-center" onClick={(e) => e.stopPropagation()}>
+                <button
+                  type="button"
+                  onClick={() => setPreviewMinuteImage(null)}
+                  className="absolute top-4 right-4 z-10 text-white bg-black/60 p-2 rounded-full hover:bg-black/90 transition"
+                >
+                  <X size={18} />
+                </button>
+                <img
+                  src={previewMinuteImage}
+                  alt="Site Inspection"
+                  className="w-full max-h-[75vh] object-contain rounded-2xl mx-auto"
+                />
+                <p className="text-white/70 text-xs mt-2">Site Inspection Photo</p>
               </div>
             </div>
           )}

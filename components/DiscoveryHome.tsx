@@ -431,42 +431,42 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             </button>
           </div>
 
-          {/* Apple-Rounded Calm Boxes for Shortcuts */}
-          <div className="grid grid-cols-2 gap-3 px-1 py-1">
+          {/* Compact Snug Calm Boxes for Shortcuts */}
+          <div className="grid grid-cols-2 gap-2 px-1 py-1">
             {favoriteItems.map((item) => (
               <Link
                 key={item.id}
                 href={item.href}
-                className="tap-scale group flex flex-col items-center text-center p-4 rounded-[20px] bg-white border border-[#E7E3D9] hover:border-forest/40 shadow-2xs hover:shadow-xs transition-all"
+                className="tap-scale group flex flex-col items-center text-center py-2 px-2.5 rounded-xl bg-white border border-[#E7E3D9] hover:border-forest/40 shadow-2xs hover:shadow-xs transition-all"
               >
                 <div
-                  className="w-12 h-12 rounded-[14px] flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105"
-                  style={{ backgroundColor: `${item.color}12`, color: item.color }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center mb-1 transition-transform duration-200 group-hover:scale-105"
+                  style={{ backgroundColor: `${item.color}14`, color: item.color }}
                 >
-                  <ShortcutIcon type={item.iconType} />
+                  <ShortcutIcon type={item.iconType} className="w-5 h-5" />
                 </div>
-                <span className="text-[13px] font-bold text-[#1B2922] leading-tight block truncate max-w-full">
+                <span className="text-[12px] font-bold text-[#1B2922] leading-tight block truncate max-w-full">
                   {item.title}
                 </span>
-                <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1 truncate max-w-full">
+                <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-0.5 truncate max-w-full">
                   {item.subtitle}
                 </span>
               </Link>
             ))}
 
-            {/* Apple-Rounded Dashed Add Shortcut Card */}
+            {/* Compact Snug Dashed Add Shortcut Card */}
             <button
               type="button"
               onClick={() => setCustomizeModal(true)}
-              className="tap-scale group flex flex-col items-center justify-center text-center p-4 rounded-[20px] bg-[#FAF8F5]/80 border border-dashed border-[#D5D0C6] hover:border-forest/50 hover:bg-[#F5F2EC] transition-all"
+              className="tap-scale group flex flex-col items-center justify-center text-center py-2 px-2.5 rounded-xl bg-[#FAF8F5]/80 border border-dashed border-[#D5D0C6] hover:border-forest/50 hover:bg-[#F5F2EC] transition-all"
             >
-              <div className="w-12 h-12 rounded-[14px] bg-black/[0.03] flex items-center justify-center text-ink-muted mb-2.5 group-hover:text-forest group-hover:scale-105 transition">
-                <Plus size={22} />
+              <div className="w-8 h-8 rounded-lg bg-black/[0.03] flex items-center justify-center text-ink-muted mb-1 group-hover:text-forest group-hover:scale-105 transition">
+                <Plus size={16} />
               </div>
-              <span className="text-[13px] font-bold text-[#1B2922] leading-tight block group-hover:text-forest">
+              <span className="text-[12px] font-bold text-[#1B2922] leading-tight block group-hover:text-forest">
                 Add Shortcut
               </span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">
+              <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-0.5">
                 Pick feature
               </span>
             </button>

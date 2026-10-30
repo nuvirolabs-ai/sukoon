@@ -10,11 +10,13 @@ export type DocType =
   | "Registry"
   | "Chain documents"
   | "Link papers"
+  | "Chain link papers"
   | "NOC"
   | "Naamantaran (mutation)"
   | "Property info"
   | "Measurement"
   | "Sanction map"
+  | "Building permission"
   | "Tax receipt"
   | "Loan agreement"
   | "Insurance"
@@ -22,14 +24,15 @@ export type DocType =
   | "Identity"
   | "Address proof"
   | "Receipt"
+  | "Additional info"
   | "Other";
 
 // Neutral record categories only. Applicability and requirements come from
 // published S12 rules; this list is not a legal checklist.
 export const DOCUMENT_TAXONOMY: DocType[] = [
-  "Registry", "Chain documents", "Link papers", "NOC", "Naamantaran (mutation)",
-  "Property info", "Measurement", "Sanction map", "Tax receipt", "Loan agreement",
-  "Insurance", "EC", "Identity", "Address proof", "Receipt", "Other",
+  "Registry", "Chain documents", "Link papers", "Chain link papers", "NOC", "Naamantaran (mutation)",
+  "Property info", "Measurement", "Sanction map", "Building permission", "Tax receipt", "Loan agreement",
+  "Insurance", "EC", "Identity", "Address proof", "Receipt", "Additional info", "Other",
 ];
 
 export type DocumentProcessingState =
