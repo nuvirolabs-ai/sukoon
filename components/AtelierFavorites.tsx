@@ -24,7 +24,7 @@ export function AtelierFavorites({
   renderIcon,
 }: AtelierFavoritesProps) {
   return (
-    <section aria-label="My Favorites" className="mt-7 mb-4">
+    <section aria-label="My Favorites" className="mb-4">
       {/* Refined Atelier Sculpted Tray */}
       <div className="bg-gradient-to-b from-[#F3EFE7]/90 via-[#EFE9DF]/80 to-[#ECE5DA]/90 backdrop-blur-md rounded-2xl p-3 sm:p-3.5 border border-[#E3DCD0] shadow-[0_4px_20px_rgba(27,61,47,0.03)]">
         {/* Header Row: Refined Jewel Emblem + Count + Customize */}

@@ -9,7 +9,6 @@ import {
   MapPin,
   Plus,
   Search,
-  SlidersHorizontal,
   Sparkles,
   X,
 } from "lucide-react";
@@ -313,13 +312,6 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
               aria-label="Search"
               className="w-full bg-transparent border-none p-0 text-sm text-[#22332A] placeholder-[#95A099] focus:ring-0 focus:outline-none font-normal leading-relaxed truncate"
             />
-            <Link
-              href="/search"
-              aria-label="Search Filters"
-              className="tap-scale text-[#6E7D75] ml-2 p-1 hover:text-[#1F3329] focus:outline-none"
-            >
-              <SlidersHorizontal className="w-5 h-5" strokeWidth={1.8} />
-            </Link>
           </form>
         </section>
 
@@ -410,6 +402,20 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             </Link>
           </div>
         </section>
+
+        {/* Elegant Partition between Core Features & My Favorites */}
+        <div className="relative my-7 flex items-center justify-center select-none" aria-hidden="true">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#DDD6C8] to-transparent" />
+          </div>
+          <div className="relative px-3.5 bg-canvas flex items-center gap-2">
+            <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
+            <span className="text-[10px] text-[#7A8E82] font-serif italic tracking-widest uppercase">
+              ✦
+            </span>
+            <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
+          </div>
+        </div>
 
         {/* 4. My Favorites Section: Sculpted Atelier Tray */}
         <AtelierFavorites
