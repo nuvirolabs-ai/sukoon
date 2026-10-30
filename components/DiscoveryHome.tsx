@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -251,6 +251,9 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
   const [customizeModal, setCustomizeModal] = useState(false);
   const { city, changeCity, allCities } = useSelectedCity();
   const [cityModalOpen, setCityModalOpen] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
@@ -296,25 +299,71 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </Link>
         </header>
 
-        {/* 2. Search Bar - Slim, Apple Spotlight Capsule */}
-        <section aria-label="Search" className="mb-7">
-          <form
-            action="/search"
-            method="GET"
-            role="search"
-            className="relative flex items-center w-full bg-white/95 rounded-full px-4.5 py-2.5 border border-[#E5DFD3] shadow-[0_2px_10px_rgba(27,61,47,0.03)] focus-within:ring-2 focus-within:ring-[#1E3328]/15 focus-within:border-[#1E3328]/40 focus-within:shadow-[0_4px_16px_rgba(27,61,47,0.06)] transition-all duration-200"
-          >
-            {/* Magnifying Glass Icon */}
-            <Search className="w-4.5 h-4.5 text-[#7C8B82] flex-shrink-0 mr-2.5" strokeWidth={2} />
-            <input
-              name="q"
-              type="search"
-              enterKeyHint="search"
-              placeholder="Search properties, papers, construction, market..."
-              aria-label="Search"
-              className="w-full bg-transparent border-none p-0 text-[13.5px] text-[#22332A] placeholder-[#8E9D94] focus:ring-0 focus:outline-none font-normal leading-normal truncate"
-            />
-          </form>
+        {/* 2. Expandable Apple Search Bar - Compact Pill that Expands */}
+        <section aria-label="Search" className="mb-7 flex justify-center">
+          {!searchExpanded ? (
+            /* Collapsed Small Apple Pill */
+            <button
+              type="button"
+              onClick={() => {
+                setSearchExpanded(true);
+                setTimeout(() => searchInputRef.current?.focus(), 60);
+              }}
+              aria-label="Open search"
+              className="tap-scale flex items-center justify-center gap-2 w-44 sm:w-52 py-2 px-4 rounded-full bg-white/95 hover:bg-white border border-[#E5DFD3] shadow-2xs hover:shadow-xs hover:border-forest/30 transition-all duration-200 cursor-pointer"
+            >
+              <Search className="w-3.5 h-3.5 text-[#6E7D73]" strokeWidth={2.2} />
+              <span className="text-[13px] font-medium text-[#6E7D73]">Search...</span>
+            </button>
+          ) : (
+            /* Expanded Full-Width Search Form */
+            <form
+              action="/search"
+              method="GET"
+              role="search"
+              className="relative flex items-center w-full bg-white rounded-full px-4 py-2.5 border border-forest/30 shadow-[0_4px_18px_rgba(27,61,47,0.08)] ring-2 ring-forest/10 transition-all duration-300 animate-in fade-in zoom-in-98"
+            >
+              <Search className="w-4 h-4 text-[#486354] flex-shrink-0 mr-2.5" strokeWidth={2.2} />
+              <input
+                ref={searchInputRef}
+                name="q"
+                type="search"
+                enterKeyHint="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search properties, papers, construction, market..."
+                aria-label="Search"
+                autoFocus
+                className="w-full bg-transparent border-none p-0 text-[13.5px] text-[#22332A] placeholder-[#8E9D94] font-normal leading-normal truncate focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 !outline-none !shadow-none"
+                style={{ outline: "none", boxShadow: "none" }}
+              />
+
+              {searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    searchInputRef.current?.focus();
+                  }}
+                  className="p-1 rounded-full text-ink-muted hover:text-foreground shrink-0 mr-1"
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSearchExpanded(false);
+                }}
+                className="tap-scale ml-1.5 text-[11px] font-bold text-forest hover:opacity-80 px-2.5 py-1 rounded-full bg-sand/80 shrink-0"
+              >
+                Cancel
+              </button>
+            </form>
+          )}
         </section>
 
         {/* 3. Core Features Section: 2 Rows, No Big Boxes, Clean Icons Only */}
