@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "Sukoon" },
 };
 
-export const viewport: Viewport = { themeColor: "#f7f3eb", viewportFit: "cover", interactiveWidget: "resizes-content" };
+export const viewport: Viewport = { themeColor: "#FFF7EF", viewportFit: "cover", interactiveWidget: "resizes-content" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

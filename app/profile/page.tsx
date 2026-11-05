@@ -52,15 +52,15 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-canvas text-foreground pb-28">
       {/* Top Header */}
       <header className="sticky top-0 z-30 bg-canvas/90 backdrop-blur-md border-b border-line/60 px-4 py-3.5 flex items-center justify-between">
-        <h1 className="text-base font-bold text-[#1B2922]">Profile &amp; Account</h1>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E5637] bg-[#E8F5EE] border border-[#A3D9B5] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+        <h1 className="text-base font-bold text-[#195A50]">Profile &amp; Account</h1>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#195A50] bg-[#FBEBE2] border border-[#E9DCCF] px-2.5 py-0.5 rounded-full flex items-center gap-1">
           <ShieldCheck size={11} /> Verified Citizen
         </span>
       </header>
 
       <main className="max-w-md mx-auto px-4 py-4 space-y-4">
         {/* VIP Citizen Passport Card */}
-        <section className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#1B2922] via-[#243B30] to-[#12231A] text-white p-5 shadow-sm">
+        <section className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#195A50] via-[#144941] to-[#0E332D] text-white p-5 shadow-sm">
           <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
 
           <div className="flex items-start justify-between gap-3 relative z-10">
@@ -115,30 +115,30 @@ export default function ProfilePage() {
 
         {/* Real Estate Portfolio KPIs */}
         <section className="grid grid-cols-2 gap-3">
-          <div className="p-3.5 rounded-[18px] bg-white border border-[#E7E3D9] shadow-2xs">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82] block">
+          <div className="p-3.5 rounded-[18px] bg-white border border-[#E9DCCF] shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83] block">
               Properties Registered
             </span>
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-lg font-bold text-[#1B2922]">
+              <span className="text-lg font-bold text-[#195A50]">
                 {Math.max(s.properties.length, 3)}
               </span>
-              <span className="text-[11px] text-[#7C8B82]">Parcels</span>
+              <span className="text-[11px] text-[#7D8C83]">Parcels</span>
             </div>
-            <p className="text-[10px] text-forest font-semibold mt-1">
+            <p className="text-[10px] text-[#195A50] font-semibold mt-1">
               ₹4.25 Cr Portfolio Value
             </p>
           </div>
 
-          <div className="p-3.5 rounded-[18px] bg-white border border-[#E7E3D9] shadow-2xs">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82] block">
+          <div className="p-3.5 rounded-[18px] bg-white border border-[#E9DCCF] shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83] block">
               Vault Health Score
             </span>
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-lg font-bold text-[#1E5637]">96%</span>
-              <span className="text-[11px] text-emerald-700 font-semibold">Grade A+</span>
+              <span className="text-lg font-bold text-[#195A50]">96%</span>
+              <span className="text-[11px] text-[#195A50] font-semibold">Grade A+</span>
             </div>
-            <p className="text-[10px] text-[#7C8B82] mt-1">
+            <p className="text-[10px] text-[#7D8C83] mt-1">
               All Deeds &amp; Tax Cleared
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function ProfilePage() {
         {/* Legal & KYC Verification Status */}
         <section className="p-4 rounded-[20px] bg-white border border-[#E7E3D9] shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B2922] flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#195A50] flex items-center gap-1.5">
               <UserCheck size={14} className="text-forest" />
               <span>KYC &amp; Legal Verification</span>
             </h3>
@@ -159,34 +159,34 @@ export default function ProfilePage() {
           <div className="space-y-2 text-xs">
             <div className="p-2.5 rounded-xl bg-sand/30 border border-line/60 flex items-center justify-between">
               <div>
-                <p className="font-bold text-[#1B2922]">Aadhaar Card</p>
+                <p className="font-bold text-[#195A50]">Aadhaar Card</p>
                 <p className="text-[10px] text-ink-muted">•••• •••• 8842 (UIDAI e-KYC Verified)</p>
               </div>
-              <CheckCircle2 size={16} className="text-[#1E5637] shrink-0" />
+              <CheckCircle2 size={16} className="text-[#195A50] shrink-0" />
             </div>
 
             <div className="p-2.5 rounded-xl bg-sand/30 border border-line/60 flex items-center justify-between">
               <div>
-                <p className="font-bold text-[#1B2922]">PAN Card (Income Tax)</p>
+                <p className="font-bold text-[#195A50]">PAN Card (Income Tax)</p>
                 <p className="text-[10px] text-ink-muted">ABCPS••••K (Linked for Form 26QB)</p>
               </div>
-              <CheckCircle2 size={16} className="text-[#1E5637] shrink-0" />
+              <CheckCircle2 size={16} className="text-[#195A50] shrink-0" />
             </div>
 
             <div className="p-2.5 rounded-xl bg-sand/30 border border-line/60 flex items-center justify-between">
               <div>
-                <p className="font-bold text-[#1B2922]">Primary Bank Account</p>
+                <p className="font-bold text-[#195A50]">Primary Bank Account</p>
                 <p className="text-[10px] text-ink-muted">HDFC Bank •••• 4091 (RTGS Ready)</p>
               </div>
-              <CheckCircle2 size={16} className="text-[#1E5637] shrink-0" />
+              <CheckCircle2 size={16} className="text-[#195A50] shrink-0" />
             </div>
 
             <div className="p-2.5 rounded-xl bg-sand/30 border border-line/60 flex items-center justify-between">
               <div>
-                <p className="font-bold text-[#1B2922]">Registered Nominee</p>
+                <p className="font-bold text-[#195A50]">Registered Nominee</p>
                 <p className="text-[10px] text-ink-muted">Sunita Sharma (Spouse) • 100% Share</p>
               </div>
-              <CheckCircle2 size={16} className="text-[#1E5637] shrink-0" />
+              <CheckCircle2 size={16} className="text-[#195A50] shrink-0" />
             </div>
           </div>
         </section>
@@ -194,11 +194,11 @@ export default function ProfilePage() {
         {/* Trusted Family & Legal Circle */}
         <section className="p-4 rounded-[20px] bg-white border border-[#E7E3D9] shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B2922] flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#195A50] flex items-center gap-1.5">
               <Users size={14} className="text-forest" />
               <span>Trusted Family Access</span>
             </h3>
-            <span className="text-[11px] text-[#7C8B82] font-medium">2 Active</span>
+            <span className="text-[11px] text-[#7D8C83] font-medium">2 Active</span>
           </div>
 
           <div className="space-y-2 text-xs">
@@ -208,8 +208,8 @@ export default function ProfilePage() {
                   SS
                 </div>
                 <div>
-                  <p className="font-bold text-[#1B2922]">Sunita Sharma</p>
-                  <p className="text-[10px] text-[#7C8B82]">Co-Owner • Full Vault Access</p>
+                  <p className="font-bold text-[#195A50]">Sunita Sharma</p>
+                  <p className="text-[10px] text-[#7D8C83]">Co-Owner • Full Vault Access</p>
                 </div>
               </div>
               <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
@@ -223,8 +223,8 @@ export default function ProfilePage() {
                   RS
                 </div>
                 <div>
-                  <p className="font-bold text-[#1B2922]">Adv. Rajesh Saxena</p>
-                  <p className="text-[10px] text-[#7C8B82]">Legal Counsel • Read-Only Title Deeds</p>
+                  <p className="font-bold text-[#195A50]">Adv. Rajesh Saxena</p>
+                  <p className="text-[10px] text-[#7D8C83]">Legal Counsel • Read-Only Title Deeds</p>
                 </div>
               </div>
               <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
@@ -243,7 +243,7 @@ export default function ProfilePage() {
 
         {/* Notifications & WhatsApp Updates */}
         <section className="p-4 rounded-[20px] bg-white border border-[#E7E3D9] shadow-2xs space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B2922] flex items-center gap-1.5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#195A50] flex items-center gap-1.5">
             <Bell size={14} className="text-forest" />
             <span>Smart Notifications</span>
           </h3>
@@ -251,7 +251,7 @@ export default function ProfilePage() {
           <div className="space-y-3 text-xs">
             <label className="flex items-center justify-between cursor-pointer select-none">
               <div>
-                <p className="font-bold text-[#1B2922]">WhatsApp Deal &amp; Market Alerts</p>
+                <p className="font-bold text-[#195A50]">WhatsApp Deal &amp; Market Alerts</p>
                 <p className="text-[10px] text-ink-muted">Receive verified Indore deals via WhatsApp</p>
               </div>
               <input
@@ -264,7 +264,7 @@ export default function ProfilePage() {
 
             <label className="flex items-center justify-between cursor-pointer select-none pt-2 border-t border-line/60">
               <div>
-                <p className="font-bold text-[#1B2922]">Daily Mandi Material Rates</p>
+                <p className="font-bold text-[#195A50]">Daily Mandi Material Rates</p>
                 <p className="text-[10px] text-ink-muted">Cement &amp; Steel daily price trend notifications</p>
               </div>
               <input
@@ -277,7 +277,7 @@ export default function ProfilePage() {
 
             <label className="flex items-center justify-between cursor-pointer select-none pt-2 border-t border-line/60">
               <div>
-                <p className="font-bold text-[#1B2922]">Biometric / Face ID App Lock</p>
+                <p className="font-bold text-[#195A50]">Biometric / Face ID App Lock</p>
                 <p className="text-[10px] text-ink-muted">Require Face ID / Fingerprint to open Vault</p>
               </div>
               <input
@@ -297,10 +297,10 @@ export default function ProfilePage() {
               <Sparkles size={16} />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-[#1B2922]">
+              <h3 className="text-xs font-bold text-[#195A50]">
                 Sukoon Private Concierge Desk
               </h3>
-              <p className="text-[10px] text-[#7C8B82]">
+              <p className="text-[10px] text-[#7D8C83]">
                 Dedicated real estate manager for title search &amp; deals
               </p>
             </div>
@@ -343,7 +343,7 @@ export default function ProfilePage() {
           >
             <LogOut size={14} /> Sign Out of Sukoon
           </button>
-          <p className="text-center text-[10px] text-[#7C8B82] mt-3">
+          <p className="text-center text-[10px] text-[#7D8C83] mt-3">
             Sukoon v2.4.0 • Enterprise 256-bit Encrypted Vault
           </p>
         </div>

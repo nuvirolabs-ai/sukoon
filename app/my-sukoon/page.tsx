@@ -1709,7 +1709,7 @@ export default function MySukoonPage() {
       {/* FLOATING TOAST NOTIFICATION */}
       {/* ========================================================================= */}
       {toastMsg && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1E5637] text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#195A50] text-white px-4 py-2 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
           <Check size={14} className="text-emerald-300" />
           <span>{toastMsg}</span>
         </div>
@@ -1739,10 +1739,10 @@ export default function MySukoonPage() {
         )}
 
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[#7C8B82]">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#7D8C83]">
             MY HAPPINESS · MY SUKOON
           </span>
-          <span className="text-xs font-serif font-bold text-[#1B2922]">
+          <span className="text-xs font-serif font-bold text-[#195A50]">
             {activePillar === null
               ? "Life & Family Sanctuary"
               : activePillar === "finance"
@@ -1772,7 +1772,7 @@ export default function MySukoonPage() {
             title={isLoveLocked ? "Private Sanctuary Locked" : "Click to Lock Private Life"}
             className={`tap-scale p-1.5 rounded-full border transition flex items-center gap-1 text-[11px] font-medium ${
               isLoveLocked
-                ? "bg-white/80 border-[#E8E2D5] text-[#7C8B82] hover:text-forest"
+                ? "bg-white/80 border-[#E9DCCF] text-[#7D8C83] hover:text-forest"
                 : "bg-emerald-50 border-emerald-200 text-emerald-800"
             }`}
           >
@@ -1787,7 +1787,7 @@ export default function MySukoonPage() {
       {activePillar === null && (
         <div className="px-4 pt-4 space-y-5 animate-in fade-in duration-200">
           {/* SANCTUARY HERO GREETING BANNER */}
-          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1E5637] via-[#1B3D2F] to-[#0F291E] p-5 text-white shadow-xs">
+          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#195A50] via-[#1B3D2F] to-[#0F291E] p-5 text-white shadow-xs">
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-xs text-[10px] font-semibold text-emerald-100">
@@ -1825,7 +1825,7 @@ export default function MySukoonPage() {
                   <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
                     Sukoon Index
                   </span>
-                  <span className="text-sm font-bold text-amber-300 mt-0.5 block">
+                  <span className="text-sm font-bold text-[#F6C6AF] mt-0.5 block">
                     {happinessScore}% Serene
                   </span>
                 </div>
@@ -1844,8 +1844,8 @@ export default function MySukoonPage() {
           </div>
 
           <div>
-            <h2 className="text-base font-serif font-bold text-[#1B2922]">5 Life Sanctuaries</h2>
-            <p className="text-xs text-[#7C8B82] mt-0.5 leading-relaxed">
+            <h2 className="text-base font-serif font-bold text-[#195A50]">5 Life Sanctuaries</h2>
+            <p className="text-xs text-[#7D8C83] mt-0.5 leading-relaxed">
               Tap any folder below to enter its dedicated workspace.
             </p>
           </div>
@@ -1856,20 +1856,20 @@ export default function MySukoonPage() {
             <button
               type="button"
               onClick={() => setActivePillar("finance")}
-              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#1E5637] border border-emerald-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBEBE2] text-[#195A50] border border-[#E9DCCF] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <Wallet size={22} />
                 </div>
-                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-xs font-bold text-[#195A50] leading-snug">
                   Family Finance &amp; Goals
                 </h3>
-                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                <p className="text-[10px] text-[#7D8C83] mt-1 line-clamp-2">
                   Real Estate, FDs, Mutual Funds, Loans &amp; Insurance.
                 </p>
               </div>
-              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-[#1E5637]">
+              <div className="mt-4 pt-2.5 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#195A50]">
                 <span>{formatINR(netFamilyWealth)}</span>
                 <ChevronRight size={12} />
               </div>
@@ -1879,20 +1879,20 @@ export default function MySukoonPage() {
             <button
               type="button"
               onClick={() => setActivePillar("travel")}
-              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-amber-400/50 hover:shadow-md transition-all duration-200"
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#EB725B]/40 hover:shadow-md transition-all duration-200"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBEBE2] text-[#EB725B] border border-[#E9DCCF] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <Plane size={22} />
                 </div>
-                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-xs font-bold text-[#195A50] leading-snug">
                   Holidays &amp; Travel
                 </h3>
-                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                <p className="text-[10px] text-[#7D8C83] mt-1 line-clamp-2">
                   Trip countdowns, vacation jar &amp; dream bucket list.
                 </p>
               </div>
-              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-amber-700">
+              <div className="mt-4 pt-2.5 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#EB725B]">
                 <span>{featuredTrip.daysRemaining}d to go</span>
                 <ChevronRight size={12} />
               </div>
@@ -1902,25 +1902,25 @@ export default function MySukoonPage() {
             <button
               type="button"
               onClick={() => setActivePillar("love")}
-              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-rose-400/50 hover:shadow-md transition-all duration-200"
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#EB725B]/40 hover:shadow-md transition-all duration-200"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform relative">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBEBE2] text-[#EB725B] border border-[#E9DCCF] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform relative">
                   <Heart size={22} />
                   {isLoveLocked && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-700 text-white flex items-center justify-center text-[9px]">
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#EB725B] text-white flex items-center justify-center text-[9px]">
                       <Lock size={9} />
                     </span>
                   )}
                 </div>
-                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-xs font-bold text-[#195A50] leading-snug">
                   My Love, My Life
                 </h3>
-                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                <p className="text-[10px] text-[#7D8C83] mt-1 line-clamp-2">
                   Quality time, couple goals, intimacy &amp; photo vault.
                 </p>
               </div>
-              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-rose-700">
+              <div className="mt-4 pt-2.5 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#EB725B]">
                 <span>{isLoveLocked ? "Private Sanctuary" : "Unlocked"}</span>
                 <ChevronRight size={12} />
               </div>
@@ -1930,20 +1930,20 @@ export default function MySukoonPage() {
             <button
               type="button"
               onClick={() => setActivePillar("kids")}
-              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-blue-400/50 hover:shadow-md transition-all duration-200"
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBEBE2] text-[#195A50] border border-[#E9DCCF] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <Baby size={22} />
                 </div>
-                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-xs font-bold text-[#195A50] leading-snug">
                   Kids &amp; Growth
                 </h3>
-                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                <p className="text-[10px] text-[#7D8C83] mt-1 line-clamp-2">
                   Daily homework, sports academies &amp; growth checks.
                 </p>
               </div>
-              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-blue-700">
+              <div className="mt-4 pt-2.5 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#195A50]">
                 <span>{kidsRoutines.filter((r) => r.completed).length}/{kidsRoutines.length} Done</span>
                 <ChevronRight size={12} />
               </div>
@@ -1953,22 +1953,22 @@ export default function MySukoonPage() {
             <button
               type="button"
               onClick={() => setActivePillar("self")}
-              className="col-span-2 tap-scale group flex items-center justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-indigo-400/50 hover:shadow-md transition-all duration-200"
+              className="col-span-2 tap-scale group flex items-center justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBEBE2] text-[#195A50] border border-[#E9DCCF] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <Feather size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-[#1B2922]">
+                  <h3 className="text-xs font-bold text-[#195A50]">
                     Work-Life Balance &amp; Self Growth
                   </h3>
-                  <p className="text-[10px] text-[#7C8B82] mt-0.5">
+                  <p className="text-[10px] text-[#7D8C83] mt-0.5">
                     Personal health, reading desk, habits &amp; daily gratitude journal.
                   </p>
                 </div>
               </div>
-              <div className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 shrink-0 ml-2">
+              <div className="inline-flex items-center gap-1 text-[11px] font-bold text-[#195A50] shrink-0 ml-2">
                 <span>{happinessScore}% Serene</span>
                 <ChevronRight size={13} />
               </div>
@@ -1992,14 +1992,14 @@ export default function MySukoonPage() {
         {activePillar === "finance" && (
           <div className="space-y-5 animate-in fade-in duration-200">
             {/* Philosophical Motto */}
-            <div className="bg-sand/30 border border-[#E8E2D5] rounded-2xl p-3 flex items-center justify-between">
+            <div className="bg-sand/30 border border-[#E9DCCF] rounded-2xl p-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-forest/10 text-forest flex items-center justify-center shrink-0">
                   <Landmark size={18} />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-[#1B2922]">Family Financial Freedom</h3>
-                  <p className="text-[11px] text-[#7C8B82] leading-tight">
+                  <h3 className="text-xs font-bold text-[#195A50]">Family Financial Freedom</h3>
+                  <p className="text-[11px] text-[#7D8C83] leading-tight">
                     Manage savings, liquid assets, debt obligations &amp; family emergency buffers.
                   </p>
                 </div>
@@ -2007,20 +2007,20 @@ export default function MySukoonPage() {
             </div>
 
             {/* Total Balance Sheet Card */}
-            <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs">
+            <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
                     Total Family Balance Sheet
                   </span>
-                  <h2 className="text-2xl font-serif font-bold text-[#1B2922]">
+                  <h2 className="text-2xl font-serif font-bold text-[#195A50]">
                     {formatINR(netFamilyWealth)}
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => openAssetModal()}
-                  className="tap-scale inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#1E5637] text-white text-xs font-semibold shadow-xs hover:bg-[#164028] transition"
+                  className="tap-scale inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#195A50] text-white text-xs font-semibold shadow-xs hover:bg-[#164028] transition"
                 >
                   <Plus size={14} /> Add Asset
                 </button>
@@ -2032,12 +2032,12 @@ export default function MySukoonPage() {
                   <span className="text-[#526359]">Gross Assets: {formatINR(realEstateValuation + totalFinancialAssets)}</span>
                   <span className="text-amber-800">Total Debt: {formatINR(totalDebt)}</span>
                 </div>
-                <div className="w-full h-2.5 rounded-full bg-[#EFECE6] overflow-hidden flex">
+                <div className="w-full h-2.5 rounded-full bg-[#FBEBE2] overflow-hidden flex">
                   <div
                     style={{
                       width: `${Math.min(100, Math.round((realEstateValuation / (realEstateValuation + totalFinancialAssets)) * 100))}%`,
                     }}
-                    className="h-full bg-[#1E5637]"
+                    className="h-full bg-[#195A50]"
                     title="Real Estate"
                   />
                   <div
@@ -2048,9 +2048,9 @@ export default function MySukoonPage() {
                     title="Liquid Assets"
                   />
                 </div>
-                <div className="flex items-center gap-4 text-[10px] font-semibold text-[#7C8B82] pt-1">
+                <div className="flex items-center gap-4 text-[10px] font-semibold text-[#7D8C83] pt-1">
                   <span className="inline-flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#1E5637]" /> Real Estate ({Math.round((realEstateValuation / (realEstateValuation + totalFinancialAssets)) * 100)}%)
+                    <span className="w-2 h-2 rounded-full bg-[#195A50]" /> Real Estate ({Math.round((realEstateValuation / (realEstateValuation + totalFinancialAssets)) * 100)}%)
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-emerald-400" /> Liquid &amp; FDs ({Math.round((totalFinancialAssets / (realEstateValuation + totalFinancialAssets)) * 100)}%)
@@ -2062,7 +2062,7 @@ export default function MySukoonPage() {
             {/* Sub-section 1: Savings & Assets */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <PiggyBank size={16} className="text-forest" />
                   Savings &amp; Assets Portfolio
                 </h3>
@@ -2076,7 +2076,7 @@ export default function MySukoonPage() {
               </div>
 
               {/* Real Estate synced from Vault */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D5] p-4 shadow-xs relative overflow-hidden">
+              <div className="bg-white rounded-2xl border border-[#E9DCCF] p-4 shadow-xs relative overflow-hidden">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-xl bg-forest/10 text-forest flex items-center justify-center shrink-0">
@@ -2086,8 +2086,8 @@ export default function MySukoonPage() {
                       <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-forest bg-forest/10 px-1.5 py-0.5 rounded">
                         Auto-Synced from Vault
                       </div>
-                      <h4 className="text-xs font-bold text-[#1B2922] mt-0.5">Real Estate Holdings</h4>
-                      <p className="text-[11px] text-[#7C8B82]">
+                      <h4 className="text-xs font-bold text-[#195A50] mt-0.5">Real Estate Holdings</h4>
+                      <p className="text-[11px] text-[#7D8C83]">
                         {properties.length} Properties in Indore (Vijay Nagar, Super Corridor, Omaxe)
                       </p>
                     </div>
@@ -2108,9 +2108,9 @@ export default function MySukoonPage() {
 
               {/* Dynamic Assets List */}
               {assets.map((asset) => (
-                <div key={asset.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs flex items-center justify-between group">
+                <div key={asset.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs flex items-center justify-between group">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-sand/60 text-[#1B2922] flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-sand/60 text-[#195A50] flex items-center justify-center shrink-0">
                       {asset.category === "Bank FD" && <Landmark size={15} />}
                       {asset.category === "Mutual Funds" && <TrendingUp size={15} />}
                       {asset.category === "Equity / Stocks" && <Wallet size={15} />}
@@ -2118,8 +2118,8 @@ export default function MySukoonPage() {
                       {asset.category === "Gold / Other" && <Sparkles size={15} />}
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-[#1B2922] leading-snug">{asset.name}</h4>
-                      <p className="text-[10px] text-[#7C8B82]">
+                      <h4 className="text-xs font-bold text-[#195A50] leading-snug">{asset.name}</h4>
+                      <p className="text-[10px] text-[#7D8C83]">
                         {asset.institutionOrDetails} {asset.returnRate ? `• ${asset.returnRate}` : ""}
                       </p>
                     </div>
@@ -2127,7 +2127,7 @@ export default function MySukoonPage() {
 
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <span className="text-xs font-bold text-[#1B2922] block">
+                      <span className="text-xs font-bold text-[#195A50] block">
                         {formatINR(asset.currentValue)}
                       </span>
                       {asset.monthlyAddition && (
@@ -2141,7 +2141,7 @@ export default function MySukoonPage() {
                         type="button"
                         onClick={() => openAssetModal(asset)}
                         title="Edit Asset"
-                        className="p-1 hover:text-forest text-[#7C8B82]"
+                        className="p-1 hover:text-forest text-[#7D8C83]"
                       >
                         <Pencil size={13} />
                       </button>
@@ -2149,7 +2149,7 @@ export default function MySukoonPage() {
                         type="button"
                         onClick={() => deleteAsset(asset.id)}
                         title="Delete Asset"
-                        className="p-1 hover:text-rose-700 text-[#7C8B82]"
+                        className="p-1 hover:text-rose-700 text-[#7D8C83]"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -2162,7 +2162,7 @@ export default function MySukoonPage() {
             {/* Sub-section 2: Loan & EMI Management */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <CreditCard size={16} className="text-amber-800" />
                   Loan &amp; EMI Management
                 </h3>
@@ -2181,41 +2181,41 @@ export default function MySukoonPage() {
               </div>
 
               {/* Home Loan Card */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs">
+              <div className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded">
                       Linked to Vijay Nagar
                     </div>
-                    <h4 className="text-xs font-bold text-[#1B2922] mt-0.5">Housing Finance EMI</h4>
-                    <p className="text-[10px] text-[#7C8B82]">SBI Home Finance • 8.5% Floating</p>
+                    <h4 className="text-xs font-bold text-[#195A50] mt-0.5">Housing Finance EMI</h4>
+                    <p className="text-[10px] text-[#7D8C83]">SBI Home Finance • 8.5% Floating</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-bold text-[#1B2922] block">₹42,000/mo</span>
-                    <span className="text-[10px] text-[#7C8B82]">Bal: {formatINR(propertyLoanBalance)}</span>
+                    <span className="text-xs font-bold text-[#195A50] block">₹42,000/mo</span>
+                    <span className="text-[10px] text-[#7D8C83]">Bal: {formatINR(propertyLoanBalance)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Other Loans */}
               {loans.map((loan) => (
-                <div key={loan.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs flex items-center justify-between group">
+                <div key={loan.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs flex items-center justify-between group">
                   <div>
                     <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded">
                       {loan.type}
                     </div>
-                    <h4 className="text-xs font-bold text-[#1B2922] mt-0.5">{loan.name}</h4>
-                    <p className="text-[10px] text-[#7C8B82]">
+                    <h4 className="text-xs font-bold text-[#195A50] mt-0.5">{loan.name}</h4>
+                    <p className="text-[10px] text-[#7D8C83]">
                       {loan.bank} • {loan.tenureRemainingMonths}m remaining
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <span className="text-xs font-bold text-[#1B2922] block">
+                      <span className="text-xs font-bold text-[#195A50] block">
                         {formatINR(loan.monthlyEmi)}/mo
                       </span>
-                      <span className="text-[10px] text-[#7C8B82]">
+                      <span className="text-[10px] text-[#7D8C83]">
                         Bal: {formatINR(loan.remainingBalance)}
                       </span>
                     </div>
@@ -2224,7 +2224,7 @@ export default function MySukoonPage() {
                         type="button"
                         onClick={() => openLoanModal(loan)}
                         title="Edit Loan"
-                        className="p-1 hover:text-amber-800 text-[#7C8B82]"
+                        className="p-1 hover:text-amber-800 text-[#7D8C83]"
                       >
                         <Pencil size={13} />
                       </button>
@@ -2232,7 +2232,7 @@ export default function MySukoonPage() {
                         type="button"
                         onClick={() => deleteLoan(loan.id)}
                         title="Delete Loan"
-                        className="p-1 hover:text-rose-700 text-[#7C8B82]"
+                        className="p-1 hover:text-rose-700 text-[#7D8C83]"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -2245,7 +2245,7 @@ export default function MySukoonPage() {
             {/* Sub-section 3: Insurance Portfolio */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <ShieldCheck size={16} className="text-forest" />
                   Insurance Portfolio (Health, Term &amp; Accident)
                 </h3>
@@ -2260,13 +2260,13 @@ export default function MySukoonPage() {
 
               <div className="grid grid-cols-1 gap-2.5">
                 {insurance.map((ins) => (
-                  <div key={ins.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs flex items-center justify-between group">
+                  <div key={ins.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs flex items-center justify-between group">
                     <div>
                       <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-forest bg-forest/10 px-1.5 py-0.5 rounded">
                         {ins.type}
                       </div>
-                      <h4 className="text-xs font-bold text-[#1B2922] mt-0.5">{ins.policyName}</h4>
-                      <p className="text-[10px] text-[#7C8B82]">{ins.provider} • Renews {ins.renewalDate}</p>
+                      <h4 className="text-xs font-bold text-[#195A50] mt-0.5">{ins.policyName}</h4>
+                      <p className="text-[10px] text-[#7D8C83]">{ins.provider} • Renews {ins.renewalDate}</p>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -2274,7 +2274,7 @@ export default function MySukoonPage() {
                         <span className="text-xs font-bold text-forest block">
                           {formatINR(ins.sumAssured)} Cover
                         </span>
-                        <span className="text-[9px] text-[#7C8B82]">
+                        <span className="text-[9px] text-[#7D8C83]">
                           Prem: {formatINR(ins.annualPremium)}/yr
                         </span>
                       </div>
@@ -2283,7 +2283,7 @@ export default function MySukoonPage() {
                           type="button"
                           onClick={() => openInsuranceModal(ins)}
                           title="Edit Policy"
-                          className="p-1 hover:text-forest text-[#7C8B82]"
+                          className="p-1 hover:text-forest text-[#7D8C83]"
                         >
                           <Pencil size={13} />
                         </button>
@@ -2291,7 +2291,7 @@ export default function MySukoonPage() {
                           type="button"
                           onClick={() => deleteInsurance(ins.id)}
                           title="Delete Policy"
-                          className="p-1 hover:text-rose-700 text-[#7C8B82]"
+                          className="p-1 hover:text-rose-700 text-[#7D8C83]"
                         >
                           <Trash2 size={13} />
                         </button>
@@ -2305,7 +2305,7 @@ export default function MySukoonPage() {
             {/* Sub-section 4 & 5: Emergency Fund & Kids Education Target */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Target size={16} className="text-blue-700" />
                   Target Goal Funds
                 </h3>
@@ -2319,25 +2319,25 @@ export default function MySukoonPage() {
               </div>
 
               {/* Emergency Fund Card */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D5] p-4 shadow-xs">
+              <div className="bg-white rounded-2xl border border-[#E9DCCF] p-4 shadow-xs">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center shrink-0">
                       <AlertCircle size={16} />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-[#1B2922]">Emergency Health &amp; Crisis Fund</h4>
-                      <p className="text-[10px] text-[#7C8B82]">Instant liquid buffer for unexpected expenses</p>
+                      <h4 className="text-xs font-bold text-[#195A50]">Emergency Health &amp; Crisis Fund</h4>
+                      <p className="text-[10px] text-[#7D8C83]">Instant liquid buffer for unexpected expenses</p>
                     </div>
                   </div>
                   <span className="text-xs font-bold text-forest">
                     {Math.round((emergencyCurrent / emergencyTarget) * 100)}% Funded
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-[#EFECE6] overflow-hidden my-2">
+                <div className="w-full h-2 rounded-full bg-[#FBEBE2] overflow-hidden my-2">
                   <div
                     style={{ width: `${Math.min(100, (emergencyCurrent / emergencyTarget) * 100)}%` }}
-                    className="h-full bg-[#1E5637] rounded-full"
+                    className="h-full bg-[#195A50] rounded-full"
                   />
                 </div>
                 <div className="flex items-center justify-between text-[11px] font-medium text-[#526359]">
@@ -2347,22 +2347,22 @@ export default function MySukoonPage() {
               </div>
 
               {/* Kids Education Fund Card */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D5] p-4 shadow-xs">
+              <div className="bg-white rounded-2xl border border-[#E9DCCF] p-4 shadow-xs">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
                       <GraduationCap size={16} />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-[#1B2922]">Kids Higher Education Corpus</h4>
-                      <p className="text-[10px] text-[#7C8B82]">College, university &amp; overseas study goal</p>
+                      <h4 className="text-xs font-bold text-[#195A50]">Kids Higher Education Corpus</h4>
+                      <p className="text-[10px] text-[#7D8C83]">College, university &amp; overseas study goal</p>
                     </div>
                   </div>
                   <span className="text-xs font-bold text-blue-700">
                     {Math.round((educationCurrent / educationTarget) * 100)}% Funded
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-[#EFECE6] overflow-hidden my-2">
+                <div className="w-full h-2 rounded-full bg-[#FBEBE2] overflow-hidden my-2">
                   <div
                     style={{ width: `${Math.min(100, (educationCurrent / educationTarget) * 100)}%` }}
                     className="h-full bg-blue-600 rounded-full"
@@ -2388,22 +2388,22 @@ export default function MySukoonPage() {
                 <Compass size={18} />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-[#1B2922]">Experiences Over Things</h3>
-                <p className="text-[11px] text-[#7C8B82] leading-tight">
+                <h3 className="text-xs font-bold text-[#195A50]">Experiences Over Things</h3>
+                <p className="text-[11px] text-[#7D8C83] leading-tight">
                   Travel bonds families and enriches the soul. Plan deliberately, fund steadily, and explore without financial guilt.
                 </p>
               </div>
             </div>
 
             {/* Travel Budget & Savings Tracker */}
-            <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs">
+            <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
                     Annual Vacation Savings Jar
                   </span>
-                  <h3 className="text-lg font-bold text-[#1B2922]">
-                    {formatINR(travelAnnualSaved)} <span className="text-xs font-normal text-[#7C8B82]">of {formatINR(travelAnnualTarget)}</span>
+                  <h3 className="text-lg font-bold text-[#195A50]">
+                    {formatINR(travelAnnualSaved)} <span className="text-xs font-normal text-[#7D8C83]">of {formatINR(travelAnnualTarget)}</span>
                   </h3>
                 </div>
                 <button
@@ -2418,13 +2418,13 @@ export default function MySukoonPage() {
                   <Pencil size={11} /> Edit Budget
                 </button>
               </div>
-              <div className="w-full h-2.5 rounded-full bg-[#EFECE6] overflow-hidden">
+              <div className="w-full h-2.5 rounded-full bg-[#FBEBE2] overflow-hidden">
                 <div
                   style={{ width: `${Math.min(100, (travelAnnualSaved / travelAnnualTarget) * 100)}%` }}
                   className="h-full bg-linear-to-r from-amber-500 to-amber-600 rounded-full"
                 />
               </div>
-              <p className="text-[11px] text-[#7C8B82] mt-2">
+              <p className="text-[11px] text-[#7D8C83] mt-2">
                 Automated monthly vacation jar funds your family holidays smoothly without dipping into long-term wealth.
               </p>
             </div>
@@ -2432,7 +2432,7 @@ export default function MySukoonPage() {
             {/* Active Next Trip on Mind */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Luggage size={16} className="text-amber-700" />
                   Next Trip on Mind (Featured Itinerary)
                 </h3>
@@ -2446,13 +2446,16 @@ export default function MySukoonPage() {
               </div>
 
               {/* Styled Scenic Featured Card (Self-contained, gradient fallback so never broken) */}
-              <div className="bg-white rounded-3xl border border-[#E8E2D5] overflow-hidden shadow-xs">
-                <div className="relative h-44 w-full bg-linear-to-br from-teal-900 via-emerald-900 to-stone-900 p-5 flex flex-col justify-between text-white">
+              <div className="bg-white rounded-3xl border border-[#E9DCCF] overflow-hidden shadow-xs">
+                <div
+                  className="relative h-44 w-full p-5 flex flex-col justify-between text-white"
+                  style={{ background: "linear-gradient(135deg, #195A50 0%, #0E3630 65%, #EB725B 140%)" }}
+                >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300 bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F6C6AF] bg-black/30 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-white/10">
                       {featuredTrip.tag}
                     </span>
-                    <span className="text-xs font-bold text-white bg-amber-600 px-2.5 py-0.5 rounded-full shadow-xs">
+                    <span className="text-xs font-bold text-white bg-[#EB725B] px-2.5 py-0.5 rounded-full shadow-xs">
                       {featuredTrip.daysRemaining} Days To Go
                     </span>
                   </div>
@@ -2461,7 +2464,7 @@ export default function MySukoonPage() {
                     <h4 className="text-lg font-bold font-serif text-white tracking-tight">
                       {featuredTrip.destination}
                     </h4>
-                    <p className="text-xs text-white/85 mt-0.5">
+                    <p className="text-xs text-white/90 mt-0.5">
                       {featuredTrip.dates} • {featuredTrip.subtitle}
                     </p>
                   </div>
@@ -2469,7 +2472,7 @@ export default function MySukoonPage() {
 
                 {/* Pre-Departure Checklist */}
                 <div className="p-4 space-y-3">
-                  <div className="flex items-center justify-between text-xs font-semibold text-[#1B2922] pb-2 border-b border-line/40">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#195A50] pb-2 border-b border-[#E9DCCF]">
                     <span>Pre-Departure Checklist</span>
                     <button
                       type="button"
@@ -2477,7 +2480,7 @@ export default function MySukoonPage() {
                         setFormField1("");
                         setActiveModal("new_task");
                       }}
-                      className="tap-scale inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:underline"
+                      className="tap-scale inline-flex items-center gap-1 text-[11px] font-bold text-[#EB725B] hover:underline"
                     >
                       <Plus size={12} /> Add Task
                     </button>
@@ -2489,25 +2492,25 @@ export default function MySukoonPage() {
                         <button
                           type="button"
                           onClick={() => togglePackingTask(item.id)}
-                          className="flex items-center gap-2.5 text-left text-xs text-[#526359] hover:text-[#1B2922] transition flex-1"
+                          className="flex items-center gap-2.5 text-left text-xs text-[#195A50] hover:text-[#195A50] transition flex-1"
                         >
                           <div
                             className={`w-4 h-4 rounded flex items-center justify-center border transition ${
                               item.done
-                                ? "bg-amber-600 border-amber-600 text-white"
-                                : "border-[#C9C3B5] bg-white"
+                                ? "bg-[#195A50] border-[#195A50] text-white"
+                                : "border-[#E9DCCF] bg-white"
                             }`}
                           >
                             {item.done && <CheckSquare size={12} />}
                           </div>
-                          <span className={item.done ? "line-through text-[#7C8B82]" : "font-medium text-[#1B2922]"}>
+                          <span className={item.done ? "line-through text-[#7D8C83]" : "font-medium text-[#195A50]"}>
                             {item.task}
                           </span>
                         </button>
                         <button
                           type="button"
                           onClick={() => deletePackingTask(item.id)}
-                          className="opacity-0 group-hover:opacity-100 p-1 text-[#7C8B82] hover:text-rose-700 transition"
+                          className="opacity-0 group-hover:opacity-100 p-1 text-[#7D8C83] hover:text-[#EB725B] transition"
                         >
                           <Trash2 size={12} />
                         </button>
@@ -2521,77 +2524,96 @@ export default function MySukoonPage() {
             {/* Travel Bucket List */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
-                  <Palmtree size={16} className="text-amber-700" />
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
+                  <Palmtree size={16} className="text-[#EB725B]" />
                   Family Travel Bucket List
                 </h3>
                 <button
                   type="button"
                   onClick={() => openBucketTripModal()}
-                  className="tap-scale inline-flex items-center gap-1 text-xs font-semibold text-amber-700 hover:text-amber-800"
+                  className="tap-scale inline-flex items-center gap-1 text-xs font-semibold text-[#EB725B] hover:underline"
                 >
-                  <Plus size={14} /> Add Dream Trip
+                  <Plus size={14} /> Add Dream Destination
                 </button>
               </div>
 
               <div className="grid grid-cols-1 gap-3">
-                {bucketList.map((item) => (
-                  <div key={item.id} className="bg-white rounded-2xl border border-[#E8E2D5] overflow-hidden shadow-xs flex group">
-                    {/* Visual Stylized Gradient Badge */}
-                    <div className={`w-28 shrink-0 bg-linear-to-br ${item.gradientBg} p-3 flex flex-col justify-between text-white`}>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-amber-300">
-                        {item.category}
-                      </span>
-                      <span className="text-xs font-bold leading-tight">
-                        {item.targetYear}
-                      </span>
-                    </div>
+                {bucketList.map((item) => {
+                  const percent = Math.min(100, Math.round((item.savedBudget / item.estimatedBudget) * 100));
+                  const isComplete = percent >= 100;
+                  const bgGradient =
+                    item.category === "International"
+                      ? "linear-gradient(135deg, #195A50 0%, #2A796C 100%)"
+                      : item.category === "Domestic"
+                      ? "linear-gradient(135deg, #EB725B 0%, #D4563F 100%)"
+                      : item.category === "Spiritual"
+                      ? "linear-gradient(135deg, #195A50 0%, #0E3630 100%)"
+                      : "linear-gradient(135deg, #EB725B 0%, #E2947A 100%)";
 
-                    <div className="p-3 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-bold text-[#1B2922] leading-snug">{item.destination}</h4>
-                          <span className="text-xs font-bold text-[#1B2922]">
-                            {formatINR(item.estimatedBudget)}
+                  return (
+                    <div key={item.id} className="bg-white rounded-2xl border border-[#E9DCCF] overflow-hidden shadow-xs flex group">
+                      {/* Visual Stylized Palette Badge */}
+                      <div
+                        className="w-24 shrink-0 p-3 flex flex-col justify-between text-white"
+                        style={{ background: bgGradient }}
+                      >
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#F6C6AF]">
+                          {item.category}
+                        </span>
+                        <div className="mt-auto">
+                          <Plane size={16} className="opacity-80 mb-1" />
+                          <span className="text-xs font-bold leading-tight block">
+                            {item.targetYear}
                           </span>
                         </div>
-                        <p className="text-[10px] text-[#7C8B82] line-clamp-1 mt-0.5">{item.whySpecial}</p>
                       </div>
 
-                      <div className="pt-2">
-                        <div className="flex items-center justify-between text-[10px] text-[#7C8B82] mb-1">
-                          <span>Saved: {formatINR(item.savedBudget)}</span>
-                          <span className="font-semibold text-amber-700">
-                            {Math.round((item.savedBudget / item.estimatedBudget) * 100)}%
-                          </span>
+                      <div className="p-3 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-bold text-[#195A50] leading-snug">{item.destination}</h4>
+                            <span className="text-xs font-bold text-[#195A50]">
+                              {formatINR(item.estimatedBudget)}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-[#7D8C83] line-clamp-1 mt-0.5">{item.whySpecial}</p>
                         </div>
-                        <div className="w-full h-1.5 rounded-full bg-[#EFECE6] overflow-hidden">
-                          <div
-                            style={{ width: `${Math.min(100, (item.savedBudget / item.estimatedBudget) * 100)}%` }}
-                            className="h-full bg-amber-600 rounded-full"
-                          />
-                        </div>
-                      </div>
 
-                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-line/30 mt-2 opacity-80 group-hover:opacity-100">
-                        <button
-                          type="button"
-                          onClick={() => openBucketTripModal(item)}
-                          className="text-[10px] font-bold text-amber-700 hover:underline flex items-center gap-0.5"
-                        >
-                          <Pencil size={10} /> Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => deleteBucketTrip(item.id)}
-                          className="text-[10px] font-bold text-rose-700 hover:underline flex items-center gap-0.5"
-                        >
-                          <Trash2 size={10} /> Delete
-                        </button>
+                        <div className="pt-2">
+                          <div className="flex items-center justify-between text-[10px] text-[#7D8C83] mb-1">
+                            <span>Saved: {formatINR(item.savedBudget)}</span>
+                            <span className={`font-semibold ${isComplete ? "text-[#195A50]" : "text-[#EB725B]"}`}>
+                              {percent}%
+                            </span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-[#FBEBE2] overflow-hidden">
+                            <div
+                              style={{ width: `${percent}%` }}
+                              className={`h-full rounded-full ${isComplete ? "bg-[#195A50]" : "bg-[#EB725B]"}`}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E9DCCF]/50 mt-2 opacity-80 group-hover:opacity-100">
+                          <button
+                            type="button"
+                            onClick={() => openBucketTripModal(item)}
+                            className="text-[10px] font-bold text-[#EB725B] hover:underline flex items-center gap-0.5"
+                          >
+                            <Pencil size={10} /> Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteBucketTrip(item.id)}
+                            className="text-[10px] font-bold text-rose-700 hover:underline flex items-center gap-0.5"
+                          >
+                            <Trash2 size={10} /> Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -2604,16 +2626,16 @@ export default function MySukoonPage() {
           <div className="space-y-5 animate-in fade-in duration-200">
             {/* If Locked, Show Discreet Privacy PIN Gate */}
             {isLoveLocked ? (
-              <div className="bg-white rounded-3xl border border-[#E8E2D5] p-6 shadow-xs text-center space-y-4">
+              <div className="bg-white rounded-3xl border border-[#E9DCCF] p-6 shadow-xs text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center mx-auto shadow-2xs">
                   <Lock size={26} />
                 </div>
 
                 <div>
-                  <h3 className="text-base font-serif font-bold text-[#1B2922]">
+                  <h3 className="text-base font-serif font-bold text-[#195A50]">
                     Private Relationship Sanctuary
                   </h3>
-                  <p className="text-xs text-[#7C8B82] max-w-xs mx-auto mt-1 leading-relaxed">
+                  <p className="text-xs text-[#7D8C83] max-w-xs mx-auto mt-1 leading-relaxed">
                     Couple memories, intimacy, and shared reflections are protected with your private PIN so you can comfortably show properties around others.
                   </p>
                 </div>
@@ -2627,7 +2649,7 @@ export default function MySukoonPage() {
                       value={pinInput}
                       onChange={(e) => setPinInput(e.target.value)}
                       placeholder="••••"
-                      className="w-32 text-center tracking-[0.5em] text-lg font-bold py-2 rounded-xl border border-[#C9C3B5] bg-canvas focus:outline-none focus:ring-2 focus:ring-rose-400"
+                      className="w-32 text-center tracking-[0.5em] text-lg font-bold py-2 rounded-xl border border-[#E9DCCF] bg-canvas focus:outline-none focus:ring-2 focus:ring-rose-400"
                     />
                     <button
                       type="submit"
@@ -2651,7 +2673,7 @@ export default function MySukoonPage() {
                       Instant Review Unlock (Face ID Demo)
                     </button>
                   </div>
-                  <p className="text-[10px] text-[#7C8B82]">Default PIN is 1234</p>
+                  <p className="text-[10px] text-[#7D8C83]">Default PIN is 1234</p>
                 </form>
               </div>
             ) : (
@@ -2664,8 +2686,8 @@ export default function MySukoonPage() {
                       <Heart size={16} />
                     </div>
                     <div>
-                      <h3 className="text-xs font-bold text-[#1B2922]">My Love, My Life</h3>
-                      <p className="text-[10px] text-[#7C8B82]">Growing Stronger Together Every Day</p>
+                      <h3 className="text-xs font-bold text-[#195A50]">My Love, My Life</h3>
+                      <p className="text-[10px] text-[#7D8C83]">Growing Stronger Together Every Day</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2675,7 +2697,7 @@ export default function MySukoonPage() {
                         setNewPinCandidate("");
                         setShowPinChangeModal(true);
                       }}
-                      className="text-[10px] font-semibold text-[#7C8B82] hover:text-[#1B2922]"
+                      className="text-[10px] font-semibold text-[#7D8C83] hover:text-[#195A50]"
                     >
                       Change PIN
                     </button>
@@ -2693,13 +2715,13 @@ export default function MySukoonPage() {
                 </div>
 
                 {/* Sub-section 1: Time with Better Half */}
-                <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs space-y-3">
+                <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
                         Quality Time Tracker
                       </span>
-                      <h4 className="text-sm font-bold text-[#1B2922]">Dedicated Couple Time This Week</h4>
+                      <h4 className="text-sm font-bold text-[#195A50]">Dedicated Couple Time This Week</h4>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full">
@@ -2708,7 +2730,7 @@ export default function MySukoonPage() {
                       <button
                         type="button"
                         onClick={openCoupleTimeModal}
-                        className="text-[#7C8B82] hover:text-rose-700 p-1"
+                        className="text-[#7D8C83] hover:text-rose-700 p-1"
                         title="Edit couple time & dates"
                       >
                         <Pencil size={12} />
@@ -2717,12 +2739,12 @@ export default function MySukoonPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-2.5 pt-1">
-                    <div className="bg-sand/30 rounded-2xl p-3 border border-[#E8E2D5]">
-                      <span className="text-[10px] font-bold uppercase text-[#7C8B82] block">Next Date Night</span>
-                      <span className="text-xs font-bold text-[#1B2922] mt-0.5 block">{nextDateNight}</span>
+                    <div className="bg-sand/30 rounded-2xl p-3 border border-[#E9DCCF]">
+                      <span className="text-[10px] font-bold uppercase text-[#7D8C83] block">Next Date Night</span>
+                      <span className="text-xs font-bold text-[#195A50] mt-0.5 block">{nextDateNight}</span>
                     </div>
-                    <div className="bg-sand/30 rounded-2xl p-3 border border-[#E8E2D5]">
-                      <span className="text-[10px] font-bold uppercase text-[#7C8B82] block">Anniversary / Milestone</span>
+                    <div className="bg-sand/30 rounded-2xl p-3 border border-[#E9DCCF]">
+                      <span className="text-[10px] font-bold uppercase text-[#7D8C83] block">Anniversary / Milestone</span>
                       <span className="text-xs font-bold text-rose-700 mt-0.5 block">{specialAnniversary}</span>
                     </div>
                   </div>
@@ -2731,7 +2753,7 @@ export default function MySukoonPage() {
                 {/* Sub-section 2: Communication & Shared Goals */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                       <Sparkles size={16} className="text-rose-700" />
                       Shared Life Visions &amp; Goals
                     </h3>
@@ -2746,7 +2768,7 @@ export default function MySukoonPage() {
 
                   <div className="space-y-2">
                     {coupleGoals.map((cg) => (
-                      <div key={cg.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3 shadow-xs flex items-center justify-between group">
+                      <div key={cg.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3 shadow-xs flex items-center justify-between group">
                         <button
                           type="button"
                           onClick={() => toggleCoupleGoal(cg.id)}
@@ -2754,16 +2776,16 @@ export default function MySukoonPage() {
                         >
                           <div
                             className={`w-4 h-4 rounded-full flex items-center justify-center border transition ${
-                              cg.completed ? "bg-rose-700 border-rose-700 text-white" : "border-[#C9C3B5]"
+                              cg.completed ? "bg-rose-700 border-rose-700 text-white" : "border-[#E9DCCF]"
                             }`}
                           >
                             {cg.completed && <CheckSquare size={10} />}
                           </div>
                           <div>
-                            <h4 className={`text-xs font-bold ${cg.completed ? "line-through text-[#7C8B82]" : "text-[#1B2922]"}`}>
+                            <h4 className={`text-xs font-bold ${cg.completed ? "line-through text-[#7D8C83]" : "text-[#195A50]"}`}>
                               {cg.title}
                             </h4>
-                            <p className="text-[10px] text-[#7C8B82]">{cg.category} • {cg.targetTime}</p>
+                            <p className="text-[10px] text-[#7D8C83]">{cg.category} • {cg.targetTime}</p>
                           </div>
                         </button>
 
@@ -2771,14 +2793,14 @@ export default function MySukoonPage() {
                           <button
                             type="button"
                             onClick={() => openCoupleGoalModal(cg)}
-                            className="p-1 hover:text-rose-700 text-[#7C8B82]"
+                            className="p-1 hover:text-rose-700 text-[#7D8C83]"
                           >
                             <Pencil size={12} />
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteCoupleGoal(cg.id)}
-                            className="p-1 hover:text-rose-700 text-[#7C8B82]"
+                            className="p-1 hover:text-rose-700 text-[#7D8C83]"
                           >
                             <Trash2 size={12} />
                           </button>
@@ -2791,7 +2813,7 @@ export default function MySukoonPage() {
                 {/* Sub-section 3: Memories to Cherish */}
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                    <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                       <Camera size={16} className="text-rose-700" />
                       Memories to Cherish
                     </h3>
@@ -2806,7 +2828,7 @@ export default function MySukoonPage() {
 
                   <div className="grid grid-cols-1 gap-3">
                     {coupleMemories.map((mem) => (
-                      <div key={mem.id} className="bg-white rounded-3xl border border-[#E8E2D5] overflow-hidden shadow-xs group">
+                      <div key={mem.id} className="bg-white rounded-3xl border border-[#E9DCCF] overflow-hidden shadow-xs group">
                         <div className={`h-28 w-full bg-linear-to-br ${mem.gradientBg} p-4 flex flex-col justify-end text-white`}>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-rose-300">
                             {mem.date} • {mem.location}
@@ -2821,14 +2843,14 @@ export default function MySukoonPage() {
                             <button
                               type="button"
                               onClick={() => openMemoryModal(mem)}
-                              className="p-1 text-[#7C8B82] hover:text-rose-700"
+                              className="p-1 text-[#7D8C83] hover:text-rose-700"
                             >
                               <Pencil size={12} />
                             </button>
                             <button
                               type="button"
                               onClick={() => deleteMemory(mem.id)}
-                              className="p-1 text-[#7C8B82] hover:text-rose-700"
+                              className="p-1 text-[#7D8C83] hover:text-rose-700"
                             >
                               <Trash2 size={12} />
                             </button>
@@ -2841,14 +2863,14 @@ export default function MySukoonPage() {
 
                 {/* Sub-section 4 & 5: Intimacy Space & Ups/Downs */}
                 <div className="space-y-3 pt-2">
-                  <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                     <Heart size={16} className="text-rose-700" />
                     Emotional &amp; Physical Intimacy Wellness
                   </h3>
 
-                  <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs space-y-3">
+                  <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs space-y-3">
                     <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-[#1B2922]">Intimacy &amp; Open Communication Wellness</span>
+                      <span className="text-[#195A50]">Intimacy &amp; Open Communication Wellness</span>
                       <span className="text-rose-700 font-bold">{intimacyScore}% Deep Alignment</span>
                     </div>
 
@@ -2858,18 +2880,18 @@ export default function MySukoonPage() {
                       max="100"
                       value={intimacyScore}
                       onChange={(e) => setIntimacyScore(Number(e.target.value))}
-                      className="w-full accent-rose-700 h-2 bg-[#EFECE6] rounded-lg cursor-pointer"
+                      className="w-full accent-rose-700 h-2 bg-[#FBEBE2] rounded-lg cursor-pointer"
                     />
 
-                    <p className="text-[11px] text-[#7C8B82] leading-relaxed">
+                    <p className="text-[11px] text-[#7D8C83] leading-relaxed">
                       Maintaining affection, emotional vulnerability, listening without judgment, and regular closeness keeps the marriage rooted in peace.
                     </p>
                   </div>
 
                   {/* Ups & Downs Reflection Journal */}
-                  <div className="bg-sand/30 rounded-3xl border border-[#E8E2D5] p-4 space-y-3">
+                  <div className="bg-sand/30 rounded-3xl border border-[#E9DCCF] p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-[#1B2922]">Navigating Ups &amp; Downs Together</h4>
+                      <h4 className="text-xs font-bold text-[#195A50]">Navigating Ups &amp; Downs Together</h4>
                       <button
                         type="button"
                         onClick={openHeartLogModal}
@@ -2881,18 +2903,18 @@ export default function MySukoonPage() {
 
                     <div className="space-y-2">
                       {heartLogs.map((log) => (
-                        <div key={log.id} className="bg-white rounded-2xl p-3 border border-[#E8E2D5] shadow-2xs group flex items-start justify-between">
+                        <div key={log.id} className="bg-white rounded-2xl p-3 border border-[#E9DCCF] shadow-2xs group flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 text-[10px] font-bold text-rose-800 mb-1">
                               <span>{log.type}</span>
-                              <span className="text-[#7C8B82] font-normal">{log.date}</span>
+                              <span className="text-[#7D8C83] font-normal">{log.date}</span>
                             </div>
                             <p className="text-xs text-[#526359] leading-relaxed">{log.reflection}</p>
                           </div>
                           <button
                             type="button"
                             onClick={() => deleteHeartLog(log.id)}
-                            className="opacity-0 group-hover:opacity-100 p-1 text-[#7C8B82] hover:text-rose-700 transition"
+                            className="opacity-0 group-hover:opacity-100 p-1 text-[#7D8C83] hover:text-rose-700 transition"
                           >
                             <Trash2 size={12} />
                           </button>
@@ -2917,8 +2939,8 @@ export default function MySukoonPage() {
                 <Baby size={18} />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-[#1B2922]">Nurturing the Next Generation</h3>
-                <p className="text-[11px] text-[#7C8B82] leading-tight">
+                <h3 className="text-xs font-bold text-[#195A50]">Nurturing the Next Generation</h3>
+                <p className="text-[11px] text-[#7D8C83] leading-tight">
                   Channelizing energy in positive directions, balancing academic rigor with joyful hobbies, and mentoring lifelong values.
                 </p>
               </div>
@@ -2934,7 +2956,7 @@ export default function MySukoonPage() {
                   className={`tap-scale px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-2 ${
                     activeChild === ch
                       ? "bg-[#0284C7] text-white shadow-xs"
-                      : "bg-white text-[#526359] border border-[#E8E2D5]"
+                      : "bg-white text-[#526359] border border-[#E9DCCF]"
                   }`}
                 >
                   <span>{ch}</span>
@@ -2943,13 +2965,13 @@ export default function MySukoonPage() {
             </div>
 
             {/* Sub-section 1: Homework & Daily Routine */}
-            <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs space-y-3">
+            <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
                     Daily School &amp; Growth Routine
                   </span>
-                  <h3 className="text-sm font-bold text-[#1B2922]">Today&apos;s Checklist ({activeChild})</h3>
+                  <h3 className="text-sm font-bold text-[#195A50]">Today&apos;s Checklist ({activeChild})</h3>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
@@ -2969,7 +2991,7 @@ export default function MySukoonPage() {
                 {kidsRoutines.map((routine) => (
                   <div
                     key={routine.id}
-                    className="flex items-center justify-between p-2.5 rounded-xl border border-[#E8E2D5] bg-sand/20 group"
+                    className="flex items-center justify-between p-2.5 rounded-xl border border-[#E9DCCF] bg-sand/20 group"
                   >
                     <button
                       type="button"
@@ -2980,32 +3002,32 @@ export default function MySukoonPage() {
                         className={`w-4 h-4 rounded flex items-center justify-center border transition ${
                           routine.completed
                             ? "bg-blue-600 border-blue-600 text-white"
-                            : "border-[#C9C3B5] bg-white"
+                            : "border-[#E9DCCF] bg-white"
                         }`}
                       >
                         {routine.completed && <CheckSquare size={12} />}
                       </div>
-                      <span className={`text-xs font-medium ${routine.completed ? "line-through text-[#7C8B82]" : "text-[#1B2922]"}`}>
+                      <span className={`text-xs font-medium ${routine.completed ? "line-through text-[#7D8C83]" : "text-[#195A50]"}`}>
                         {routine.title}
                       </span>
                     </button>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-[#7C8B82] uppercase tracking-wider">
+                      <span className="text-[10px] font-bold text-[#7D8C83] uppercase tracking-wider">
                         {routine.timeSlot}
                       </span>
                       <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition">
                         <button
                           type="button"
                           onClick={() => openKidRoutineModal(routine)}
-                          className="p-1 text-[#7C8B82] hover:text-blue-700"
+                          className="p-1 text-[#7D8C83] hover:text-blue-700"
                         >
                           <Pencil size={11} />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteKidRoutine(routine.id)}
-                          className="p-1 text-[#7C8B82] hover:text-rose-700"
+                          className="p-1 text-[#7D8C83] hover:text-rose-700"
                         >
                           <Trash2 size={11} />
                         </button>
@@ -3019,7 +3041,7 @@ export default function MySukoonPage() {
             {/* Sub-section 2: Skill Development & Hobbies */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Award size={16} className="text-blue-700" />
                   Skill Development &amp; Hobbies
                 </h3>
@@ -3034,14 +3056,14 @@ export default function MySukoonPage() {
 
               <div className="grid grid-cols-1 gap-2.5">
                 {kidsSkills.map((skill) => (
-                  <div key={skill.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs group">
+                  <div key={skill.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs group">
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded">
                           {skill.childName}
                         </div>
-                        <h4 className="text-xs font-bold text-[#1B2922] mt-1">{skill.hobbyName}</h4>
-                        <p className="text-[10px] text-[#7C8B82]">{skill.levelOrAcademy} • {skill.schedule}</p>
+                        <h4 className="text-xs font-bold text-[#195A50] mt-1">{skill.hobbyName}</h4>
+                        <p className="text-[10px] text-[#7D8C83]">{skill.levelOrAcademy} • {skill.schedule}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-blue-700">{skill.progressPercent}% Mastery</span>
@@ -3049,21 +3071,21 @@ export default function MySukoonPage() {
                           <button
                             type="button"
                             onClick={() => openKidSkillModal(skill)}
-                            className="p-1 text-[#7C8B82] hover:text-blue-700"
+                            className="p-1 text-[#7D8C83] hover:text-blue-700"
                           >
                             <Pencil size={11} />
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteKidSkill(skill.id)}
-                            className="p-1 text-[#7C8B82] hover:text-rose-700"
+                            className="p-1 text-[#7D8C83] hover:text-rose-700"
                           >
                             <Trash2 size={11} />
                           </button>
                         </div>
                       </div>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-[#EFECE6] overflow-hidden mt-2">
+                    <div className="w-full h-1.5 rounded-full bg-[#FBEBE2] overflow-hidden mt-2">
                       <div style={{ width: `${skill.progressPercent}%` }} className="h-full bg-blue-600 rounded-full" />
                     </div>
                   </div>
@@ -3074,7 +3096,7 @@ export default function MySukoonPage() {
             {/* Sub-section 3: Tuition & Academic Performance Check */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <BookOpen size={16} className="text-blue-700" />
                   Tuition &amp; Academic Performance Check
                 </h3>
@@ -3087,17 +3109,17 @@ export default function MySukoonPage() {
                 </button>
               </div>
 
-              <div className="bg-white rounded-3xl border border-[#E8E2D5] p-4 shadow-xs space-y-2.5">
+              <div className="bg-white rounded-3xl border border-[#E9DCCF] p-4 shadow-xs space-y-2.5">
                 <div className="flex items-center justify-between pb-2 border-b border-line/40 text-xs">
-                  <span className="font-bold text-[#1B2922]">{academicGrades.schoolName}</span>
+                  <span className="font-bold text-[#195A50]">{academicGrades.schoolName}</span>
                   <span className="font-bold text-emerald-700">Overall: {academicGrades.overallGrade}</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center pt-1">
                   {academicGrades.subjects.map((sub, i) => (
                     <div key={i} className="bg-sand/30 p-2 rounded-xl">
-                      <span className="text-[10px] text-[#7C8B82] block truncate">{sub.subject}</span>
-                      <span className="text-xs font-bold text-[#1B2922]">{sub.score} / 100</span>
+                      <span className="text-[10px] text-[#7D8C83] block truncate">{sub.subject}</span>
+                      <span className="text-xs font-bold text-[#195A50]">{sub.score} / 100</span>
                     </div>
                   ))}
                 </div>
@@ -3111,7 +3133,7 @@ export default function MySukoonPage() {
             {/* Sub-section 4 & 5: Health & Screen Time */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Clock size={16} className="text-blue-700" />
                   Health &amp; Routine Monitoring
                 </h3>
@@ -3125,21 +3147,21 @@ export default function MySukoonPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82] block">
+                <div className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83] block">
                     Growth &amp; Pediatric Log
                   </span>
-                  <span className="text-sm font-bold text-[#1B2922] mt-1 block">
+                  <span className="text-sm font-bold text-[#195A50] mt-1 block">
                     {kidsHealth.heightCm} cm • {kidsHealth.weightKg} kg
                   </span>
                   <span className="text-[10px] text-emerald-700 font-semibold block mt-0.5">Healthy Growth Percentile</span>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82] block">
+                <div className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83] block">
                     Screen Time Today
                   </span>
-                  <span className="text-sm font-bold text-[#1B2922] mt-1 block">
+                  <span className="text-sm font-bold text-[#195A50] mt-1 block">
                     {kidsHealth.screenTimeMinutes}m / {kidsHealth.screenTimeLimit}m
                   </span>
                   <span className="text-[10px] text-blue-700 font-semibold block mt-0.5">
@@ -3162,21 +3184,21 @@ export default function MySukoonPage() {
                 <Feather size={18} />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-[#1B2922]">Inner Sukoon &amp; Self Actualization</h3>
-                <p className="text-[11px] text-[#7C8B82] leading-tight">
+                <h3 className="text-xs font-bold text-[#195A50]">Inner Sukoon &amp; Self Actualization</h3>
+                <p className="text-[11px] text-[#7D8C83] leading-tight">
                   You cannot pour from an empty cup. Nurture your personal health, feed your intellect, and celebrate daily gratitude.
                 </p>
               </div>
             </div>
 
             {/* Happiness Index Score Gauge */}
-            <div className="bg-white rounded-3xl border border-[#E8E2D5] p-5 shadow-xs">
+            <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-xs">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7C8B82]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
                     Daily Sukoon Index
                   </span>
-                  <h3 className="text-xl font-serif font-bold text-[#1B2922]">
+                  <h3 className="text-xl font-serif font-bold text-[#195A50]">
                     {happinessScore} / 100 <span className="text-xs font-normal text-emerald-700 font-sans font-semibold">• Serene &amp; Grounded</span>
                   </h3>
                 </div>
@@ -3192,9 +3214,9 @@ export default function MySukoonPage() {
                   max="100"
                   value={happinessScore}
                   onChange={(e) => setHappinessScore(Number(e.target.value))}
-                  className="w-full accent-emerald-700 h-2 bg-[#EFECE6] rounded-lg cursor-pointer"
+                  className="w-full accent-emerald-700 h-2 bg-[#FBEBE2] rounded-lg cursor-pointer"
                 />
-                <div className="flex items-center justify-between text-[10px] text-[#7C8B82] font-semibold">
+                <div className="flex items-center justify-between text-[10px] text-[#7D8C83] font-semibold">
                   <span>Stressed</span>
                   <span>Balanced</span>
                   <span>Peaceful (Sukoon)</span>
@@ -3205,7 +3227,7 @@ export default function MySukoonPage() {
             {/* Sub-section 1: Personal Health & Fitness */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Activity size={16} className="text-indigo-600" />
                   Health &amp; Wellness Routines
                 </h3>
@@ -3219,20 +3241,20 @@ export default function MySukoonPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs">
-                  <span className="text-[10px] font-bold uppercase text-[#7C8B82] block">Daily Steps</span>
-                  <span className="text-base font-bold text-[#1B2922] mt-0.5 block">{dailySteps.toLocaleString()}</span>
+                <div className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs">
+                  <span className="text-[10px] font-bold uppercase text-[#7D8C83] block">Daily Steps</span>
+                  <span className="text-base font-bold text-[#195A50] mt-0.5 block">{dailySteps.toLocaleString()}</span>
                   <span className="text-[10px] text-[#526359] block">Goal: {stepsGoal.toLocaleString()}</span>
-                  <div className="w-full h-1.5 rounded-full bg-[#EFECE6] overflow-hidden mt-2">
+                  <div className="w-full h-1.5 rounded-full bg-[#FBEBE2] overflow-hidden mt-2">
                     <div style={{ width: `${Math.min(100, (dailySteps / stepsGoal) * 100)}%` }} className="h-full bg-indigo-600 rounded-full" />
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs">
-                  <span className="text-[10px] font-bold uppercase text-[#7C8B82] block">Weekly Workouts</span>
-                  <span className="text-base font-bold text-[#1B2922] mt-0.5 block">{weeklyWorkouts} of 5 Days</span>
+                <div className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs">
+                  <span className="text-[10px] font-bold uppercase text-[#7D8C83] block">Weekly Workouts</span>
+                  <span className="text-base font-bold text-[#195A50] mt-0.5 block">{weeklyWorkouts} of 5 Days</span>
                   <span className="text-[10px] text-emerald-700 font-semibold block">Consistent Streak</span>
-                  <div className="w-full h-1.5 rounded-full bg-[#EFECE6] overflow-hidden mt-2">
+                  <div className="w-full h-1.5 rounded-full bg-[#FBEBE2] overflow-hidden mt-2">
                     <div style={{ width: `${Math.min(100, (weeklyWorkouts / 5) * 100)}%` }} className="h-full bg-emerald-600 rounded-full" />
                   </div>
                 </div>
@@ -3242,7 +3264,7 @@ export default function MySukoonPage() {
             {/* Sub-section 2: Reading List */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Book size={16} className="text-indigo-600" />
                   Self Growth &amp; Reading
                 </h3>
@@ -3257,17 +3279,17 @@ export default function MySukoonPage() {
 
               <div className="space-y-2.5">
                 {books.map((book) => (
-                  <div key={book.id} className="bg-white rounded-2xl border border-[#E8E2D5] p-3.5 shadow-xs flex items-center justify-between group">
+                  <div key={book.id} className="bg-white rounded-2xl border border-[#E9DCCF] p-3.5 shadow-xs flex items-center justify-between group">
                     <div>
-                      <h4 className="text-xs font-bold text-[#1B2922]">{book.title}</h4>
-                      <p className="text-[10px] text-[#7C8B82]">{book.author} • Page {book.currentPage} of {book.totalPages}</p>
+                      <h4 className="text-xs font-bold text-[#195A50]">{book.title}</h4>
+                      <p className="text-[10px] text-[#7D8C83]">{book.author} • Page {book.currentPage} of {book.totalPages}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
                         <span className="text-xs font-bold text-indigo-700 block">
                           {Math.round((book.currentPage / book.totalPages) * 100)}%
                         </span>
-                        <span className="text-[9px] uppercase font-bold text-[#7C8B82]">
+                        <span className="text-[9px] uppercase font-bold text-[#7D8C83]">
                           {book.status === "completed" ? "Done" : "Reading"}
                         </span>
                       </div>
@@ -3275,14 +3297,14 @@ export default function MySukoonPage() {
                         <button
                           type="button"
                           onClick={() => openBookModal(book)}
-                          className="p-1 text-[#7C8B82] hover:text-indigo-700"
+                          className="p-1 text-[#7D8C83] hover:text-indigo-700"
                         >
                           <Pencil size={12} />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteBook(book.id)}
-                          className="p-1 text-[#7C8B82] hover:text-rose-700"
+                          className="p-1 text-[#7D8C83] hover:text-rose-700"
                         >
                           <Trash2 size={12} />
                         </button>
@@ -3296,7 +3318,7 @@ export default function MySukoonPage() {
             {/* Sub-section 3: Personal Habits & Streaks */}
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                   <Target size={16} className="text-indigo-600" />
                   Personal Habits &amp; Hobbies
                 </h3>
@@ -3313,7 +3335,7 @@ export default function MySukoonPage() {
                 {habits.map((habit) => (
                   <div
                     key={habit.id}
-                    className="flex items-center justify-between p-3 rounded-2xl border border-[#E8E2D5] bg-white shadow-2xs group"
+                    className="flex items-center justify-between p-3 rounded-2xl border border-[#E9DCCF] bg-white shadow-2xs group"
                   >
                     <button
                       type="button"
@@ -3324,12 +3346,12 @@ export default function MySukoonPage() {
                         className={`w-4 h-4 rounded flex items-center justify-center border transition ${
                           habit.completedToday
                             ? "bg-indigo-600 border-indigo-600 text-white"
-                            : "border-[#C9C3B5] bg-white"
+                            : "border-[#E9DCCF] bg-white"
                         }`}
                       >
                         {habit.completedToday && <CheckSquare size={12} />}
                       </div>
-                      <span className={`text-xs font-medium ${habit.completedToday ? "line-through text-[#7C8B82]" : "text-[#1B2922]"}`}>
+                      <span className={`text-xs font-medium ${habit.completedToday ? "line-through text-[#7D8C83]" : "text-[#195A50]"}`}>
                         {habit.title}
                       </span>
                     </button>
@@ -3342,14 +3364,14 @@ export default function MySukoonPage() {
                         <button
                           type="button"
                           onClick={() => openHabitModal(habit)}
-                          className="p-1 text-[#7C8B82] hover:text-indigo-700"
+                          className="p-1 text-[#7D8C83] hover:text-indigo-700"
                         >
                           <Pencil size={11} />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteHabit(habit.id)}
-                          className="p-1 text-[#7C8B82] hover:text-rose-700"
+                          className="p-1 text-[#7D8C83] hover:text-rose-700"
                         >
                           <Trash2 size={11} />
                         </button>
@@ -3362,19 +3384,19 @@ export default function MySukoonPage() {
 
             {/* Sub-section 4: Daily Gratitude Journal */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-sm font-bold text-[#1B2922] flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-[#195A50] flex items-center gap-1.5">
                 <Sparkle size={16} className="text-amber-600" />
                 Daily Gratitude Journal (3 Things I Am Thankful For)
               </h3>
 
-              <div className="bg-sand/30 rounded-3xl border border-[#E8E2D5] p-4 space-y-3">
+              <div className="bg-sand/30 rounded-3xl border border-[#E9DCCF] p-4 space-y-3">
                 <form onSubmit={handleAddGratitude} className="flex gap-2">
                   <input
                     type="text"
                     value={newGratitudeText}
                     onChange={(e) => setNewGratitudeText(e.target.value)}
                     placeholder="Today I am grateful for..."
-                    className="flex-1 text-xs px-3 py-2 rounded-xl border border-[#C9C3B5] bg-white focus:outline-none focus:ring-2 focus:ring-forest"
+                    className="flex-1 text-xs px-3 py-2 rounded-xl border border-[#E9DCCF] bg-white focus:outline-none focus:ring-2 focus:ring-forest"
                   />
                   <button
                     type="submit"
@@ -3386,7 +3408,7 @@ export default function MySukoonPage() {
 
                 <div className="space-y-2">
                   {gratitudeNotes.map((g, idx) => (
-                    <div key={idx} className="bg-white rounded-2xl p-2.5 border border-[#E8E2D5] text-xs text-[#526359] flex items-start justify-between shadow-2xs group">
+                    <div key={idx} className="bg-white rounded-2xl p-2.5 border border-[#E9DCCF] text-xs text-[#526359] flex items-start justify-between shadow-2xs group">
                       <div className="flex items-start gap-2 flex-1">
                         <span className="text-amber-600 font-bold">✨</span>
                         <p className="leading-relaxed">{g}</p>
@@ -3394,7 +3416,7 @@ export default function MySukoonPage() {
                       <button
                         type="button"
                         onClick={() => deleteGratitude(idx)}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-[#7C8B82] hover:text-rose-700 transition ml-1"
+                        className="opacity-0 group-hover:opacity-100 p-1 text-[#7D8C83] hover:text-rose-700 transition ml-1"
                       >
                         <Trash2 size={12} />
                       </button>
@@ -3412,9 +3434,9 @@ export default function MySukoonPage() {
       {/* ========================================================================= */}
       {activeModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 border border-[#E8E2D5] shadow-xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 border border-[#E9DCCF] shadow-xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-2 border-b border-line/60">
-              <h3 className="text-sm font-bold text-[#1B2922]">
+              <h3 className="text-sm font-bold text-[#195A50]">
                 {activeModal === "asset" && (editId ? "Edit Asset" : "Add Financial Asset")}
                 {activeModal === "loan" && (editId ? "Edit Loan & EMI" : "Add Loan & EMI")}
                 {activeModal === "insurance" && (editId ? "Edit Insurance Policy" : "Add Insurance Policy")}
@@ -3448,11 +3470,11 @@ export default function MySukoonPage() {
             {activeModal === "asset" && (
               <form onSubmit={handleSaveAsset} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Asset Category</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Asset Category</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Bank FD">Bank FD (Fixed Deposit)</option>
                     <option value="Mutual Funds">Mutual Funds (SIP / Lumpsum)</option>
@@ -3462,48 +3484,48 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Asset Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Asset Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. HDFC Liquidity FD or Nifty 50 Index"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Institution / Details</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Institution / Details</label>
                   <input
                     type="text"
                     placeholder="e.g. SBI Bank or Zerodha"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Current Valuation (₹)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Current Valuation (₹)</label>
                   <input
                     type="number"
                     required
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Monthly SIP Addition (₹) Optional</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Monthly SIP Addition (₹) Optional</label>
                   <input
                     type="number"
                     value={formNumber2 || ""}
                     onChange={(e) => setFormNumber2(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-forest text-white text-xs font-semibold shadow-xs">Save</button>
                 </div>
               </form>
@@ -3513,11 +3535,11 @@ export default function MySukoonPage() {
             {activeModal === "loan" && (
               <form onSubmit={handleSaveLoan} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Loan Type</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Loan Type</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Home Loan">Home Loan</option>
                     <option value="Car Loan">Car Loan</option>
@@ -3526,48 +3548,48 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Loan / Asset Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Loan / Asset Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Car EMI or Personal Loan"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Financing Bank</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Financing Bank</label>
                   <input
                     type="text"
                     placeholder="e.g. HDFC Auto Finance"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Remaining Outstanding Balance (₹)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Remaining Outstanding Balance (₹)</label>
                   <input
                     type="number"
                     required
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Monthly EMI Outflow (₹)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Monthly EMI Outflow (₹)</label>
                   <input
                     type="number"
                     required
                     value={formNumber2 || ""}
                     onChange={(e) => setFormNumber2(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-amber-800 text-white text-xs font-semibold shadow-xs">Save Loan</button>
                 </div>
               </form>
@@ -3577,11 +3599,11 @@ export default function MySukoonPage() {
             {activeModal === "insurance" && (
               <form onSubmit={handleSaveInsurance} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Policy Type</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Policy Type</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Medical / Health">Medical / Health Floater</option>
                     <option value="Term Life Plan">Term Life Cover</option>
@@ -3589,60 +3611,60 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Policy Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Policy Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Optima Secure Health"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Insurance Provider</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Insurance Provider</label>
                   <input
                     type="text"
                     placeholder="e.g. HDFC Ergo or ICICI Prudential"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Sum Assured (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Sum Assured (₹)</label>
                     <input
                       type="number"
                       required
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Annual Premium (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Annual Premium (₹)</label>
                     <input
                       type="number"
                       required
                       value={formNumber2 || ""}
                       onChange={(e) => setFormNumber2(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Renewal Date</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Renewal Date</label>
                   <input
                     type="text"
                     placeholder="e.g. 15 Oct 2027"
                     value={formField4}
                     onChange={(e) => setFormField4(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-forest text-white text-xs font-semibold shadow-xs">Save Policy</button>
                 </div>
               </form>
@@ -3652,23 +3674,23 @@ export default function MySukoonPage() {
             {activeModal === "target_funds" && (
               <form onSubmit={handleSaveTargetFunds} className="space-y-3">
                 <div className="p-3 bg-sand/30 rounded-2xl space-y-2">
-                  <span className="text-[11px] font-bold text-[#1B2922] block">Emergency Crisis Buffer</span>
+                  <span className="text-[11px] font-bold text-[#195A50] block">Emergency Crisis Buffer</span>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Current Saved (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Current Saved (₹)</label>
                     <input
                       type="number"
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-white text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-white text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Target Buffer (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Target Buffer (₹)</label>
                     <input
                       type="number"
                       value={formNumber2 || ""}
                       onChange={(e) => setFormNumber2(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-white text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-white text-[#195A50]"
                     />
                   </div>
                 </div>
@@ -3676,27 +3698,27 @@ export default function MySukoonPage() {
                 <div className="p-3 bg-blue-50/50 rounded-2xl space-y-2">
                   <span className="text-[11px] font-bold text-blue-900 block">Kids Higher Education Corpus</span>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Accumulated Amount (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Accumulated Amount (₹)</label>
                     <input
                       type="number"
                       value={formField1}
                       onChange={(e) => setFormField1(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-white text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-white text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Target College Goal (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Target College Goal (₹)</label>
                     <input
                       type="number"
                       value={formField2}
                       onChange={(e) => setFormField2(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-white text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-white text-[#195A50]"
                     />
                   </div>
                 </div>
 
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold shadow-xs">Save Targets</button>
                 </div>
               </form>
@@ -3715,25 +3737,25 @@ export default function MySukoonPage() {
                 className="space-y-3"
               >
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Currently Saved in Vacation Jar (₹)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Currently Saved in Vacation Jar (₹)</label>
                   <input
                     type="number"
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Annual Vacation Target (₹)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Annual Vacation Target (₹)</label>
                   <input
                     type="number"
                     value={formNumber2 || ""}
                     onChange={(e) => setFormNumber2(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-semibold shadow-xs">Update Budget</button>
                 </div>
               </form>
@@ -3743,58 +3765,58 @@ export default function MySukoonPage() {
             {activeModal === "featured_trip" && (
               <form onSubmit={handleSaveFeaturedTrip} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Destination Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Destination Name</label>
                   <input
                     type="text"
                     required
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Travel Dates</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Travel Dates</label>
                   <input
                     type="text"
                     placeholder="e.g. 24 Dec 2026 – 30 Dec 2026"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Holiday Tag</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Holiday Tag</label>
                     <input
                       type="text"
                       placeholder="e.g. Winter Holiday"
                       value={formField3}
                       onChange={(e) => setFormField3(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Days Remaining</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Days Remaining</label>
                     <input
                       type="number"
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Subtitle / Members</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Subtitle / Members</label>
                   <input
                     type="text"
                     placeholder="e.g. 7 Days • 2 Adults, 2 Kids"
                     value={formField4}
                     onChange={(e) => setFormField4(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-semibold shadow-xs">Save Itinerary</button>
                 </div>
               </form>
@@ -3804,18 +3826,18 @@ export default function MySukoonPage() {
             {activeModal === "new_task" && (
               <form onSubmit={handleAddPackingTask} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Task or Packing Item</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Task or Packing Item</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Reserve safari jeep tickets"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-semibold shadow-xs">Add Item</button>
                 </div>
               </form>
@@ -3825,23 +3847,23 @@ export default function MySukoonPage() {
             {activeModal === "bucket_trip" && (
               <form onSubmit={handleSaveBucketTrip} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Destination Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Destination Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Swiss Alps or Amalfi Coast"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Category</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Category</label>
                     <select
                       value={formField3}
                       onChange={(e) => setFormField3(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     >
                       <option value="Domestic">Domestic</option>
                       <option value="International">International</option>
@@ -3850,49 +3872,49 @@ export default function MySukoonPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Target Season / Year</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Target Season / Year</label>
                     <input
                       type="text"
                       placeholder="e.g. Summer 2027"
                       value={formField4}
                       onChange={(e) => setFormField4(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Estimated Budget (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Estimated Budget (₹)</label>
                     <input
                       type="number"
                       required
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Saved So Far (₹)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Saved So Far (₹)</label>
                     <input
                       type="number"
                       value={formNumber2 || ""}
                       onChange={(e) => setFormNumber2(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Why Special / Family Dream</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Why Special / Family Dream</label>
                   <textarea
                     rows={2}
                     placeholder="Why this destination matters to us..."
                     value={formField5}
                     onChange={(e) => setFormField5(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-semibold shadow-xs">Save Destination</button>
                 </div>
               </form>
@@ -3902,35 +3924,35 @@ export default function MySukoonPage() {
             {activeModal === "couple_time" && (
               <form onSubmit={handleSaveCoupleTime} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Logged Quality Hours This Week</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Logged Quality Hours This Week</label>
                   <input
                     type="number"
                     step="0.5"
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Next Date Night Plan</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Next Date Night Plan</label>
                   <input
                     type="text"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Anniversary / Milestone</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Anniversary / Milestone</label>
                   <input
                     type="text"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold shadow-xs">Update</button>
                 </div>
               </form>
@@ -3940,11 +3962,11 @@ export default function MySukoonPage() {
             {activeModal === "couple_goal" && (
               <form onSubmit={handleSaveCoupleGoal} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Goal Category</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Goal Category</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Quality Time">Quality Time</option>
                     <option value="Future Dream">Future Dream</option>
@@ -3953,28 +3975,28 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Goal Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Goal Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Unplugged date night every Friday"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Target Timeline</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Target Timeline</label>
                   <input
                     type="text"
                     placeholder="e.g. Every Friday 8 PM or Late 2027"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold shadow-xs">Save Goal</button>
                 </div>
               </form>
@@ -3984,50 +4006,50 @@ export default function MySukoonPage() {
             {activeModal === "couple_memory" && (
               <form onSubmit={handleSaveMemory} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Memory Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Memory Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. First Home Key Handover"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Date</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Date</label>
                     <input
                       type="text"
                       placeholder="e.g. 14 Feb 2026"
                       value={formField2}
                       onChange={(e) => setFormField2(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Location</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Location</label>
                     <input
                       type="text"
                       placeholder="e.g. Indore"
                       value={formField3}
                       onChange={(e) => setFormField3(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Heartfelt Note</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Heartfelt Note</label>
                   <textarea
                     rows={3}
                     placeholder="What made this moment unforgettable..."
                     value={formField4}
                     onChange={(e) => setFormField4(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold shadow-xs">Save Memory</button>
                 </div>
               </form>
@@ -4037,11 +4059,11 @@ export default function MySukoonPage() {
             {activeModal === "heart_log" && (
               <form onSubmit={handleSaveHeartLog} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Reflection Type</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Reflection Type</label>
                   <select
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Shared Joy">Shared Joy</option>
                     <option value="Tough Day Overcome">Tough Day Overcome</option>
@@ -4049,27 +4071,27 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Date</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Date</label>
                   <input
                     type="text"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Private Mutual Reflection</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Private Mutual Reflection</label>
                   <textarea
                     rows={4}
                     required
                     placeholder="Log mutual support, how we navigated stress together, or words of love..."
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold shadow-xs">Save Entry</button>
                 </div>
               </form>
@@ -4079,11 +4101,11 @@ export default function MySukoonPage() {
             {activeModal === "kid_routine" && (
               <form onSubmit={handleSaveKidRoutine} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Time Slot</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Time Slot</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Morning">Morning</option>
                     <option value="Afternoon">Afternoon</option>
@@ -4092,18 +4114,18 @@ export default function MySukoonPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Routine / Homework Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Routine / Homework Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Science project reading"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold shadow-xs">Save Task</button>
                 </div>
               </form>
@@ -4113,58 +4135,58 @@ export default function MySukoonPage() {
             {activeModal === "kid_skill" && (
               <form onSubmit={handleSaveKidSkill} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Child</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Child</label>
                   <input
                     type="text"
                     value={formField4}
                     onChange={(e) => setFormField4(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Hobby / Activity Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Hobby / Activity Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Swimming or Piano Lessons"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Academy / Instructor</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Academy / Instructor</label>
                   <input
                     type="text"
                     placeholder="e.g. Shishukunj Sports Club"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Weekly Schedule</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Weekly Schedule</label>
                   <input
                     type="text"
                     placeholder="e.g. Tue, Thu, Sat (5 PM)"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Progress Mastery: {formNumber1}%</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Progress Mastery: {formNumber1}%</label>
                   <input
                     type="range"
                     min="10"
                     max="100"
                     value={formNumber1}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full accent-blue-700 h-2 bg-[#EFECE6] rounded-lg cursor-pointer"
+                    className="w-full accent-blue-700 h-2 bg-[#FBEBE2] rounded-lg cursor-pointer"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold shadow-xs">Save Skill</button>
                 </div>
               </form>
@@ -4174,35 +4196,35 @@ export default function MySukoonPage() {
             {activeModal === "kid_academic" && (
               <form onSubmit={handleSaveAcademic} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">School / Academy Name</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">School / Academy Name</label>
                   <input
                     type="text"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Overall Term Grade</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Overall Term Grade</label>
                   <input
                     type="text"
                     placeholder="A+ or 94%"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Teacher Remarks</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Teacher Remarks</label>
                   <textarea
                     rows={3}
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold shadow-xs">Update Report</button>
                 </div>
               </form>
@@ -4213,55 +4235,55 @@ export default function MySukoonPage() {
               <form onSubmit={handleSaveKidHealth} className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Height (cm)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Height (cm)</label>
                     <input
                       type="number"
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Weight (kg)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Weight (kg)</label>
                     <input
                       type="number"
                       value={formNumber2 || ""}
                       onChange={(e) => setFormNumber2(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Screen Time Used (min)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Screen Time Used (min)</label>
                     <input
                       type="number"
                       value={formField1}
                       onChange={(e) => setFormField1(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Daily Limit (min)</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Daily Limit (min)</label>
                     <input
                       type="number"
                       value={formField2}
                       onChange={(e) => setFormField2(e.target.value)}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Bedtime Target</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Bedtime Target</label>
                   <input
                     type="text"
                     value={formField3}
                     onChange={(e) => setFormField3(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold shadow-xs">Save Health</button>
                 </div>
               </form>
@@ -4271,48 +4293,48 @@ export default function MySukoonPage() {
             {activeModal === "book" && (
               <form onSubmit={handleSaveBook} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Book Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Book Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Atomic Habits"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Author</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Author</label>
                   <input
                     type="text"
                     placeholder="e.g. James Clear"
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Current Page</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Current Page</label>
                     <input
                       type="number"
                       value={formNumber1 || ""}
                       onChange={(e) => setFormNumber1(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Total Pages</label>
+                    <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Total Pages</label>
                     <input
                       type="number"
                       value={formNumber2 || ""}
                       onChange={(e) => setFormNumber2(Number(e.target.value))}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                     />
                   </div>
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-indigo-700 text-white text-xs font-semibold shadow-xs">Save Book</button>
                 </div>
               </form>
@@ -4322,38 +4344,38 @@ export default function MySukoonPage() {
             {activeModal === "habit" && (
               <form onSubmit={handleSaveHabit} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Frequency</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Frequency</label>
                   <select
                     value={formField2}
                     onChange={(e) => setFormField2(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   >
                     <option value="Daily">Daily Habit</option>
                     <option value="Weekly">Weekly Habit</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Habit Title</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Habit Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 15 Min Morning Silence"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Current Day Streak</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Current Day Streak</label>
                   <input
                     type="number"
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-indigo-700 text-white text-xs font-semibold shadow-xs">Save Habit</button>
                 </div>
               </form>
@@ -4363,34 +4385,34 @@ export default function MySukoonPage() {
             {activeModal === "fitness" && (
               <form onSubmit={handleSaveFitness} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Daily Steps Logged</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Daily Steps Logged</label>
                   <input
                     type="number"
                     value={formNumber1 || ""}
                     onChange={(e) => setFormNumber1(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Target Steps Goal</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Target Steps Goal</label>
                   <input
                     type="number"
                     value={formNumber2 || ""}
                     onChange={(e) => setFormNumber2(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Workouts Completed This Week (of 5)</label>
+                  <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Workouts Completed This Week (of 5)</label>
                   <input
                     type="number"
                     value={formField1}
                     onChange={(e) => setFormField1(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#C9C3B5] bg-canvas text-[#1B2922]"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#E9DCCF] bg-canvas text-[#195A50]"
                   />
                 </div>
                 <div className="pt-2 flex items-center justify-end gap-2">
-                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]">Cancel</button>
+                  <button type="button" onClick={() => setActiveModal(null)} className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]">Cancel</button>
                   <button type="submit" className="tap-scale px-4 py-2 rounded-xl bg-indigo-700 text-white text-xs font-semibold shadow-xs">Save Metrics</button>
                 </div>
               </form>
@@ -4404,9 +4426,9 @@ export default function MySukoonPage() {
       {/* ========================================================================= */}
       {showPinChangeModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 border border-[#E8E2D5] shadow-xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 border border-[#E9DCCF] shadow-xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-2 border-b border-line/60">
-              <h3 className="text-sm font-bold text-[#1B2922]">Change 4-Digit PIN</h3>
+              <h3 className="text-sm font-bold text-[#195A50]">Change 4-Digit PIN</h3>
               <button
                 type="button"
                 onClick={() => setShowPinChangeModal(false)}
@@ -4418,7 +4440,7 @@ export default function MySukoonPage() {
 
             <form onSubmit={handleSaveNewPin} className="space-y-3">
               <div>
-                <label className="block text-[10px] font-bold uppercase text-[#7C8B82] mb-1">Enter New 4-Digit PIN</label>
+                <label className="block text-[10px] font-bold uppercase text-[#7D8C83] mb-1">Enter New 4-Digit PIN</label>
                 <input
                   type="password"
                   maxLength={4}
@@ -4426,7 +4448,7 @@ export default function MySukoonPage() {
                   placeholder="••••"
                   value={newPinCandidate}
                   onChange={(e) => setNewPinCandidate(e.target.value)}
-                  className="w-full text-center tracking-[0.5em] text-lg font-bold py-2 rounded-xl border border-[#C9C3B5] bg-canvas focus:outline-none focus:ring-2 focus:ring-rose-400"
+                  className="w-full text-center tracking-[0.5em] text-lg font-bold py-2 rounded-xl border border-[#E9DCCF] bg-canvas focus:outline-none focus:ring-2 focus:ring-rose-400"
                 />
               </div>
 
@@ -4434,7 +4456,7 @@ export default function MySukoonPage() {
                 <button
                   type="button"
                   onClick={() => setShowPinChangeModal(false)}
-                  className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7C8B82]"
+                  className="px-3 py-2 rounded-xl text-xs font-semibold text-[#7D8C83]"
                 >
                   Cancel
                 </button>

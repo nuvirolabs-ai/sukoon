@@ -436,13 +436,13 @@ export default function StockMarketPage() {
       {/* Hero Title & Live Status */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Stock Market Prices</h1>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+          <h1 className="text-2xl font-serif font-bold text-[#195A50]">Stock Market Prices</h1>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#FBEBE2] text-[#195A50] border border-[#E9DCCF] shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-[#195A50] animate-ping" />
             <span>NSE / BSE Live</span>
           </span>
         </div>
-        <p className="text-xs text-ink-muted">
+        <p className="text-xs text-[#7D8C83]">
           Live Indian equities: Real estate developers, REITs, cement &amp; construction steel.
         </p>
       </div>
@@ -452,13 +452,13 @@ export default function StockMarketPage() {
         {MAJOR_INDICES.map((idx) => (
           <div
             key={idx.name}
-            className="p-3 rounded-2xl bg-white border border-line shadow-2xs space-y-1 hover:border-forest/40 transition"
+            className="p-3 rounded-2xl bg-white border border-[#E9DCCF] shadow-2xs space-y-1 hover:border-[#195A50]/40 transition"
           >
-            <div className="flex items-center justify-between text-[10px] text-ink-muted font-bold">
+            <div className="flex items-center justify-between text-[10px] text-[#7D8C83] font-bold">
               <span>{idx.name}</span>
-              <span className="px-1.5 py-0.2 rounded bg-sand/60 text-[9px]">{idx.exchange}</span>
+              <span className="px-1.5 py-0.2 rounded bg-[#FBEBE2] text-[9px] text-[#195A50]">{idx.exchange}</span>
             </div>
-            <div className="text-sm font-black text-[#1B2922]">{idx.value}</div>
+            <div className="text-sm font-black text-[#195A50]">{idx.value}</div>
             <div
               className={`text-[10px] font-bold inline-flex items-center gap-0.5 ${
                 idx.isPositive ? "text-emerald-700" : "text-rose-700"
@@ -530,7 +530,7 @@ export default function StockMarketPage() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs font-black text-[#1B2922]">
+                    <span className="font-mono text-xs font-black text-[#195A50]">
                       {stock.symbol}
                     </span>
                     <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sand/80 text-ink-muted">
@@ -550,7 +550,7 @@ export default function StockMarketPage() {
                       {stock.sector}
                     </span>
                   </div>
-                  <h3 className="text-xs font-semibold text-[#1B2922] mt-0.5">
+                  <h3 className="text-xs font-semibold text-[#195A50] mt-0.5">
                     {stock.name}
                   </h3>
                   <p className="text-[11px] text-ink-muted mt-0.5 leading-snug">
@@ -559,7 +559,7 @@ export default function StockMarketPage() {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-sm font-black text-[#1B2922] block font-mono">
+                  <span className="text-sm font-black text-[#195A50] block font-mono">
                     ₹{stock.currentPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
                   <span
@@ -579,11 +579,11 @@ export default function StockMarketPage() {
               <div className="pt-2 border-t border-line/60 grid grid-cols-3 gap-2 text-[10px]">
                 <div>
                   <span className="text-ink-muted block">Market Cap</span>
-                  <strong className="text-[#1B2922] font-semibold">{stock.marketCap}</strong>
+                  <strong className="text-[#195A50] font-semibold">{stock.marketCap}</strong>
                 </div>
                 <div>
                   <span className="text-ink-muted block">52W Range</span>
-                  <strong className="text-[#1B2922] font-semibold">
+                  <strong className="text-[#195A50] font-semibold">
                     ₹{stock.low52W} - ₹{stock.high52W}
                   </strong>
                 </div>
@@ -603,8 +603,8 @@ export default function StockMarketPage() {
 
       {/* Real Estate Correlation Educational Tip */}
       <div className="p-4 rounded-3xl bg-sand/30 border border-line space-y-2 text-xs">
-        <div className="flex items-center gap-2 text-[#1B2922] font-bold">
-          <Sparkles size={15} className="text-[#1E5637]" />
+        <div className="flex items-center gap-2 text-[#195A50] font-bold">
+          <Sparkles size={15} className="text-[#195A50]" />
           <span>Why Indian Stock Prices Matter For Real Estate</span>
         </div>
         <p className="text-[11px] text-[#2A3A30] leading-relaxed">

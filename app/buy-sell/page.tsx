@@ -154,7 +154,7 @@ const BUY_SELL_FEATURES = [
     id: "trending" as const,
     title: "Trending deals",
     subtitle: "Area & Society Search",
-    color: "#1E5637",
+    color: "#195A50",
     icon: function TrendingIcon() {
       return (
         <svg
@@ -539,8 +539,8 @@ function BuySellContent() {
       {section === null && (
         <div className="animate-in fade-in duration-200">
           <div className="mb-6">
-            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Buy &amp; Sell Hub</h1>
-            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+            <h1 className="text-2xl font-serif font-bold text-[#195A50]">Buy &amp; Sell Hub</h1>
+            <p className="text-xs text-[#7D8C83] mt-1 leading-relaxed">
               Tap a folder below for direct property matchmaking, verified listings, seller submissions &amp; trending deals.
             </p>
           </div>
@@ -549,26 +549,28 @@ function BuySellContent() {
           <div className="grid grid-cols-2 gap-4 mb-8">
             {BUY_SELL_FEATURES.map((item) => {
               const IconComp = item.icon;
+              const isAccent = item.id === "post-deals" || item.id === "trending";
+
               return (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setSection(item.id)}
-                  className="tap-scale group flex flex-col items-center text-center p-5 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                  className="tap-scale group flex flex-col items-center text-center p-5 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
                 >
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] transition-transform duration-200 group-hover:scale-105"
-                    style={{ color: item.color }}
+                    className="w-16 h-16 rounded-[22px] flex items-center justify-center mb-3 bg-[#FBEBE2] border border-[#E9DCCF] transition-transform duration-200 group-hover:scale-105"
+                    style={{ color: isAccent ? "#EB725B" : "#195A50" }}
                   >
                     <IconComp />
                   </div>
-                  <span className="text-sm font-bold text-[#1B2922] leading-tight block">
+                  <span className="text-sm font-bold text-[#195A50] leading-tight block">
                     {item.title}
                   </span>
-                  <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1.5">
+                  <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-1.5">
                     {item.subtitle}
                   </span>
-                  <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-forest">
+                  <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-[#195A50]">
                     <span>Open Folder</span>
                     <ChevronRight size={12} />
                   </div>
@@ -590,7 +592,7 @@ function BuySellContent() {
         <section className="space-y-5 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Property Matchmaker</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Property Matchmaker</h2>
               <p className="text-[11px] text-ink-muted">
                 Intelligent buyer requirement matching with direct sellers.
               </p>
@@ -824,7 +826,7 @@ function BuySellContent() {
 
               {/* USER'S POSTED REQUIREMENTS */}
               <div className="pt-2">
-                <h3 className="text-xs font-bold text-[#1B2922] mb-2 px-1">
+                <h3 className="text-xs font-bold text-[#195A50] mb-2 px-1">
                   My Posted Requirements ({postedRequirements.length})
                 </h3>
                 {postedRequirements.length === 0 ? (
@@ -906,7 +908,7 @@ function BuySellContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Power Docs</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Power Docs</h2>
               <p className="text-[11px] text-ink-muted">
                 Calculators, bank loans, circle rates, associates &amp; legal drafting.
               </p>
@@ -1450,7 +1452,7 @@ function BuySellContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Post Deals</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Post Deals</h2>
               <p className="text-[11px] text-ink-muted">
                 Direct seller listing · Free title verification by Sukoon.
               </p>
@@ -1751,7 +1753,7 @@ function BuySellContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Trending Deals</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Trending Deals</h2>
               <p className="text-[11px] text-ink-muted">
                 Search areas &amp; societies for verified live deals.
               </p>

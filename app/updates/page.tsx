@@ -142,7 +142,7 @@ const INSIGHTS_FEATURES = [
     id: "dos-donts" as const,
     title: "Do's & Don'ts",
     subtitle: "Buyer Checkpoints",
-    color: "#1E5637",
+    color: "#195A50",
     icon: function DosDontsIcon() {
       return (
         <svg
@@ -381,7 +381,7 @@ function UpdatesContent() {
     <div className="w-full max-w-md mx-auto min-h-screen px-4 pt-3 pb-28 text-foreground">
       {/* Toast Notification */}
       {copiedToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1B2922] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-200">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#195A50] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-200">
           <Check size={14} className="text-emerald-400" />
           <span>{copiedToast}</span>
         </div>
@@ -430,8 +430,8 @@ function UpdatesContent() {
       {section === null && (
         <div className="animate-in fade-in duration-200">
           <div className="mb-6">
-            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Insights Hub</h1>
-            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+            <h1 className="text-2xl font-serif font-bold text-[#195A50]">Insights Hub</h1>
+            <p className="text-xs text-[#7D8C83] mt-1 leading-relaxed">
               Tap a folder below to explore live city news, real estate guides, legal terminology, vastu &amp; developer trends.
             </p>
           </div>
@@ -440,28 +440,30 @@ function UpdatesContent() {
           <div className="grid grid-cols-2 gap-3.5 mb-8">
             {INSIGHTS_FEATURES.map((item) => {
               const IconComp = item.icon;
+              const isAccent = item.id === "blogs" || item.id === "vastu";
+
               return (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setSection(item.id)}
-                  className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                  className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
                 >
                   <div>
                     <div
-                      className="w-13 h-13 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] group-hover:scale-105 transition-transform"
-                      style={{ color: item.color }}
+                      className="w-13 h-13 rounded-2xl flex items-center justify-center mb-3 bg-[#FBEBE2] border border-[#E9DCCF] group-hover:scale-105 transition-transform"
+                      style={{ color: isAccent ? "#EB725B" : "#195A50" }}
                     >
                       <IconComp />
                     </div>
-                    <span className="text-xs font-bold text-[#1B2922] leading-tight block">
+                    <span className="text-xs font-bold text-[#195A50] leading-tight block">
                       {item.title}
                     </span>
-                    <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-1 block">
+                    <span className="text-[10px] font-medium text-[#7D8C83] leading-tight mt-1 block">
                       {item.subtitle}
                     </span>
                   </div>
-                  <div className="mt-3.5 pt-2 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-forest">
+                  <div className="mt-3.5 pt-2 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#195A50]">
                     <span>Open Folder</span>
                     <ChevronRight size={12} />
                   </div>
@@ -481,7 +483,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Real-Time City News</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Real-Time City News</h2>
               <p className="text-[11px] text-ink-muted">
                 Live crawled updates from local authorities &amp; news bureaus.
               </p>
@@ -497,7 +499,7 @@ function UpdatesContent() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
               </span>
               <div>
-                <p className="text-[11px] font-bold text-[#1B2922]">
+                <p className="text-[11px] font-bold text-[#195A50]">
                   Live City Crawler Active
                 </p>
                 <p className="text-[10px] text-ink-muted">
@@ -598,7 +600,7 @@ function UpdatesContent() {
                     </span>
                   </div>
 
-                  <h3 className="text-[13px] font-serif font-bold text-[#1B2922] leading-snug">
+                  <h3 className="text-[13px] font-serif font-bold text-[#195A50] leading-snug">
                     {news.headline}
                   </h3>
 
@@ -644,7 +646,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Real Estate Blogs</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Real Estate Blogs</h2>
               <p className="text-[11px] text-ink-muted">
                 Daily in-depth market guides, legal analysis &amp; town planning blueprints.
               </p>
@@ -689,7 +691,7 @@ function UpdatesContent() {
                   </span>
                 </div>
 
-                <h3 className="text-sm font-serif font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-sm font-serif font-bold text-[#195A50] leading-snug">
                   {blog.title}
                 </h3>
 
@@ -729,7 +731,7 @@ function UpdatesContent() {
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#B26315]/10 text-[#B26315]">
                     {activeBlogModal.category} • {activeBlogModal.city}
                   </span>
-                  <h2 className="text-base font-serif font-bold text-[#1B2922] mt-1.5 leading-snug">
+                  <h2 className="text-base font-serif font-bold text-[#195A50] mt-1.5 leading-snug">
                     {activeBlogModal.title}
                   </h2>
                   <p className="text-[11px] text-ink-muted mt-0.5">
@@ -807,7 +809,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Real Estate Terminologies</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Real Estate Terminologies</h2>
               <p className="text-[11px] text-ink-muted">
                 Indian revenue &amp; property dictionary in plain English and Hindi.
               </p>
@@ -887,7 +889,7 @@ function UpdatesContent() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-sm font-bold text-[#1B2922]">
+                      <h3 className="text-sm font-bold text-[#195A50]">
                         {termItem.term}
                       </h3>
                       <p className="text-[11px] font-medium text-[#553C9A]">
@@ -900,12 +902,12 @@ function UpdatesContent() {
                   </div>
 
                   <div className="bg-sand/30 rounded-xl p-2.5 text-xs text-[#2A3A30] leading-relaxed">
-                    <strong className="text-[#1B2922] block mb-0.5">Simple Meaning:</strong>
+                    <strong className="text-[#195A50] block mb-0.5">Simple Meaning:</strong>
                     {termItem.simpleMeaning}
                   </div>
 
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    <strong className="text-[#1B2922]">Why It Matters:</strong>{" "}
+                    <strong className="text-[#195A50]">Why It Matters:</strong>{" "}
                     {termItem.whyItMatters}
                   </div>
 
@@ -948,7 +950,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Do’s &amp; Don’ts Checklist</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Do’s &amp; Don’ts Checklist</h2>
               <p className="text-[11px] text-ink-muted">
                 Essential checkpoints across token, legal verification &amp; registry.
               </p>
@@ -959,7 +961,7 @@ function UpdatesContent() {
           {/* Progress Bar */}
           <div className="bg-white border border-line rounded-2xl p-3.5 shadow-2xs space-y-2">
             <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-[#1B2922] flex items-center gap-1.5">
+              <span className="text-[#195A50] flex items-center gap-1.5">
                 <CheckCircle2 size={14} className="text-forest" /> Your Due Diligence Progress
               </span>
               <span className="text-forest">
@@ -991,8 +993,8 @@ function UpdatesContent() {
                     onClick={() => setDosFilter(stage)}
                     className={`tap-scale px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                       isSelected
-                        ? "bg-[#1E5637] text-white shadow-2xs"
-                        : "bg-white text-ink-muted border border-line hover:border-[#1E5637]/40"
+                        ? "bg-[#195A50] text-white shadow-2xs"
+                        : "bg-white text-ink-muted border border-line hover:border-[#195A50]/40"
                     }`}
                   >
                     {stage}
@@ -1041,7 +1043,7 @@ function UpdatesContent() {
                         >
                           {chk.type === "DO" ? "DO (Mandatory)" : "DON'T (Strictly Avoid)"} • {chk.stage}
                         </span>
-                        <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                        <h3 className="text-xs font-bold text-[#195A50] leading-snug">
                           {chk.title}
                         </h3>
                       </div>
@@ -1065,7 +1067,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Podcasts &amp; Videos</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Podcasts &amp; Videos</h2>
               <p className="text-[11px] text-ink-muted">
                 Curated YouTube videos &amp; expert audio episodes on property and civil engineering.
               </p>
@@ -1111,7 +1113,7 @@ function UpdatesContent() {
                   </span>
                 </div>
 
-                <h3 className="text-sm font-serif font-bold text-[#1B2922] leading-snug">
+                <h3 className="text-sm font-serif font-bold text-[#195A50] leading-snug">
                   {media.title}
                 </h3>
 
@@ -1150,7 +1152,7 @@ function UpdatesContent() {
             <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in">
               <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative space-y-3 p-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-[#1B2922] line-clamp-1 pr-4">
+                  <h3 className="text-xs font-bold text-[#195A50] line-clamp-1 pr-4">
                     {playingVideo.title}
                   </h3>
                   <button
@@ -1203,7 +1205,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Vastu Shastra Guide</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Vastu Shastra Guide</h2>
               <p className="text-[11px] text-ink-muted">
                 Permanent architectural reference for 8 directions, rooms &amp; plot shapes.
               </p>
@@ -1278,7 +1280,7 @@ function UpdatesContent() {
               <div className="bg-white border border-line rounded-2xl p-4 shadow-2xs space-y-3">
                 <div className="flex items-start justify-between border-b border-line/60 pb-3">
                   <div>
-                    <h3 className="text-sm font-bold text-[#1B2922]">
+                    <h3 className="text-sm font-bold text-[#195A50]">
                       {selectedDirection.direction}
                     </h3>
                     <p className="text-[11px] font-medium text-amber-700">
@@ -1297,7 +1299,7 @@ function UpdatesContent() {
 
                 {/* Key Advice */}
                 <div className="bg-sand/30 rounded-xl p-3 text-xs text-[#2A3A30] leading-relaxed">
-                  <strong className="text-[#1B2922] block mb-1">Architectural Advice:</strong>
+                  <strong className="text-[#195A50] block mb-1">Architectural Advice:</strong>
                   {selectedDirection.keyAdvice}
                 </div>
 
@@ -1337,7 +1339,7 @@ function UpdatesContent() {
                   key={rule.room}
                   className="bg-white border border-line rounded-2xl p-4 shadow-2xs space-y-2"
                 >
-                  <h3 className="text-xs font-bold text-[#1B2922]">
+                  <h3 className="text-xs font-bold text-[#195A50]">
                     {rule.room}
                   </h3>
 
@@ -1353,7 +1355,7 @@ function UpdatesContent() {
                   </div>
 
                   <p className="text-[11px] text-ink-muted pt-1">
-                    <strong className="text-[#1B2922]">Golden Rule:</strong> {rule.goldenRule}
+                    <strong className="text-[#195A50]">Golden Rule:</strong> {rule.goldenRule}
                   </p>
                 </div>
               ))}
@@ -1365,7 +1367,7 @@ function UpdatesContent() {
             <div className="space-y-3">
               <div className="bg-white border border-line rounded-2xl p-4 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-[#1B2922]">
+                  <h3 className="text-xs font-bold text-[#195A50]">
                     Gomukhi Plot (Cow Faced)
                   </h3>
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800">
@@ -1379,7 +1381,7 @@ function UpdatesContent() {
 
               <div className="bg-white border border-line rounded-2xl p-4 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-[#1B2922]">
+                  <h3 className="text-xs font-bold text-[#195A50]">
                     Shermukhi Plot (Lion Faced)
                   </h3>
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800">
@@ -1393,7 +1395,7 @@ function UpdatesContent() {
 
               <div className="bg-white border border-line rounded-2xl p-4 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-[#1B2922]">
+                  <h3 className="text-xs font-bold text-[#195A50]">
                     T-Junction Plot (Veedhi Shula)
                   </h3>
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-800">
@@ -1416,7 +1418,7 @@ function UpdatesContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">City Trends</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">City Trends</h2>
               <p className="text-[11px] text-ink-muted">
                 Track what big national developers and authorities are buying, selling &amp; investing.
               </p>
@@ -1501,7 +1503,7 @@ function UpdatesContent() {
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0D9488]/10 text-[#0D9488]">
                         {trend.developerType}
                       </span>
-                      <h3 className="text-sm font-bold text-[#1B2922] mt-1">
+                      <h3 className="text-sm font-bold text-[#195A50] mt-1">
                         {trend.developerName}
                       </h3>
                       <p className="text-[11px] text-ink-muted flex items-center gap-1 mt-0.5">
@@ -1525,17 +1527,17 @@ function UpdatesContent() {
                       <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted block">
                         Deal Value
                       </span>
-                      <span className="font-bold text-[#1B2922]">{trend.dealValue}</span>
+                      <span className="font-bold text-[#195A50]">{trend.dealValue}</span>
                     </div>
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted block">
                         Land Area
                       </span>
-                      <span className="font-bold text-[#1B2922]">{trend.landArea}</span>
+                      <span className="font-bold text-[#195A50]">{trend.landArea}</span>
                     </div>
                   </div>
 
-                  <h4 className="text-xs font-serif font-bold text-[#1B2922] leading-snug">
+                  <h4 className="text-xs font-serif font-bold text-[#195A50] leading-snug">
                     {trend.headline}
                   </h4>
 

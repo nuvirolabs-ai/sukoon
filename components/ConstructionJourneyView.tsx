@@ -287,13 +287,13 @@ export function ConstructionJourneyView() {
     <div className="space-y-4">
       {/* Toast popup */}
       {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-[#1B2922] text-white text-xs font-bold rounded-full shadow-lg transition-all animate-in fade-in">
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-[#195A50] text-white text-xs font-bold rounded-full shadow-lg transition-all animate-in fade-in">
           {toastMessage}
         </div>
       )}
 
       {/* Hero Overview Card */}
-      <div className="p-5 rounded-3xl bg-gradient-to-br from-[#1E5637] to-[#133A24] text-white shadow-md relative overflow-hidden">
+      <div className="p-5 rounded-3xl bg-gradient-to-br from-[#195A50] to-[#133A24] text-white shadow-md relative overflow-hidden">
         <div className="flex items-start justify-between mb-3">
           <div>
             <div className="flex items-center gap-1.5 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
@@ -448,7 +448,7 @@ export function ConstructionJourneyView() {
                     </span>
                     <h3
                       className={`text-xs font-bold ${
-                        isPhaseFullyDone ? "text-[#1B2922]" : "text-[#1B2922]"
+                        isPhaseFullyDone ? "text-[#195A50]" : "text-[#195A50]"
                       }`}
                     >
                       {phase.title}
@@ -519,7 +519,7 @@ export function ConstructionJourneyView() {
                                   Step {step.stepNumber}
                                 </span>
                                 {step.isCompleted && (
-                                  <span className="text-[9px] font-bold text-[#1E5637] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.5 rounded-md inline-flex items-center gap-1">
+                                  <span className="text-[9px] font-bold text-[#195A50] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.5 rounded-md inline-flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Completed
                                   </span>
                                 )}
@@ -533,7 +533,7 @@ export function ConstructionJourneyView() {
                                 </span>
                               </div>
 
-                              <h4 className="text-xs leading-snug mt-0.5 font-bold text-[#1B2922]">
+                              <h4 className="text-xs leading-snug mt-0.5 font-bold text-[#195A50]">
                                 {step.title}
                               </h4>
                             </div>
@@ -724,7 +724,7 @@ export function ConstructionJourneyView() {
               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">
                 Consolidated Report
               </span>
-              <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+              <h3 className="text-base font-serif font-bold text-[#195A50] mt-1">
                 Share Construction Progress
               </h3>
               <p className="text-xs text-ink-muted">
@@ -733,7 +733,7 @@ export function ConstructionJourneyView() {
             </div>
 
             {/* Preformatted Preview Box */}
-            <div className="bg-sand/30 border border-line rounded-2xl p-3.5 text-xs font-mono text-[#1B2922] whitespace-pre-wrap max-h-60 overflow-y-auto leading-relaxed">
+            <div className="bg-sand/30 border border-line rounded-2xl p-3.5 text-xs font-mono text-[#195A50] whitespace-pre-wrap max-h-60 overflow-y-auto leading-relaxed">
               {consolidatedReport}
             </div>
 

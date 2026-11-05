@@ -453,26 +453,21 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             type="button"
             onClick={() => setCityModalOpen(true)}
             aria-label="Select City"
-            className="tap-scale relative z-10 flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-sand/80 hover:bg-sand border border-line text-[#1B2922] text-[11px] font-bold transition focus:outline-none shadow-2xs shrink-0"
+            className="tap-scale relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-[#FFF7EF] border border-[#E9DCCF] text-[#195A50] text-xs font-semibold shadow-2xs focus:outline-none shrink-0"
           >
-            <MapPin size={11} className="text-[#1E5637] shrink-0" />
-            <span className="max-w-[62px] truncate">{city}</span>
-            <ChevronDown size={10} className="text-ink-muted shrink-0" />
+            <MapPin size={12} className="text-[#195A50] shrink-0" />
+            <span className="max-w-[70px] truncate">{city}</span>
+            <ChevronDown size={11} className="text-[#195A50] shrink-0" />
           </button>
 
           {/* Center Brand Identity - Centered with Mathematical Precision & Safe Margins */}
-          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-24">
-            <div className="h-6.5 sm:h-7 flex items-center justify-center overflow-visible">
-              <Image
-                src="/images/sukoon-brand-logo.png"
-                alt="Sukoon"
-                width={342}
-                height={79}
-                priority
-                className="h-6.5 sm:h-7 w-auto object-contain select-none mix-blend-multiply"
-              />
+          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-20">
+            <div className="flex items-center text-[22px] sm:text-[24px] font-black tracking-[0.06em] font-serif leading-none select-none">
+              <span className="text-[#195A50]">SUK</span>
+              <span className="text-[#EB725B]">OO</span>
+              <span className="text-[#195A50]">N</span>
             </div>
-            <p className="sublogo-tracking text-[7.5px] sm:text-[8px] font-semibold text-[#6E7B73] uppercase mt-0.5 leading-none tracking-[0.24em] select-none whitespace-nowrap">
+            <p className="text-[7.5px] sm:text-[8px] font-bold uppercase tracking-[0.28em] text-[#195A50] mt-1 leading-none select-none whitespace-nowrap">
               Escape the Chaos
             </p>
           </div>
@@ -481,9 +476,9 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           <Link
             href="/profile"
             aria-label="User Profile"
-            className="tap-scale relative z-10 w-9 h-9 rounded-full bg-[#182C22] text-[#F3F6F4] font-semibold text-xs flex items-center justify-center shadow-sm border border-emerald-950/10 focus:outline-none shrink-0"
+            className="tap-scale relative z-10 w-9 h-9 rounded-full bg-[#195A50] text-white font-bold text-xs flex items-center justify-center shadow-xs border border-[#195A50]/20 focus:outline-none shrink-0"
           >
-            {mark}
+            {mark || "AS"}
           </Link>
         </header>
 
@@ -509,10 +504,10 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                   setTimeout(() => searchInputRef.current?.focus(), 60);
                 }}
                 aria-label="Open search"
-                className="tap-scale flex items-center justify-center gap-2 w-44 sm:w-52 py-2 px-4 rounded-full bg-white/95 hover:bg-white border border-[#E5DFD3] shadow-2xs hover:shadow-xs hover:border-forest/30 transition-all duration-200 cursor-pointer"
+                className="tap-scale flex items-center justify-center gap-2 w-52 py-2 px-5 rounded-full bg-white border border-[#E9DCCF] shadow-[0_4px_18px_rgba(25,90,80,0.05)] hover:shadow-md transition-all duration-200 cursor-pointer"
               >
-                <Search className="w-3.5 h-3.5 text-[#6E7D73]" strokeWidth={2.2} />
-                <span className="text-[13px] font-medium text-[#6E7D73]">Search...</span>
+                <Search className="w-3.5 h-3.5 text-[#7D8C83]" strokeWidth={2} />
+                <span className="text-[13.5px] font-medium text-[#7D8C83]">Search...</span>
               </button>
             ) : (
               /* Expanded Search Bar + Live Auto-Suggestions Dropdown */
@@ -521,7 +516,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                   action="/search"
                   method="GET"
                   role="search"
-                  className="relative flex items-center w-full bg-white rounded-full px-4 py-2.5 border border-forest/30 shadow-[0_4px_18px_rgba(27,61,47,0.08)] ring-2 ring-forest/10 transition-all duration-300"
+                  className="relative flex items-center w-full bg-white rounded-full px-4 py-2.5 border border-[#195A50]/40 shadow-[0_4px_18px_rgba(25,90,80,0.08)] ring-2 ring-[#195A50]/15 transition-all duration-300"
                 >
                   <Search className="w-4 h-4 text-[#486354] flex-shrink-0 mr-2.5" strokeWidth={2.2} />
                   <input
@@ -576,7 +571,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                     /* When Query is Empty: Popular Searches & Suggested Shortcuts */
                     <div>
                       <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7D8C83] uppercase">
                           Popular Searches
                         </span>
                         <span className="text-[10px] font-medium text-forest">Quick Tap</span>
@@ -597,7 +592,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                         ))}
                       </div>
                       <div className="border-t border-[#F0ECE1] pt-2">
-                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase block mb-1.5 px-1">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7D8C83] uppercase block mb-1.5 px-1">
                           Suggested Shortcuts
                         </span>
                         <div className="space-y-1">
@@ -616,10 +611,10 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                                   <SearchItemIcon icon={item.icon} className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="text-[12.5px] font-semibold text-[#1B2922] truncate group-hover:text-forest">
+                                  <p className="text-[12.5px] font-semibold text-[#195A50] truncate group-hover:text-forest">
                                     {item.title}
                                   </p>
-                                  <p className="text-[10.5px] text-[#7C8B82] truncate">{item.subtitle}</p>
+                                  <p className="text-[10.5px] text-[#7D8C83] truncate">{item.subtitle}</p>
                                 </div>
                               </div>
                               <span className="text-[9.5px] font-medium px-1.5 py-0.5 rounded bg-sand/80 text-[#52665B] shrink-0 ml-2">
@@ -634,7 +629,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                     /* When Query is Typed: Live Filtered Auto-Suggestions */
                     <div>
                       <div className="flex items-center justify-between mb-2 px-1">
-                        <span className="text-[10px] font-bold tracking-wider text-[#7C8B82] uppercase">
+                        <span className="text-[10px] font-bold tracking-wider text-[#7D8C83] uppercase">
                           Auto-Suggestions ({filteredSuggestions.length})
                         </span>
                         <span className="text-[10px] text-ink-muted">Tap to open</span>
@@ -657,10 +652,10 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                                   <SearchItemIcon icon={item.icon} className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="text-[12.5px] font-semibold text-[#1B2922] truncate group-hover:text-forest">
+                                  <p className="text-[12.5px] font-semibold text-[#195A50] truncate group-hover:text-forest">
                                     {item.title}
                                   </p>
-                                  <p className="text-[10.5px] text-[#7C8B82] truncate">{item.subtitle}</p>
+                                  <p className="text-[10.5px] text-[#7D8C83] truncate">{item.subtitle}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-1.5 shrink-0 ml-2">
@@ -688,7 +683,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                           <p className="text-[12.5px] text-[#486354] font-medium">
                             No direct matches for &ldquo;{searchQuery}&rdquo;
                           </p>
-                          <p className="text-[11px] text-[#7C8B82] mt-0.5 mb-3">
+                          <p className="text-[11px] text-[#7D8C83] mt-0.5 mb-3">
                             Search the full vault and marketplace records
                           </p>
                           <Link
@@ -717,12 +712,12 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           {/* Section Header Label: Non-colliding, elegant mobile-first header */}
           <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[#3D6650] text-[11px] leading-none select-none">✦</span>
-              <h2 className="text-[11px] font-bold tracking-[0.1em] text-[#697A71] uppercase">
+              <span className="text-[#EB725B] text-[12px] leading-none select-none">✦</span>
+              <h2 className="text-[11px] font-bold tracking-[0.1em] text-[#EB725B] uppercase">
                 Core Modules
               </h2>
             </div>
-            <span className="text-[10px] font-semibold text-[#486354] px-2 py-0.5 rounded-full bg-mint/50 border border-forest/15">
+            <span className="text-[10px] font-semibold text-[#195A50] px-2.5 py-0.5 rounded-full bg-[#FBEBE2] border border-[#E9DCCF]">
               4 Features
             </span>
           </div>
@@ -732,72 +727,65 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             {/* Feature 1: Vault */}
             <Link
               href="/vault"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1"
             >
-              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(30,86,55,0.18),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#1E5637] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(30,86,55,0.28)]">
-                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(30,86,55,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
-                  <rect height="28" rx="2" width="26" x="7" y="6" />
-                  <path d="M13 6V30" />
-                  <path d="M18 13h10M18 18h7" />
-                  <circle cx="24" cy="26" r="3.5" strokeWidth="1.6" />
-                  <path d="M24 25v2M24 29.5v3M26.5 31h-2.5" />
+              <div className="w-16 h-16 rounded-[22px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_16px_rgba(25,90,80,0.06)] flex items-center justify-center text-[#195A50] mb-2.5 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(25,90,80,0.14)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 40 40">
+                  <rect height="28" rx="4" width="22" x="9" y="6" />
+                  <path d="M14 12h12M14 17h12M14 22h6" />
+                  <circle cx="25" cy="27" r="3.5" />
+                  <path d="M25 26v2M25 30.5v2" />
                 </svg>
               </div>
-              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Vault</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Papers &amp; Records</span>
+              <span className="text-[13.5px] font-bold text-[#195A50] leading-tight block">Vault</span>
+              <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-0.5">Papers &amp; Records</span>
             </Link>
 
             {/* Feature 2: Construction */}
             <Link
               href="/construction"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1"
             >
-              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(178,99,21,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#B26315] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(178,99,21,0.30)]">
-                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(178,99,21,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
-                  <path d="M20 5v4" />
+              <div className="w-16 h-16 rounded-[22px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_16px_rgba(235,114,91,0.08)] flex items-center justify-center text-[#EB725B] mb-2.5 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(235,114,91,0.18)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 40 40">
                   <circle cx="20" cy="9" r="2.5" />
-                  <path d="m18 11.5-9 22.5M22 11.5l9 22.5" />
-                  <path d="M12.5 25.5h15" strokeDasharray="1 0" />
-                  <path d="M16 23.5a9 9 0 0 1 8 0" />
-                  <path d="M20 23.5V34" />
+                  <path d="M20 11.5v4" />
+                  <path d="m18 15.5-8 19M22 15.5l8 19" />
+                  <path d="M13.5 27h13" />
                 </svg>
               </div>
-              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Construction</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">0 to 1 Build</span>
+              <span className="text-[13.5px] font-bold text-[#195A50] leading-tight block">Construction</span>
+              <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-0.5">0 to 1 Build</span>
             </Link>
 
             {/* Feature 3: Buy & Sell */}
             <Link
               href="/buy-sell"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1"
             >
-              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(30,87,164,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#1E57A4] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(30,87,164,0.30)]">
-                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(30,87,164,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
-                  <path d="M6 16.5 20 6l14 10.5" />
-                  <path d="M9 14.5V33h22V14.5" />
-                  <path d="M15 33V22h10v11" />
-                  <path d="M20 22v11" />
-                  <circle cx="27" cy="12" r="2" />
-                  <path d="M27 14v4M29 16h-2" />
+              <div className="w-16 h-16 rounded-[22px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_16px_rgba(25,90,80,0.06)] flex items-center justify-center text-[#195A50] mb-2.5 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(25,90,80,0.14)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 40 40">
+                  <path d="M8 18 20 8l12 10" />
+                  <path d="M11 16v17h18V16" />
+                  <path d="M16 33V23h8v10" />
                 </svg>
               </div>
-              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Buy &amp; Sell</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Marketplace</span>
+              <span className="text-[13.5px] font-bold text-[#195A50] leading-tight block">Buy &amp; Sell</span>
+              <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-0.5">Marketplace</span>
             </Link>
 
-            {/* Feature 4: Insights (New Name for Knowledge) */}
+            {/* Feature 4: Insights */}
             <Link
               href="/updates"
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1.5"
+              className="tap-scale group flex flex-col items-center text-center focus:outline-none py-1"
             >
-              <div className="w-13 h-13 rounded-2xl bg-white shadow-[0_4px_16px_rgba(85,60,154,0.20),0_1px_3px_rgba(0,0,0,0.04)] border border-[#E8E2D5] flex items-center justify-center text-[#553C9A] mb-2 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(85,60,154,0.30)]">
-                <svg className="w-8 h-8 drop-shadow-[0_2px_4px_rgba(85,60,154,0.30)]" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 40 40">
-                  <path d="M20 13v20M20 13C17 10 9 10 6 12v20c3-2 11-2 14 1M20 13c3-3 11-3 14-1v20c-3-2-11-2-14 1" />
-                  <path d="M20 4v4M14 6l2 2M26 6l-2 2" />
+              <div className="w-16 h-16 rounded-[22px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_16px_rgba(235,114,91,0.08)] flex items-center justify-center text-[#EB725B] mb-2.5 transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_22px_rgba(235,114,91,0.18)]">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" viewBox="0 0 40 40">
+                  <path d="M20 12v20M20 12C17 9 10 9 7 11v20c3-2 10-2 13 1M20 12c3-3 10-3 13-1v20c-3-2-10-2-13 1" />
                 </svg>
               </div>
-              <span className="text-[13.5px] font-bold text-[#1B2922] leading-tight block">Insights</span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-0.5">Guides &amp; News</span>
+              <span className="text-[13.5px] font-bold text-[#195A50] leading-tight block">Insights</span>
+              <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-0.5">Guides &amp; News</span>
             </Link>
           </div>
         </section>
@@ -805,14 +793,12 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
         {/* Elegant Partition between Core Features & My Favorites */}
         <div className="relative my-7 flex items-center justify-center select-none" aria-hidden="true">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#DDD6C8] to-transparent" />
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#E9DCCF] to-transparent" />
           </div>
-          <div className="relative px-3.5 py-0.5 rounded-full bg-canvas flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
-            <span className="text-[10px] text-[#7A8E82] font-serif italic tracking-widest uppercase">
-              ✦
-            </span>
-            <span className="w-1 h-1 rounded-full bg-[#A8B7AD]" />
+          <div className="relative px-3 py-0.5 rounded-full bg-[#FFF7EF] flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7D8C83]" />
+            <span className="text-[10px] text-[#7D8C83] leading-none">◆</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#7D8C83]" />
           </div>
         </div>
 
@@ -925,7 +911,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 flex items-center gap-1 w-max">
                 <MapPin size={11} /> Select Location
               </span>
-              <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1.5">
+              <h3 className="text-base font-serif font-bold text-[#195A50] mt-1.5">
                 Choose Your City
               </h3>
               <p className="text-xs text-ink-muted">
@@ -948,7 +934,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
                     className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all ${
                       isSelected
                         ? "bg-forest text-white border-forest shadow-2xs font-bold"
-                        : "bg-white text-[#1B2922] border-line hover:border-forest/40"
+                        : "bg-white text-[#195A50] border-line hover:border-forest/40"
                     }`}
                   >
                     <span className="text-xs">{c}</span>

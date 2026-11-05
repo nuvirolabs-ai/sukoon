@@ -111,7 +111,7 @@ const VAULT_FEATURES = [
     id: "docs" as const,
     title: "My Docs",
     subtitle: "Upload & Health Score",
-    color: "#1E5637",
+    color: "#195A50",
     icon: function MyDocsIcon() {
       return (
         <svg
@@ -928,8 +928,8 @@ function VaultContent() {
       {section === null && (
         <div className="animate-in fade-in duration-200">
           <div className="mb-6">
-            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Property Vault</h1>
-            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+            <h1 className="text-2xl font-serif font-bold text-[#195A50]">Property Vault</h1>
+            <p className="text-xs text-[#7D8C83] mt-1 leading-relaxed">
               Tap a folder below to enter and manage legal documents, portfolio net worth, property dues &amp; instant search.
             </p>
           </div>
@@ -938,26 +938,27 @@ function VaultContent() {
           <div className="grid grid-cols-2 gap-4 mb-8">
             {VAULT_FEATURES.map((item) => {
               const IconComp = item.icon;
+
               return (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setSection(item.id)}
-                  className="tap-scale group flex flex-col items-center text-center p-5 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                  className="tap-scale group flex flex-col items-center text-center p-5 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
                 >
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] transition-transform duration-200 group-hover:scale-105"
-                    style={{ color: item.color }}
+                    className="w-16 h-16 rounded-[22px] flex items-center justify-center mb-3 bg-[#FBEBE2] border border-[#E9DCCF] transition-transform duration-200 group-hover:scale-105"
+                    style={{ color: item.id === "portfolio" ? "#EB725B" : "#195A50" }}
                   >
                     <IconComp />
                   </div>
-                  <span className="text-sm font-bold text-[#1B2922] leading-tight block">
+                  <span className="text-sm font-bold text-[#195A50] leading-tight block">
                     {item.title}
                   </span>
-                  <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1.5">
+                  <span className="text-[11px] font-medium text-[#7D8C83] leading-tight mt-1.5">
                     {item.subtitle}
                   </span>
-                  <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-forest">
+                  <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-[#195A50]">
                     <span>Open Folder</span>
                     <ChevronRight size={12} />
                   </div>
@@ -979,7 +980,7 @@ function VaultContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">My Docs</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">My Docs</h2>
               <p className="text-[11px] text-ink-muted">
                 Property document archive &amp; vault health score.
               </p>
@@ -1392,7 +1393,7 @@ function VaultContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Property Portfolio</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Property Portfolio</h2>
               <p className="text-[11px] text-ink-muted">
                 Total property net worth &amp; valuation manager.
               </p>
@@ -1555,10 +1556,10 @@ function VaultContent() {
                 <Plus size={20} />
               </div>
               <div className="text-left">
-                <h4 className="text-xs font-bold text-[#1B2922] group-hover:text-forest">
+                <h4 className="text-xs font-bold text-[#195A50] group-hover:text-forest">
                   + Add Property Details to Portfolio
                 </h4>
-                <p className="text-[10px] text-[#7C8B82]">
+                <p className="text-[10px] text-[#7D8C83]">
                   Add a new plot, flat, villa or commercial asset with title &amp; valuation
                 </p>
               </div>
@@ -1713,7 +1714,7 @@ function VaultContent() {
                             alt="Property Photo"
                             className="w-12 h-12 object-cover rounded-lg border border-[#A7CEB7]"
                           />
-                          <span className="text-[11px] font-bold text-[#1E5637]">
+                          <span className="text-[11px] font-bold text-[#195A50]">
                             Photo Attached ✓
                           </span>
                         </div>
@@ -1768,7 +1769,7 @@ function VaultContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Manage Properties</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Manage Properties</h2>
               <p className="text-[11px] text-ink-muted">
                 Collections, utility payments &amp; maintenance repair alerts.
               </p>
@@ -1912,8 +1913,8 @@ function VaultContent() {
               </div>
 
               {/* Timely Due Date Notifications Banner */}
-              <div className="p-3.5 rounded-2xl bg-[#E8F5EE] border border-[#A3D9B5] text-[#1E5637] flex items-start gap-2.5 shadow-2xs">
-                <Bell size={16} className="mt-0.5 shrink-0 text-[#1E5637]" />
+              <div className="p-3.5 rounded-2xl bg-[#E8F5EE] border border-[#A3D9B5] text-[#195A50] flex items-start gap-2.5 shadow-2xs">
+                <Bell size={16} className="mt-0.5 shrink-0 text-[#195A50]" />
                 <div className="text-xs">
                   <p className="font-bold">Timely Due Date Notifications Active</p>
                   <p className="text-[11px] text-[#245838] mt-0.5 leading-relaxed">
@@ -2296,9 +2297,9 @@ function VaultContent() {
                   {/* Timely Due Date Notification Checkbox */}
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#E8F5EE] border border-[#A3D9B5] text-xs">
                     <div className="flex items-center gap-2">
-                      <Bell size={14} className="text-[#1E5637] shrink-0" />
+                      <Bell size={14} className="text-[#195A50] shrink-0" />
                       <div>
-                        <p className="font-bold text-[#1E5637]">Timely Notification</p>
+                        <p className="font-bold text-[#195A50]">Timely Notification</p>
                         <p className="text-[10px] text-[#245838]">WhatsApp &amp; SMS alerts 7 days &amp; 1 day before due date</p>
                       </div>
                     </div>
@@ -2430,7 +2431,7 @@ function VaultContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Find a Paper</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Find a Paper</h2>
               <p className="text-[11px] text-ink-muted">
                 Keyword search across all property documents in your vault.
               </p>

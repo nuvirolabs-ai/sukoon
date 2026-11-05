@@ -76,7 +76,7 @@ const CONSTRUCTION_FEATURES = [
     id: "journey" as const,
     title: "Build journey",
     subtitle: "28 Steps & Roadmap",
-    color: "#1E5637",
+    color: "#195A50",
     icon: function BuildJourneyIcon() {
       return (
         <svg
@@ -396,7 +396,7 @@ const FOLDERS_CONFIG: {
   { key: "Pipe", name: "Pipe & Plumbing", color: "#0D9488", iconBg: "bg-teal-50 text-teal-700" },
   { key: "Sand", name: "Sand (River & M-Sand)", color: "#D97706", iconBg: "bg-orange-50 text-orange-700" },
   { key: "Stone Chips", name: "Stone Chips (Gitti)", color: "#52525B", iconBg: "bg-zinc-100 text-zinc-700" },
-  { key: "Labour", name: "Labour & Contractor", color: "#1E5637", iconBg: "bg-emerald-50 text-emerald-800" },
+  { key: "Labour", name: "Labour & Contractor", color: "#195A50", iconBg: "bg-emerald-50 text-emerald-800" },
   { key: "Miscellaneous", name: "Miscellaneous / Other", color: "#7C3AED", iconBg: "bg-purple-50 text-purple-700" },
 ];
 
@@ -1034,7 +1034,7 @@ function ConstructionContent() {
     <div className="w-full max-w-md mx-auto min-h-screen px-4 pt-3 pb-28 text-foreground">
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1B2922] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-200">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#195A50] text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-top duration-200">
           <Check size={14} className="text-emerald-400" />
           <span>{toastMsg}</span>
         </div>
@@ -1090,8 +1090,8 @@ function ConstructionContent() {
       {section === null && (
         <div className="animate-in fade-in duration-200">
           <div className="mb-6">
-            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Construction Hub</h1>
-            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+            <h1 className="text-2xl font-serif font-bold text-[#195A50]">Construction Hub</h1>
+            <p className="text-xs text-[#7D8C83] mt-1 leading-relaxed">
               Tap a folder below to manage milestones, expense folders, on-site supervision, material rates &amp; architectural plans.
             </p>
           </div>
@@ -1100,6 +1100,8 @@ function ConstructionContent() {
           <div className="grid grid-cols-2 gap-3.5 mb-8">
             {CONSTRUCTION_FEATURES.map((item) => {
               const IconComp = item.icon;
+              const isAccent = item.id === "rates" || item.id === "plans" || item.id === "journey";
+
               return (
                 <button
                   key={item.id}
@@ -1108,23 +1110,23 @@ function ConstructionContent() {
                     setSection(item.id);
                     if (item.id !== "accounts") setActiveFolderKey(null);
                   }}
-                  className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                  className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E9DCCF] shadow-[0_6px_20px_rgba(25,90,80,0.05)] hover:border-[#195A50]/40 hover:shadow-md transition-all duration-200"
                 >
                   <div>
                     <div
-                      className="w-13 h-13 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] group-hover:scale-105 transition-transform"
-                      style={{ color: item.color }}
+                      className="w-14 h-14 rounded-[20px] flex items-center justify-center mb-3 bg-[#FBEBE2] border border-[#E9DCCF] group-hover:scale-105 transition-transform"
+                      style={{ color: isAccent ? "#EB725B" : "#195A50" }}
                     >
                       <IconComp />
                     </div>
-                    <span className="text-xs font-bold text-[#1B2922] leading-tight block">
+                    <span className="text-xs font-bold text-[#195A50] leading-tight block">
                       {item.title}
                     </span>
-                    <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-1 block">
+                    <span className="text-[10px] font-medium text-[#7D8C83] leading-tight mt-1 block">
                       {item.subtitle}
                     </span>
                   </div>
-                  <div className="mt-3.5 pt-2 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-forest">
+                  <div className="mt-3.5 pt-2 border-t border-[#E9DCCF] flex items-center justify-between text-[10px] font-bold text-[#195A50]">
                     <span>Open Folder</span>
                     <ChevronRight size={12} />
                   </div>
@@ -1146,7 +1148,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Build Journey (28 Steps)</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Build Journey (28 Steps)</h2>
               <p className="text-[11px] text-ink-muted">
                 Minimal interactive roadmap. Tap any step to expand details.
               </p>
@@ -1165,7 +1167,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Expenses Notebook</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Expenses Notebook</h2>
               <p className="text-[11px] text-ink-muted">
                 Smart folders by construction material with consolidated totals.
               </p>
@@ -1174,7 +1176,7 @@ function ConstructionContent() {
           </div>
 
           {/* Overall Expenses Summary Banner */}
-          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#1E5637] to-[#133A24] text-white shadow-md space-y-3">
+          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#195A50] to-[#133A24] text-white shadow-md space-y-3">
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">
@@ -1218,7 +1220,7 @@ function ConstructionContent() {
                 >
                   <ArrowLeft size={14} /> Back to All Folders
                 </button>
-                <span className="text-xs font-bold text-[#1B2922]">
+                <span className="text-xs font-bold text-[#195A50]">
                   📂 {activeFolderKey} Folder
                 </span>
               </div>
@@ -1229,7 +1231,7 @@ function ConstructionContent() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted">
                     Consolidated {activeFolderKey} Spend
                   </span>
-                  <h3 className="text-xl font-bold text-[#1B2922] mt-0.5">
+                  <h3 className="text-xl font-bold text-[#195A50] mt-0.5">
                     ₹{(folderCategoryTotals[activeFolderKey]?.total || 0).toLocaleString("en-IN")}
                   </h3>
                   <p className="text-[11px] text-ink-muted">
@@ -1251,7 +1253,7 @@ function ConstructionContent() {
 
               {/* List of entries inside this category folder */}
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-[#1B2922] px-1">
+                <h4 className="text-xs font-bold text-[#195A50] px-1">
                   Transactions in {activeFolderKey}
                 </h4>
 
@@ -1279,7 +1281,7 @@ function ConstructionContent() {
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <h5 className="text-xs font-bold text-[#1B2922]">{item.agencyName}</h5>
+                            <h5 className="text-xs font-bold text-[#195A50]">{item.agencyName}</h5>
                             <span className="text-[10px] text-ink-muted">{item.date}</span>
                           </div>
                           {item.note && (
@@ -1290,7 +1292,7 @@ function ConstructionContent() {
                         </div>
 
                         <div className="text-right shrink-0">
-                          <span className="text-xs font-bold text-[#1B2922] block">
+                          <span className="text-xs font-bold text-[#195A50] block">
                             ₹{item.amount.toLocaleString("en-IN")}
                           </span>
                           <button
@@ -1310,7 +1312,7 @@ function ConstructionContent() {
             /* SMART FOLDERS GRID VIEW (8 CATEGORIES) */
             <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-bold text-[#1B2922]">Smart Construction Folders</span>
+                <span className="text-xs font-bold text-[#195A50]">Smart Construction Folders</span>
                 <span className="text-[11px] text-ink-muted">Tap folder to open breakdown</span>
               </div>
 
@@ -1335,11 +1337,11 @@ function ConstructionContent() {
                         </span>
                       </div>
 
-                      <h4 className="text-xs font-bold text-[#1B2922] group-hover:text-forest transition leading-tight">
+                      <h4 className="text-xs font-bold text-[#195A50] group-hover:text-forest transition leading-tight">
                         {folder.name}
                       </h4>
 
-                      <p className="text-sm font-black text-[#1B2922] mt-1">
+                      <p className="text-sm font-black text-[#195A50] mt-1">
                         ₹{(stat.total / 100000).toFixed(2)} Lakh
                       </p>
                       <span className="text-[10px] text-ink-muted">till date</span>
@@ -1366,7 +1368,7 @@ function ConstructionContent() {
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">
                     Smart Expense Ledger
                   </span>
-                  <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+                  <h3 className="text-base font-serif font-bold text-[#195A50] mt-1">
                     Record Construction Expense
                   </h3>
                 </div>
@@ -1459,7 +1461,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Site Visit Minutes</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Site Visit Minutes</h2>
               <p className="text-[11px] text-ink-muted">
                 To-do list for discussion points with your architect &amp; interior team.
               </p>
@@ -1473,7 +1475,7 @@ function ConstructionContent() {
               <span className="text-[10px] font-bold uppercase tracking-wider text-forest bg-emerald-100 px-2 py-0.5 rounded-full">
                 Active Site: Plot 108
               </span>
-              <h3 className="text-xs font-bold text-[#1B2922] mt-1">
+              <h3 className="text-xs font-bold text-[#195A50] mt-1">
                 {siteMinutes.filter((m) => !m.isDone).length} Open Action Points
               </h3>
             </div>
@@ -1574,7 +1576,7 @@ function ConstructionContent() {
                           </span>
                         )}
                         {item.isDone && (
-                          <span className="text-[9px] font-bold text-[#1E5637] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.2 rounded-md">
+                          <span className="text-[9px] font-bold text-[#195A50] bg-[#E8F2EC] border border-[#C5DDD0] px-1.5 py-0.2 rounded-md">
                             ✓ Resolved
                           </span>
                         )}
@@ -1582,7 +1584,7 @@ function ConstructionContent() {
 
                       <p
                         className={`text-xs mt-1 leading-snug font-semibold ${
-                          item.isDone ? "text-[#1B2922]" : "text-[#1B2922]"
+                          item.isDone ? "text-[#195A50]" : "text-[#195A50]"
                         }`}
                       >
                         {item.title}
@@ -1625,7 +1627,7 @@ function ConstructionContent() {
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-blue-100 text-blue-800">
                     Site Visit Action Point
                   </span>
-                  <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+                  <h3 className="text-base font-serif font-bold text-[#195A50] mt-1">
                     Add Observation / To-Do
                   </h3>
                 </div>
@@ -1709,10 +1711,10 @@ function ConstructionContent() {
                             className="w-12 h-12 object-cover rounded-lg border border-[#A7CEB7]"
                           />
                           <div className="min-w-0">
-                            <span className="text-[11px] font-bold text-[#1E5637] block truncate">
+                            <span className="text-[11px] font-bold text-[#195A50] block truncate">
                               ✓ Photo Attached
                             </span>
-                            <span className="text-[9px] text-[#7C8B82]">Tap X to remove or replace</span>
+                            <span className="text-[9px] text-[#7D8C83]">Tap X to remove or replace</span>
                           </div>
                         </div>
                         <button
@@ -1798,7 +1800,7 @@ function ConstructionContent() {
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-blue-100 text-blue-800">
                     Team Discussion
                   </span>
-                  <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+                  <h3 className="text-base font-serif font-bold text-[#195A50] mt-1">
                     Share Site Minutes
                   </h3>
                   <p className="text-xs text-ink-muted">
@@ -1806,7 +1808,7 @@ function ConstructionContent() {
                   </p>
                 </div>
 
-                <div className="bg-sand/30 border border-line rounded-2xl p-3.5 text-xs font-mono text-[#1B2922] whitespace-pre-wrap max-h-56 overflow-y-auto leading-relaxed">
+                <div className="bg-sand/30 border border-line rounded-2xl p-3.5 text-xs font-mono text-[#195A50] whitespace-pre-wrap max-h-56 overflow-y-auto leading-relaxed">
                   {shareableMinutesText}
                 </div>
 
@@ -1846,7 +1848,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Daily Material Rates</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Daily Material Rates</h2>
               <p className="text-[11px] text-ink-muted">
                 Mandi rates auto-adjusted across major Indian cities.
               </p>
@@ -1933,12 +1935,12 @@ function ConstructionContent() {
                     <span className="px-2 py-0.5 rounded-md text-[9px] font-bold bg-[#553C9A]/10 text-[#553C9A]">
                       {item.category}
                     </span>
-                    <h3 className="text-sm font-bold text-[#1B2922] mt-1">{item.name}</h3>
+                    <h3 className="text-sm font-bold text-[#195A50] mt-1">{item.name}</h3>
                     <p className="text-[11px] text-ink-muted">{item.brandOrType}</p>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className="text-sm font-black text-[#1B2922] block">
+                    <span className="text-sm font-black text-[#195A50] block">
                       ₹{item.currentRate.toLocaleString("en-IN")}
                     </span>
                     <span className="text-[10px] text-ink-muted block">{item.unit}</span>
@@ -1968,7 +1970,7 @@ function ConstructionContent() {
           <div className="bg-sand/30 border border-line rounded-3xl p-4 space-y-3 mt-5">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xs font-bold text-[#1B2922] flex items-center gap-1.5">
+                <h3 className="text-xs font-bold text-[#195A50] flex items-center gap-1.5">
                   <Sparkles size={14} className="text-amber-600" /> Material Quantity Estimator
                 </h3>
                 <p className="text-[10px] text-ink-muted">
@@ -2028,7 +2030,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Authorized Material Dealers</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Authorized Material Dealers</h2>
               <p className="text-[11px] text-ink-muted">
                 Direct WhatsApp connect with verified construction material suppliers in {appSelectedCity}.
               </p>
@@ -2080,7 +2082,7 @@ function ConstructionContent() {
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[#1B2922] mt-1.5 leading-snug">
+                    <h3 className="text-sm font-bold text-[#195A50] mt-1.5 leading-snug">
                       {dealer.businessName}
                     </h3>
                     <p className="text-xs text-ink-muted flex items-center gap-1 mt-0.5">
@@ -2102,7 +2104,7 @@ function ConstructionContent() {
                   {dealer.categories.map((cat, i) => (
                     <span
                       key={i}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-sand/60 text-[#1B2922] border border-line/60"
+                      className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-sand/60 text-[#195A50] border border-line/60"
                     >
                       {cat}
                     </span>
@@ -2117,7 +2119,7 @@ function ConstructionContent() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="tap-scale flex-1 py-2 px-3 rounded-xl bg-[#1E5637] text-white text-xs font-bold shadow-2xs hover:opacity-95 flex items-center justify-center gap-1.5"
+                    className="tap-scale flex-1 py-2 px-3 rounded-xl bg-[#195A50] text-white text-xs font-bold shadow-2xs hover:opacity-95 flex items-center justify-center gap-1.5"
                   >
                     <MessageSquare size={14} /> Connect on WhatsApp
                   </a>
@@ -2135,7 +2137,7 @@ function ConstructionContent() {
 
           {/* Supplier listing prompt */}
           <div className="bg-sand/30 border border-dashed border-line rounded-2xl p-4 text-center space-y-1.5">
-            <p className="text-xs font-bold text-[#1B2922]">Are you an authorized material supplier?</p>
+            <p className="text-xs font-bold text-[#195A50]">Are you an authorized material supplier?</p>
             <p className="text-[11px] text-ink-muted">
               Get listed on Sukoon Construction Hub and receive verified direct orders in {appSelectedCity}.
             </p>
@@ -2160,7 +2162,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Listed Authorized Architects</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Listed Authorized Architects</h2>
               <p className="text-[11px] text-ink-muted">
                 Council of Architecture (COA) registered residential &amp; luxury architects in {appSelectedCity}.
               </p>
@@ -2195,7 +2197,7 @@ function ConstructionContent() {
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[#1B2922] mt-1.5 leading-snug">
+                    <h3 className="text-sm font-bold text-[#195A50] mt-1.5 leading-snug">
                       {arch.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#0D7490] mt-0.5">
@@ -2256,7 +2258,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Listed Authorized Civil Engineers</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Listed Authorized Civil Engineers</h2>
               <p className="text-[11px] text-ink-muted">
                 Chartered structural consultants, RCC bar-bending auditors &amp; soil test engineers in {appSelectedCity}.
               </p>
@@ -2291,7 +2293,7 @@ function ConstructionContent() {
                       </span>
                     </div>
 
-                    <h3 className="text-sm font-bold text-[#1B2922] mt-1.5 leading-snug">
+                    <h3 className="text-sm font-bold text-[#195A50] mt-1.5 leading-snug">
                       {eng.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#C05621] mt-0.5">
@@ -2352,7 +2354,7 @@ function ConstructionContent() {
         <section className="space-y-4 animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-sm font-bold text-[#1B2922]">Conceptual Layout Plans &amp; Elevations</h2>
+              <h2 className="text-sm font-bold text-[#195A50]">Conceptual Layout Plans &amp; Elevations</h2>
               <p className="text-[11px] text-ink-muted">
                 Pre-defined Vastu layouts with 3D elevations + Custom Plan drafting.
               </p>
@@ -2361,7 +2363,7 @@ function ConstructionContent() {
           </div>
 
           {/* Make Custom Plan Banner */}
-          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#1E5637] to-[#133A24] text-white shadow-md space-y-3">
+          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#195A50] to-[#133A24] text-white shadow-md space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300">
@@ -2440,7 +2442,7 @@ function ConstructionContent() {
                           {plan.facing}
                         </span>
                       </div>
-                      <h3 className="text-sm font-bold text-[#1B2922] mt-1.5 leading-snug">
+                      <h3 className="text-sm font-bold text-[#195A50] mt-1.5 leading-snug">
                         {plan.title}
                       </h3>
                       <p className="text-xs font-medium text-ink-muted mt-0.5">
@@ -2555,7 +2557,7 @@ function ConstructionContent() {
                   <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800">
                     Architectural Desk
                   </span>
-                  <h3 className="text-base font-serif font-bold text-[#1B2922] mt-1">
+                  <h3 className="text-base font-serif font-bold text-[#195A50] mt-1">
                     Request Custom Layout Plan
                   </h3>
                   <p className="text-xs text-ink-muted">

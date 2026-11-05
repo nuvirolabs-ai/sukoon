@@ -50,15 +50,15 @@ export function IOSFolderFavorites({
   return (
     <section aria-label="My Favorites" className="mb-4">
       {/* Apple Frosted Glass Card Container */}
-      <div className="bg-gradient-to-b from-white/95 via-white/90 to-[#F5F0E6]/90 backdrop-blur-md rounded-[26px] p-4 sm:p-4.5 border border-[#E5DFD2] shadow-[0_4px_24px_rgba(27,61,47,0.04)]">
+      <div className="bg-white/95 backdrop-blur-md rounded-[28px] p-4.5 sm:p-5 border border-[#E9DCCF] shadow-[0_8px_30px_rgba(25,90,80,0.05)]">
         {/* Header Row: Subtle Jewel Indicator + Count + Customize */}
         <div className="flex items-center justify-between mb-3.5 px-1">
           <div className="flex items-center gap-2">
-            <span className="text-[#3D6650] text-[12px] leading-none select-none">✦</span>
-            <h2 className="text-[11px] font-bold tracking-[0.12em] text-[#5A6E63] uppercase">
+            <span className="text-[#EB725B] text-[12px] leading-none select-none">✦</span>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] text-[#195A50] uppercase">
               My Favorites
             </h2>
-            <span className="px-2 py-0.5 rounded-full bg-[#EFE9DF] border border-[#DDD6C8] text-[10px] font-semibold text-[#3D5A4A]">
+            <span className="px-2 py-0.5 rounded-full bg-[#F6C6AF] border border-[#E9DCCF] text-[10px] font-bold text-[#195A50]">
               {favoriteItems.length} {favoriteItems.length === 1 ? "App" : "Apps"}
             </span>
           </div>
@@ -66,9 +66,9 @@ export function IOSFolderFavorites({
           <button
             type="button"
             onClick={onOpenCustomize}
-            className="tap-scale inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white hover:bg-[#FAF8F5] text-forest border border-[#D8D0C2] text-[11px] font-bold shadow-2xs hover:shadow-xs transition-all"
+            className="tap-scale inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-[#FFF7EF] text-[#195A50] border border-[#E9DCCF] text-[11px] font-bold shadow-2xs hover:shadow-xs transition-all"
           >
-            <SlidersHorizontal size={11} className="text-forest/80" />
+            <SlidersHorizontal size={12} className="text-[#195A50]" />
             <span>Customize</span>
           </button>
         </div>
@@ -83,13 +83,13 @@ export function IOSFolderFavorites({
             className="tap-scale group flex flex-col items-center text-center focus:outline-none"
           >
             {/* iOS Folder Squircle */}
-            <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-gradient-to-br from-[#EAE3D6] to-[#DDD4C3] border border-white/80 shadow-[0_4px_14px_rgba(27,61,47,0.08),0_1px_3px_rgba(0,0,0,0.04)] p-1.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(27,61,47,0.14)]">
+            <div className="relative w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_14px_rgba(25,90,80,0.06)] p-1.5 flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(25,90,80,0.14)]">
               {/* 2x2 Mini Preview Grid */}
               <div className="grid grid-cols-2 gap-1 w-full h-full">
                 {previewItems.map((item) => (
                   <div
                     key={item.id}
-                    className="w-full h-full rounded-[4px] bg-white shadow-2xs flex items-center justify-center overflow-hidden"
+                    className="w-full h-full rounded-[5px] bg-white shadow-2xs flex items-center justify-center overflow-hidden"
                     style={{ color: item.color }}
                   >
                     {renderIcon(item.iconType, "w-2.5 h-2.5")}
@@ -98,7 +98,7 @@ export function IOSFolderFavorites({
                 {Array.from({ length: Math.max(0, 4 - previewItems.length) }).map((_, i) => (
                   <div
                     key={`empty-${i}`}
-                    className="w-full h-full rounded-[4px] bg-white/40 flex items-center justify-center text-[#9AA8A0]"
+                    className="w-full h-full rounded-[5px] bg-white/40 flex items-center justify-center text-[#9AA8A0]"
                   >
                     <Plus size={8} />
                   </div>
@@ -107,38 +107,40 @@ export function IOSFolderFavorites({
             </div>
 
             {/* Folder Label */}
-            <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest transition-colors">
+            <span className="text-[11px] font-bold text-[#195A50] mt-1.5 leading-tight block truncate max-w-full group-hover:text-[#EB725B] transition-colors">
               Favorites
             </span>
-            <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
+            <span className="text-[9px] font-medium text-[#7D8C83] leading-tight block truncate max-w-full mt-0.5">
               Open folder
             </span>
           </button>
 
           {/* 2, 3, 4. DIRECT QUICK-LAUNCH APPS */}
-          {quickApps.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className="tap-scale group flex flex-col items-center text-center focus:outline-none"
-            >
-              {/* iOS White App Squircle */}
-              <div
-                className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white border border-[#E8E2D5] shadow-[0_4px_14px_rgba(27,61,47,0.08),0_1px_3px_rgba(0,0,0,0.04)] flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(27,61,47,0.14)]"
-                style={{ color: item.color }}
+          {quickApps.map((item) => {
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="tap-scale group flex flex-col items-center text-center focus:outline-none"
               >
-                {renderIcon(item.iconType, "w-6.5 h-6.5")}
-              </div>
+                {/* iOS App Squircle */}
+                <div
+                  className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-[#FBEBE2] border border-[#E9DCCF] shadow-[0_4px_14px_rgba(25,90,80,0.06)] flex items-center justify-center transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_8px_20px_rgba(25,90,80,0.12)]"
+                  style={{ color: item.color }}
+                >
+                  {renderIcon(item.iconType, "w-6 h-6")}
+                </div>
 
-              {/* App Title */}
-              <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest transition-colors">
-                {item.title}
-              </span>
-              <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
-                {item.subtitle}
-              </span>
-            </Link>
-          ))}
+                {/* App Title */}
+                <span className="text-[11px] font-bold text-[#195A50] mt-1.5 leading-tight block truncate max-w-full group-hover:text-[#EB725B] transition-colors">
+                  {item.title}
+                </span>
+                <span className="text-[9px] font-medium text-[#7D8C83] leading-tight block truncate max-w-full mt-0.5">
+                  {item.subtitle}
+                </span>
+              </Link>
+            );
+          })}
 
           {/* If user has fewer than 3 quick apps, show Add Shortcut button */}
           {quickApps.length < 3 && (
@@ -147,13 +149,13 @@ export function IOSFolderFavorites({
               onClick={onOpenCustomize}
               className="tap-scale group flex flex-col items-center text-center focus:outline-none"
             >
-              <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white/50 border border-dashed border-[#D2C8B8] hover:border-forest/50 hover:bg-white shadow-2xs flex items-center justify-center text-[#7C8B82] group-hover:text-forest transition-all">
+              <div className="w-14 h-14 sm:w-15 sm:h-15 rounded-[18px] bg-white/60 border border-dashed border-[#E9DCCF] hover:border-[#195A50]/50 hover:bg-white shadow-2xs flex items-center justify-center text-[#7D8C83] group-hover:text-[#195A50] transition-all">
                 <Plus size={18} />
               </div>
-              <span className="text-[11px] font-bold text-[#1B2922] mt-1.5 leading-tight block truncate max-w-full group-hover:text-forest">
+              <span className="text-[11px] font-bold text-[#195A50] mt-1.5 leading-tight block truncate max-w-full group-hover:text-[#EB725B]">
                 Add
               </span>
-              <span className="text-[9px] font-medium text-[#7C8B82] leading-tight block truncate max-w-full mt-0.5">
+              <span className="text-[9px] font-medium text-[#7D8C83] leading-tight block truncate max-w-full mt-0.5">
                 New app
               </span>
             </button>
@@ -161,17 +163,18 @@ export function IOSFolderFavorites({
         </div>
 
         {/* Bottom Subtle Folder Hint */}
-        <div className="mt-3.5 pt-2.5 border-t border-[#EAE3D6] flex items-center justify-between text-[10px] text-[#76877D] px-1">
+        <div className="mt-4 pt-3 border-t border-[#E9DCCF] flex items-center justify-between text-[10.5px] text-[#7D8C83] px-1">
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#3D6650]/60" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#195A50]" />
             <span>Tap <strong>Favorites folder</strong> to view full suite</span>
           </span>
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="tap-scale text-[#3D6650] font-semibold hover:underline"
+            className="tap-scale text-[#EB725B] font-bold hover:underline flex items-center gap-0.5"
           >
-            Expand ↗
+            <span>Expand</span>
+            <span>↗</span>
           </button>
         </div>
       </div>

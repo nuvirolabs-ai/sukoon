@@ -12,8 +12,32 @@ import { StatusTransition } from "./motion/StatusTransition";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell">
-      <a href="#main-content" className="skip-link">Skip to content</a><main id="main-content" className="app-workspace">{children}</main>
+    <div className="app-shell relative min-h-screen">
+      {/* Ambient Atmospheric Organic Backdrop Blobs - Constant across all pages */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        {/* Top-Right Warm Soft Peach Organic Shape */}
+        <svg
+          className="absolute -top-4 -right-4 w-48 h-48 sm:w-60 sm:h-60 text-[#F6C6AF]"
+          viewBox="0 0 160 160"
+          fill="currentColor"
+          preserveAspectRatio="none"
+        >
+          <path d="M160 0 H50 C65 65 110 115 160 115 Z" />
+        </svg>
+
+        {/* Bottom-Left Calming Sage Green Organic Shape */}
+        <svg
+          className="absolute -bottom-6 -left-6 w-52 h-52 sm:w-64 sm:h-64 text-[#CFDCCB]"
+          viewBox="0 0 160 160"
+          fill="currentColor"
+          preserveAspectRatio="none"
+        >
+          <path d="M0 160 V50 C65 65 115 110 115 160 Z" />
+        </svg>
+      </div>
+
+      <a href="#main-content" className="skip-link">Skip to content</a>
+      <main id="main-content" className="app-workspace relative z-10">{children}</main>
       <Suspense fallback={null}><BottomNav /></Suspense>
     </div>
   );
