@@ -837,9 +837,8 @@ html.has-dock-place { --sukoon-nav-height: 128px; }
    Home and /home-reference stay on the flat reference dock. */
 html.is-inner {
   --color-canvas: #FFF7EF;
-  --sukoon-nav-height: 124px;
+  --sukoon-nav-height: 80px;
 }
-html.is-inner.has-dock-place { --sukoon-nav-height: 162px; }
 html.is-inner body {
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -986,55 +985,9 @@ html.is-inner .section-switch button[aria-current="page"] {
   color: #fff;
   box-shadow: none;
 }
-html.is-inner .bottom-navigation {
-  left: 14px;
-  right: 14px;
-  bottom: max(12px, env(safe-area-inset-bottom));
-  width: auto;
-  border-radius: 32px;
-  border: 1px solid #E9DCCF;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(24px) saturate(1.5);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  box-shadow: 0 14px 40px rgba(25, 90, 80, 0.08), inset 0 1px 0 rgba(255, 255, 255, .95);
-  padding: 8px 8px 10px;
-}
-html.is-inner .nav-item.is-active { color: #195A50; }
-html.is-inner .nav-item.is-active .nav-item__label::after { display: none; }
-html.is-inner .nav-item__pill {
-  display: block;
-  position: absolute;
-  inset: 2px 4px;
-  border-radius: 16px;
-  background: rgba(25, 90, 80, .1);
-  opacity: 0;
-}
-html.is-inner .nav-item.is-active .nav-item__pill { opacity: 1; }
-html.is-inner .dock-place { padding: 2px 12px 4px; min-height: 26px; }
-html.is-inner .dock-place strong {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .02em;
-  color: #6e746f;
-}
 html.is-inner .primary-disclosure { border-radius: 16px; font-weight: 600; letter-spacing: -0.16px; }
 @media (min-width: 1000px) {
-  html.is-inner,
-  html.is-inner.has-dock-place { --sukoon-nav-height: 0px; }
-  html.is-inner .bottom-navigation {
-    left: 0;
-    right: auto;
-    bottom: 0;
-    width: 224px;
-    border-radius: 0;
-    border: 0;
-    border-right: 1px solid #e8e9e5;
-    background: rgba(255, 255, 255, .96);
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    padding: 80px 20px;
-  }
+  html.is-inner { --sukoon-nav-height: 0px; }
   html.is-inner .motion-compactbar {
     position: sticky;
     top: 0;

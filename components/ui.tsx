@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { Suspense, useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2, FolderOpen, HardHat, Receipt, Bell, Inbox, BookOpen, Search, User, TrendingUp, Sparkles } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Home, Loader2, User, TrendingUp, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
 import { cx } from "@/lib/utils";
 import { useStore } from "./StoreProvider";
 import { t } from "@/lib/i18n";
@@ -45,46 +45,21 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
 const NAV_ICON = "h-[22px] w-[22px]";
 
-function dockPlace(path: string, tab: string | null, properties: Array<{ id: string; name: string }>) {
-  if (path.startsWith("/estate")) return { href: "/vault", label: "Estate & Build", slot: "context" as const, icon: <Building2 className={NAV_ICON} /> };
-  if (path.startsWith("/market")) return { href: "/buy-sell", label: "Deals & Market", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
-  if (path.startsWith("/vault")) return { href: "/vault", label: "Vault", slot: "more" as const, icon: <FolderOpen className={NAV_ICON} /> };
-  if (path.startsWith("/construction")) return { href: "/construction", label: "Build", slot: "more" as const, icon: <HardHat className={NAV_ICON} /> };
-  if (path.startsWith("/bills")) return { href: "/bills", label: "Bills", slot: "more" as const, icon: <Receipt className={NAV_ICON} /> };
-  if (path.startsWith("/reminders")) return { href: "/reminders", label: "Reminders", slot: "more" as const, icon: <Bell className={NAV_ICON} /> };
-  if (path.startsWith("/updates")) return { href: "/updates", label: "Updates", slot: "more" as const, icon: <Inbox className={NAV_ICON} /> };
-  if (path.startsWith("/guides") || path.startsWith("/guideline")) return { href: "/guides", label: "Guides", slot: "more" as const, icon: <BookOpen className={NAV_ICON} /> };
-  if (path.startsWith("/buy-sell")) return { href: "/buy-sell", label: "Buy / Sell", slot: "context" as const, icon: <Compass className={NAV_ICON} /> };
-  const match = path.match(/^\/property\/([^/]+)/);
-  if (!match || match[1] === "new") return null;
-  const name = properties.find((property) => property.id === match[1])?.name || "Property";
-  const section = path.includes("/documents/") ? "Papers" : path.includes("/bills/") ? "Bills" : tab === "vault" ? "Papers" : tab === "bills" ? "Bills" : tab === "maint" ? "Maintenance" : tab === "rent" ? "Rent" : tab === "timeline" ? "Timeline" : tab === "share" ? "Sharing" : tab === "export" ? "Exports" : "";
-  const href = section === "Papers" ? `/property/${match[1]}?tab=vault` : section === "Bills" ? `/property/${match[1]}?tab=bills` : section ? `/property/${match[1]}?tab=${tab || "overview"}` : `/property/${match[1]}`;
-  return { href, label: section ? `${name} · ${section}` : name, slot: "context" as const, icon: <Building2 className={NAV_ICON} /> };
-}
-
 function BottomNav() {
   const path = usePathname();
-  const tab = useSearchParams().get("tab");
   let lang: "en" | "hi" = "en";
-  let properties: Array<{ id: string; name: string }> = [];
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { s } = useStore();
     lang = s.lang;
-    properties = s.properties;
   } catch {}
-  const place = dockPlace(path, tab, properties);
-  const placeKey = place ? `${place.slot}:${place.href}` : "";
   const inner = path !== "/" && path !== "/home-reference";
   useEffect(() => {
-    document.documentElement.classList.toggle("has-dock-place", Boolean(placeKey));
     document.documentElement.classList.toggle("is-inner", inner);
     return () => {
-      document.documentElement.classList.remove("has-dock-place");
       document.documentElement.classList.remove("is-inner");
     };
-  }, [placeKey, inner]);
+  }, [inner]);
   const navTabs = [
     {
       href: "/",
@@ -120,7 +95,6 @@ function BottomNav() {
   );
   return (
     <nav aria-label="Main navigation" className="bottom-navigation">
-      {place ? <div className="dock-place"><strong>{place.label}</strong></div> : null}
       <div className="nav-items">
         {navTabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
       </div>

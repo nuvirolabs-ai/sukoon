@@ -456,32 +456,32 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
       <div>
         {/* 1. Header with Centered Sukoon Logo, City Selector & Profile (Native Mobile Optimized) */}
-        <header className="relative flex items-center justify-between mb-6 pt-2 min-h-[58px] px-0.5">
+        <header className="relative flex items-center justify-between mb-6 pt-1.5 pb-1 min-h-[54px] px-0.5">
           {/* Top Left: City Selector */}
           <button
             type="button"
             onClick={() => setCityModalOpen(true)}
             aria-label="Select City"
-            className="tap-scale relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-[#FFF7EF] border border-[#E9DCCF] text-[#195A50] text-xs font-semibold shadow-2xs focus:outline-none shrink-0"
+            className="tap-scale relative z-10 flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white hover:bg-[#FFF7EF] border border-[#E9DCCF] text-[#195A50] text-xs font-semibold shadow-2xs focus:outline-none shrink-0"
           >
             <MapPin size={12} className="text-[#195A50] shrink-0" />
-            <span className="max-w-[70px] truncate">{city}</span>
+            <span className="max-w-[62px] truncate">{city}</span>
             <ChevronDown size={11} className="text-[#195A50] shrink-0" />
           </button>
 
-          {/* Center Brand Identity - Sized Same as Search Bar & Center Aligned */}
-          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0">
-            <div className="w-52 flex items-center justify-center overflow-visible">
+          {/* Center Brand Identity - Sized with Clean Spacing & Mathematically Centered */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-0 px-20">
+            <div className="flex items-center justify-center">
               <Image
                 src="/images/sukoon-brand-logo.png"
                 alt="Sukoon"
-                width={208}
-                height={48}
+                width={130}
+                height={30}
                 priority
-                className="h-10 sm:h-11 w-auto max-w-[208px] object-contain select-none mix-blend-multiply"
+                className="h-7 sm:h-7.5 w-auto max-w-[125px] sm:max-w-[135px] object-contain select-none mix-blend-multiply"
               />
             </div>
-            <p className="sublogo-tracking text-[8px] sm:text-[8.5px] font-semibold text-[#7D8C83] uppercase mt-0.5 leading-none tracking-[0.28em] select-none whitespace-nowrap">
+            <p className="sublogo-tracking text-[7.5px] sm:text-[8px] font-semibold text-[#7D8C83] uppercase mt-0.5 leading-none tracking-[0.24em] select-none whitespace-nowrap">
               Escape the Chaos
             </p>
           </div>
