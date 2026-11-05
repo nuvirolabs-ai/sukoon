@@ -286,15 +286,15 @@ function VaultContent() {
   const rawParam = searchParams.get("section") || "";
 
   // Map backward compatibility links
-  const initialSection = useMemo<VaultSection>(() => {
+  const initialSection = useMemo<VaultSection | null>(() => {
     if (rawParam === "docs" || rawParam === "my-docs") return "docs";
     if (rawParam === "portfolio") return "portfolio";
     if (rawParam === "manage" || rawParam === "details") return "manage";
     if (rawParam === "single" || rawParam === "find") return "single";
-    return "docs";
+    return null;
   }, [rawParam]);
 
-  const [section, setSection] = useState<VaultSection>(initialSection);
+  const [section, setSection] = useState<VaultSection | null>(initialSection);
   const { s, update } = useStore();
 
   // All properties available from user store
@@ -893,58 +893,84 @@ function VaultContent() {
     <div className="w-full max-w-md mx-auto min-h-screen px-4 pt-3 pb-28 text-foreground">
       {/* Top Header */}
       <div className="flex items-center justify-between py-2 border-b border-line/60 mb-5">
-        <Link
-          href="/"
-          className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
-        >
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
+        {section === null ? (
+          <Link
+            href="/"
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
+          >
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setSection(null)}
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
+          >
+            <ArrowLeft size={16} /> Back to Property Vault
+          </button>
+        )}
         <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted">
-          Sukoon Vault
+          {section === null
+            ? "Sukoon Vault"
+            : section === "docs"
+            ? "Vault / My Docs"
+            : section === "portfolio"
+            ? "Vault / Portfolio"
+            : section === "manage"
+            ? "Vault / Management"
+            : "Vault / Find Papers"}
         </span>
       </div>
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Property Vault</h1>
-        <p className="text-xs text-ink-muted mt-1">
-          Secure documents, portfolio net worth &amp; property management.
-        </p>
-      </div>
+      {/* ========================================================================= */}
+      {/* LEVEL 1: FOLDER HUB VIEW (ONLY DISPLAYED WHEN NO FOLDER IS OPENED) */}
+      {/* ========================================================================= */}
+      {section === null && (
+        <div className="animate-in fade-in duration-200">
+          <div className="mb-6">
+            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Property Vault</h1>
+            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+              Tap a folder below to enter and manage legal documents, portfolio net worth, property dues &amp; instant search.
+            </p>
+          </div>
+
+          {/* 4 MAIN FOLDER ICONS - TACTILE SQUIRCLE CARDS */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {VAULT_FEATURES.map((item) => {
+              const IconComp = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSection(item.id)}
+                  className="tap-scale group flex flex-col items-center text-center p-5 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                >
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] transition-transform duration-200 group-hover:scale-105"
+                    style={{ color: item.color }}
+                  >
+                    <IconComp />
+                  </div>
+                  <span className="text-sm font-bold text-[#1B2922] leading-tight block">
+                    {item.title}
+                  </span>
+                  <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1.5">
+                    {item.subtitle}
+                  </span>
+                  <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-forest">
+                    <span>Open Folder</span>
+                    <ChevronRight size={12} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ========================================================================= */}
-      {/* 4 MAIN FEATURE ICONS - MATCHING HOME PAGE ICON STYLE & DESIGN LANGUAGE */}
+      {/* LEVEL 2: INSIDE THE FOLDER (SHOWS ONLY THE SELECTED FEATURE DETAIL) */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-2 gap-y-7 gap-x-6 mb-8 px-2 py-1">
-        {VAULT_FEATURES.map((item) => {
-          const IconComp = item.icon;
-          const isSelected = section === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setSection(item.id)}
-              className={`tap-scale group flex flex-col items-center text-center focus:outline-none py-2 rounded-2xl transition-all duration-200 ${
-                isSelected
-                  ? "bg-[#1E5637]/10 ring-2 ring-[#1E5637]/30 shadow-2xs"
-                  : "hover:bg-sand/40"
-              }`}
-            >
-              <div
-                className="w-14 h-14 flex items-center justify-center mb-2 transition-all duration-200 group-hover:scale-105"
-                style={{ color: item.color }}
-              >
-                <IconComp />
-              </div>
-              <span className="text-[13px] font-bold text-[#1B2922] leading-tight block px-1">
-                {item.title}
-              </span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">
-                {item.subtitle}
-              </span>
-            </button>
-          );
-        })}
-      </div>
 
       {/* ========================================================================= */}
       {/* SECTION A: MY DOCS (UPLOAD DOCS, PROPERTY SWITCHER & VAULT HEALTH BAR) */}

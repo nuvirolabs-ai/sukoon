@@ -450,8 +450,8 @@ export default function MySukoonPage() {
   const store = useOptionalStore();
   const properties = store?.s?.properties || [];
 
-  // Active Life Pillar Tab
-  const [activePillar, setActivePillar] = useState<LifePillar>("finance");
+  // Active Life Pillar Tab (defaults to null for Folder View)
+  const [activePillar, setActivePillar] = useState<LifePillar | null>(null);
 
   // Privacy & PIN Lock for "My Love My Life"
   const [isLoveLocked, setIsLoveLocked] = useState<boolean>(true);
@@ -1719,20 +1719,41 @@ export default function MySukoonPage() {
       {/* TOP HEADER */}
       {/* ========================================================================= */}
       <header className="sticky top-0 z-30 bg-canvas/90 backdrop-blur-md border-b border-line/60 px-4 py-3 flex items-center justify-between">
-        <Link
-          href="/"
-          className="tap-scale inline-flex items-center gap-1.5 text-xs font-semibold text-forest hover:opacity-80 transition"
-        >
-          <ArrowLeft size={16} />
-          <span>Home</span>
-        </Link>
+        {activePillar === null ? (
+          <Link
+            href="/"
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-semibold text-forest hover:opacity-80 transition"
+          >
+            <ArrowLeft size={16} />
+            <span>Home</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setActivePillar(null)}
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-semibold text-forest hover:opacity-80 transition"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to My Sukoon</span>
+          </button>
+        )}
 
         <div className="flex flex-col items-center">
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#7C8B82]">
             MY HAPPINESS · MY SUKOON
           </span>
           <span className="text-xs font-serif font-bold text-[#1B2922]">
-            Life &amp; Family Sanctuary
+            {activePillar === null
+              ? "Life & Family Sanctuary"
+              : activePillar === "finance"
+              ? "Finance & Goals"
+              : activePillar === "travel"
+              ? "Holidays & Travel"
+              : activePillar === "love"
+              ? "Love & Life"
+              : activePillar === "kids"
+              ? "Kids & Growth"
+              : "Self & Balance"}
           </span>
         </div>
 
@@ -1761,138 +1782,204 @@ export default function MySukoonPage() {
       </header>
 
       {/* ========================================================================= */}
-      {/* SANCTUARY HERO GREETING BANNER */}
+      {/* LEVEL 1: FOLDER HUB VIEW (ONLY DISPLAYED WHEN NO PILLAR IS OPENED) */}
       {/* ========================================================================= */}
-      <section className="px-4 pt-4 pb-2">
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1E5637] via-[#1B3D2F] to-[#0F291E] p-5 text-white shadow-xs">
-          <div className="relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-xs text-[10px] font-semibold text-emerald-100">
-                <Sparkles size={12} className="text-amber-300" />
-                <span>Personalized Goal Engine</span>
+      {activePillar === null && (
+        <div className="px-4 pt-4 space-y-5 animate-in fade-in duration-200">
+          {/* SANCTUARY HERO GREETING BANNER */}
+          <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1E5637] via-[#1B3D2F] to-[#0F291E] p-5 text-white shadow-xs">
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-xs text-[10px] font-semibold text-emerald-100">
+                  <Sparkles size={12} className="text-amber-300" />
+                  <span>Life Harmony Folders</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleResetDefaults}
+                  title="Reset sample values"
+                  className="text-white/60 hover:text-white text-[10px] font-medium flex items-center gap-1"
+                >
+                  <RotateCcw size={11} /> Reset
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={handleResetDefaults}
-                title="Reset sample values"
-                className="text-white/60 hover:text-white text-[10px] font-medium flex items-center gap-1"
-              >
-                <RotateCcw size={11} /> Reset
-              </button>
+
+              <h1 className="text-xl font-serif font-bold text-white tracking-tight mt-2">
+                My Happiness, My Sukoon
+              </h1>
+              <p className="text-[12px] text-emerald-100/85 mt-1 leading-relaxed">
+                Personalized life sanctuary for your wealth, holidays, relationship &amp; family growth.
+              </p>
+
+              {/* Quick KPI Bar */}
+              <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-white/10">
+                <div className="text-center">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
+                    Family Wealth
+                  </span>
+                  <span className="text-sm font-bold text-white mt-0.5 block">
+                    {formatINR(netFamilyWealth)}
+                  </span>
+                </div>
+                <div className="text-center border-x border-white/10">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
+                    Sukoon Index
+                  </span>
+                  <span className="text-sm font-bold text-amber-300 mt-0.5 block">
+                    {happinessScore}% Serene
+                  </span>
+                </div>
+                <div className="text-center">
+                  <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
+                    Next Trip
+                  </span>
+                  <span className="text-sm font-bold text-white mt-0.5 block truncate px-1">
+                    {featuredTrip.daysRemaining}d to go
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-xl font-serif font-bold text-white tracking-tight mt-2">
-              My Happiness, My Sukoon
-            </h1>
-            <p className="text-[12px] text-emerald-100/85 mt-1 leading-relaxed">
-              Every detail is editable: adjust your finances, holiday targets, kids routines &amp; habits in one touch.
-            </p>
-
-            {/* Quick KPI Bar */}
-            <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-white/10">
-              <div className="text-center">
-                <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
-                  Family Wealth
-                </span>
-                <span className="text-sm font-bold text-white mt-0.5 block">
-                  {formatINR(netFamilyWealth)}
-                </span>
-              </div>
-              <div className="text-center border-x border-white/10">
-                <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
-                  Sukoon Index
-                </span>
-                <span className="text-sm font-bold text-amber-300 mt-0.5 block">
-                  {happinessScore}% Serene
-                </span>
-              </div>
-              <div className="text-center">
-                <span className="block text-[10px] uppercase font-bold tracking-wider text-emerald-200/80">
-                  Next Trip
-                </span>
-                <span className="text-sm font-bold text-white mt-0.5 block truncate px-1">
-                  {featuredTrip.daysRemaining}d to go
-                </span>
-              </div>
-            </div>
+            <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
           </div>
 
-          <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+          <div>
+            <h2 className="text-base font-serif font-bold text-[#1B2922]">5 Life Sanctuaries</h2>
+            <p className="text-xs text-[#7C8B82] mt-0.5 leading-relaxed">
+              Tap any folder below to enter its dedicated workspace.
+            </p>
+          </div>
+
+          {/* 5 TACTILE SQUIRCLE FOLDER CARDS */}
+          <div className="grid grid-cols-2 gap-3.5 pb-8">
+            {/* Folder 1: Family Financial Planning */}
+            <button
+              type="button"
+              onClick={() => setActivePillar("finance")}
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#1E5637] border border-emerald-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                  <Wallet size={22} />
+                </div>
+                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                  Family Finance &amp; Goals
+                </h3>
+                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                  Real Estate, FDs, Mutual Funds, Loans &amp; Insurance.
+                </p>
+              </div>
+              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-[#1E5637]">
+                <span>{formatINR(netFamilyWealth)}</span>
+                <ChevronRight size={12} />
+              </div>
+            </button>
+
+            {/* Folder 2: Holiday & Travel Experiences */}
+            <button
+              type="button"
+              onClick={() => setActivePillar("travel")}
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-amber-400/50 hover:shadow-md transition-all duration-200"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                  <Plane size={22} />
+                </div>
+                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                  Holidays &amp; Travel
+                </h3>
+                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                  Trip countdowns, vacation jar &amp; dream bucket list.
+                </p>
+              </div>
+              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-amber-700">
+                <span>{featuredTrip.daysRemaining}d to go</span>
+                <ChevronRight size={12} />
+              </div>
+            </button>
+
+            {/* Folder 3: My Love My Life */}
+            <button
+              type="button"
+              onClick={() => setActivePillar("love")}
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-rose-400/50 hover:shadow-md transition-all duration-200"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform relative">
+                  <Heart size={22} />
+                  {isLoveLocked && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-700 text-white flex items-center justify-center text-[9px]">
+                      <Lock size={9} />
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                  My Love, My Life
+                </h3>
+                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                  Quality time, couple goals, intimacy &amp; photo vault.
+                </p>
+              </div>
+              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-rose-700">
+                <span>{isLoveLocked ? "Private Sanctuary" : "Unlocked"}</span>
+                <ChevronRight size={12} />
+              </div>
+            </button>
+
+            {/* Folder 4: Responsibilities Towards Kids */}
+            <button
+              type="button"
+              onClick={() => setActivePillar("kids")}
+              className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-blue-400/50 hover:shadow-md transition-all duration-200"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                  <Baby size={22} />
+                </div>
+                <h3 className="text-xs font-bold text-[#1B2922] leading-snug">
+                  Kids &amp; Growth
+                </h3>
+                <p className="text-[10px] text-[#7C8B82] mt-1 line-clamp-2">
+                  Daily homework, sports academies &amp; growth checks.
+                </p>
+              </div>
+              <div className="mt-4 pt-2.5 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-blue-700">
+                <span>{kidsRoutines.filter((r) => r.completed).length}/{kidsRoutines.length} Done</span>
+                <ChevronRight size={12} />
+              </div>
+            </button>
+
+            {/* Folder 5: Work-Life Balance & Self Growth */}
+            <button
+              type="button"
+              onClick={() => setActivePillar("self")}
+              className="col-span-2 tap-scale group flex items-center justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-indigo-400/50 hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Feather size={22} />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-[#1B2922]">
+                    Work-Life Balance &amp; Self Growth
+                  </h3>
+                  <p className="text-[10px] text-[#7C8B82] mt-0.5">
+                    Personal health, reading desk, habits &amp; daily gratitude journal.
+                  </p>
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700 shrink-0 ml-2">
+                <span>{happinessScore}% Serene</span>
+                <ChevronRight size={13} />
+              </div>
+            </button>
+          </div>
         </div>
-      </section>
+      )}
 
       {/* ========================================================================= */}
-      {/* 5 LIFE PILLARS HORIZONTAL NAVIGATION */}
+      {/* LEVEL 2: INSIDE THE FOLDER (SHOWS ONLY THE ACTIVE SANCTUARY) */}
       {/* ========================================================================= */}
-      <nav aria-label="Life Pillars" className="sticky top-[53px] z-20 bg-canvas/95 backdrop-blur-md px-4 py-2.5 border-b border-line/40">
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <button
-            type="button"
-            onClick={() => setActivePillar("finance")}
-            className={`tap-scale shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activePillar === "finance"
-                ? "bg-[#1E5637] text-white shadow-xs"
-                : "bg-white/80 text-[#526359] border border-[#E8E2D5] hover:bg-white"
-            }`}
-          >
-            <Wallet size={13} />
-            <span>Finance &amp; Goals</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePillar("travel")}
-            className={`tap-scale shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activePillar === "travel"
-                ? "bg-[#D97706] text-white shadow-xs"
-                : "bg-white/80 text-[#526359] border border-[#E8E2D5] hover:bg-white"
-            }`}
-          >
-            <Plane size={13} />
-            <span>Holidays &amp; Travel</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePillar("love")}
-            className={`tap-scale shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activePillar === "love"
-                ? "bg-[#BE185D] text-white shadow-xs"
-                : "bg-white/80 text-[#526359] border border-[#E8E2D5] hover:bg-white"
-            }`}
-          >
-            <Heart size={13} />
-            <span>Love &amp; Life</span>
-            {isLoveLocked && <Lock size={10} className="opacity-70 ml-0.5" />}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePillar("kids")}
-            className={`tap-scale shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activePillar === "kids"
-                ? "bg-[#0284C7] text-white shadow-xs"
-                : "bg-white/80 text-[#526359] border border-[#E8E2D5] hover:bg-white"
-            }`}
-          >
-            <Baby size={13} />
-            <span>Kids &amp; Growth</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActivePillar("self")}
-            className={`tap-scale shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activePillar === "self"
-                ? "bg-[#6366F1] text-white shadow-xs"
-                : "bg-white/80 text-[#526359] border border-[#E8E2D5] hover:bg-white"
-            }`}
-          >
-            <Feather size={13} />
-            <span>Self &amp; Balance</span>
-          </button>
-        </div>
-      </nav>
 
       {/* ========================================================================= */}
       {/* MAIN CONTENT AREA */}

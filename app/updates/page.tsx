@@ -235,13 +235,13 @@ const INSIGHTS_FEATURES = [
 function UpdatesContent() {
   const searchParams = useSearchParams();
   const rawSection = searchParams.get("section") as InsightsSection;
-  const initialSection: InsightsSection =
+  const initialSection: InsightsSection | null =
     rawSection &&
     ["news", "blogs", "dictionary", "dos-donts", "podcasts", "vastu", "trends"].includes(rawSection)
       ? rawSection
-      : "news";
+      : null;
 
-  const [section, setSection] = useState<InsightsSection>(initialSection);
+  const [section, setSection] = useState<InsightsSection | null>(initialSection);
   const [copiedToast, setCopiedToast] = useState("");
 
   const triggerToast = (msg: string) => {
@@ -389,59 +389,91 @@ function UpdatesContent() {
 
       {/* Top Header */}
       <div className="flex items-center justify-between py-2 border-b border-line/60 mb-5">
-        <Link
-          href="/"
-          className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
-        >
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
+        {section === null ? (
+          <Link
+            href="/"
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
+          >
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setSection(null)}
+            className="tap-scale inline-flex items-center gap-1.5 text-xs font-bold text-forest hover:opacity-80"
+          >
+            <ArrowLeft size={16} /> Back to Insights Hub
+          </button>
+        )}
         <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted">
-          Sukoon Insights
+          {section === null
+            ? "Sukoon Insights"
+            : section === "news"
+            ? "Real-Time News"
+            : section === "blogs"
+            ? "Market Blogs"
+            : section === "dictionary"
+            ? "Dictionary"
+            : section === "dos-donts"
+            ? "Do's & Don'ts"
+            : section === "podcasts"
+            ? "Podcasts & Media"
+            : section === "vastu"
+            ? "Vastu Knowledge"
+            : "Developer Trends"}
         </span>
       </div>
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Insights</h1>
-        <p className="text-xs text-ink-muted mt-1">
-          City news, market blogs, terminologies, vastu &amp; developer trends.
-        </p>
-      </div>
+      {/* ========================================================================= */}
+      {/* LEVEL 1: FOLDER HUB VIEW (ONLY DISPLAYED WHEN NO FOLDER IS OPENED) */}
+      {/* ========================================================================= */}
+      {section === null && (
+        <div className="animate-in fade-in duration-200">
+          <div className="mb-6">
+            <h1 className="text-2xl font-serif font-bold text-[#1B2922]">Insights Hub</h1>
+            <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+              Tap a folder below to explore live city news, real estate guides, legal terminology, vastu &amp; developer trends.
+            </p>
+          </div>
+
+          {/* 7 MAIN FOLDER ICONS - TACTILE SQUIRCLE CARDS */}
+          <div className="grid grid-cols-2 gap-3.5 mb-8">
+            {INSIGHTS_FEATURES.map((item) => {
+              const IconComp = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSection(item.id)}
+                  className="tap-scale group flex flex-col justify-between text-left p-4 rounded-3xl bg-white border border-[#E8E2D5] shadow-xs hover:border-[#1E5637]/50 hover:shadow-md transition-all duration-200"
+                >
+                  <div>
+                    <div
+                      className="w-13 h-13 rounded-2xl flex items-center justify-center mb-3 bg-[#F7F3EB] border border-[#EFECE6] group-hover:scale-105 transition-transform"
+                      style={{ color: item.color }}
+                    >
+                      <IconComp />
+                    </div>
+                    <span className="text-xs font-bold text-[#1B2922] leading-tight block">
+                      {item.title}
+                    </span>
+                    <span className="text-[10px] font-medium text-[#7C8B82] leading-tight mt-1 block">
+                      {item.subtitle}
+                    </span>
+                  </div>
+                  <div className="mt-3.5 pt-2 border-t border-line/40 flex items-center justify-between text-[10px] font-bold text-forest">
+                    <span>Open Folder</span>
+                    <ChevronRight size={12} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ========================================================================= */}
-      {/* 7 MAIN FEATURE ICONS - MATCHING HOME PAGE ICON STYLE & DESIGN LANGUAGE */}
-      {/* ========================================================================= */}
-      <div className="grid grid-cols-2 gap-y-7 gap-x-5 mb-8 px-2 py-1">
-        {INSIGHTS_FEATURES.map((item) => {
-          const IconComp = item.icon;
-          const isSelected = section === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setSection(item.id)}
-              className={`tap-scale group flex flex-col items-center text-center focus:outline-none py-2 rounded-2xl transition-all duration-200 ${
-                isSelected
-                  ? "bg-[#1E5637]/10 ring-2 ring-[#1E5637]/30 shadow-2xs"
-                  : "hover:bg-sand/40"
-              }`}
-            >
-              <div
-                className="w-14 h-14 flex items-center justify-center mb-2 transition-all duration-200 group-hover:scale-105"
-                style={{ color: item.color }}
-              >
-                <IconComp />
-              </div>
-              <span className="text-[13px] font-bold text-[#1B2922] leading-tight block px-1">
-                {item.title}
-              </span>
-              <span className="text-[11px] font-medium text-[#7C8B82] leading-tight mt-1">
-                {item.subtitle}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
+      {/* LEVEL 2: INSIDE THE FOLDER (SHOWS ONLY THE ACTIVE FEATURE DETAIL) */}
       {/* ========================================================================= */}
       {/* 1. NEWS SECTION */}
       {/* ========================================================================= */}
