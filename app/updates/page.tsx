@@ -66,7 +66,8 @@ type InsightsSection =
   | "dos-donts"
   | "podcasts"
   | "vastu"
-  | "trends";
+  | "trends"
+  | "compass";
 
 // 7 Main Icons matching Home Screen, Buy/Sell & Vault Hub clean aesthetic
 const INSIGHTS_FEATURES = [
@@ -207,6 +208,30 @@ const INSIGHTS_FEATURES = [
     },
   },
   {
+    id: "compass" as const,
+    title: "Vastu Compass",
+    subtitle: "Live Direction & Shubh Disha",
+    color: "#EB725B",
+    icon: function CompassIcon() {
+      return (
+        <svg
+          className="w-10 h-10"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+          viewBox="0 0 40 40"
+        >
+          <circle cx="20" cy="20" r="14" />
+          <path d="M20 6v4M20 30v4M6 20h4M30 20h4" strokeWidth="1.8" />
+          <polygon points="20,10 24,19 20,28 16,19" fill="#EB725B" fillOpacity="0.85" stroke="#195A50" strokeWidth="1.5" />
+          <circle cx="20" cy="20" r="2.5" fill="#195A50" />
+        </svg>
+      );
+    },
+  },
+  {
     id: "trends" as const,
     title: "City Trends",
     subtitle: "Big Developer Tracker",
@@ -232,12 +257,177 @@ const INSIGHTS_FEATURES = [
   },
 ];
 
+const ROOM_VASTU_GUIDE = [
+  {
+    id: "entrance",
+    name: "Main Entrance (मुख्य द्वार)",
+    best: "North, North-East (Ishan), East",
+    avoid: "South-West (Nairruti), South",
+    tips: "Entrance in North brings Kubera wealth; NE brings spiritual peace. Keep it well-lit, elevated slightly above road level, and clutter-free.",
+    badge: "Auspicious in North/East",
+  },
+  {
+    id: "mandir",
+    name: "Mandir / Pooja Room (पूजा घर)",
+    best: "North-East (Ishan Kon)",
+    avoid: "South, South-West, Under Staircase, Adjacent to Toilet",
+    tips: "Ishan kon has supreme cosmic energy. Faces of idols should face West or East, devotee faces East while praying. Keep Mandir on ground level with white or cream tones.",
+    badge: "100% Divine in Ishan",
+  },
+  {
+    id: "kitchen",
+    name: "Kitchen (रसोईघर)",
+    best: "South-East (Agni Kon) or North-West (Vayu)",
+    avoid: "North-East, South-West, Directly below toilet",
+    tips: "Cook should face East while cooking. Sink should be in North-East (water element) and Stove in South-East (fire element) to avoid element clash.",
+    badge: "Agni Kon Ideal",
+  },
+  {
+    id: "master_bedroom",
+    name: "Master Bedroom (मास्टर बेडरूम)",
+    best: "South-West (Nairruti Kon)",
+    avoid: "North-East, North-West",
+    tips: "Head of the family must anchor in Nairruti kon for stability, leadership, and sound sleep. Sleep with head towards South or East.",
+    badge: "Nairruti Anchor",
+  },
+  {
+    id: "study",
+    name: "Study & Kids Room (अध्ययन कक्ष)",
+    best: "East, North-East, West",
+    avoid: "South-West, South",
+    tips: "Children should face North or East while studying to enhance concentration, memory recall, and academic clarity.",
+    badge: "East / North-East",
+  },
+  {
+    id: "living",
+    name: "Living Room (बैठक)",
+    best: "North, East, North-West",
+    avoid: "South-West",
+    tips: "Guests should be seated in NW or East; owner faces East or North. Keeps guest energy peaceful and harmonious.",
+    badge: "North / East / NW",
+  },
+  {
+    id: "toilet",
+    name: "Toilet / Washroom (शौचालय)",
+    best: "North-West (Vayu) or West of South",
+    avoid: "North-East (Strict Vastu Dosha), South-West, Center (Brahmasthan)",
+    tips: "Never construct toilet in North-East as it drains positive magnetic energy and prosperity. Keep exhaust fan towards East or North.",
+    badge: "NW / West Permissible",
+  },
+  {
+    id: "tank",
+    name: "Overhead Water Tank (पानी की टंकी)",
+    best: "South-West (Nairruti) or West",
+    avoid: "North-East, South-East",
+    tips: "Heavy water storage on SW adds required physical weight to the South-West corner, which strengthens family stability.",
+    badge: "South-West Heavy",
+  },
+];
+
+function getVastuDirection(deg: number) {
+  const normalized = ((deg % 360) + 360) % 360;
+  if (normalized >= 337.5 || normalized < 22.5) {
+    return {
+      code: "N",
+      name: "North • उत्तर (Uttar)",
+      deity: "Lord Kubera (कुबेर)",
+      element: "Water (जल तत्व)",
+      color: "#195A50",
+      vastuSummary: "Treasury, wealth inflow, main door, expansive windows, open green lawn.",
+      vibe: "Wealth & New Opportunities",
+      score: "98% Auspicious",
+    };
+  }
+  if (normalized >= 22.5 && normalized < 67.5) {
+    return {
+      code: "NE",
+      name: "North-East • ईशान (Ishan Kon)",
+      deity: "Lord Shiva (ईशान / महादेव)",
+      element: "Water & Space (जल / आकाश तत्व)",
+      color: "#195A50",
+      vastuSummary: "Pooja Ghar, meditation zone, water fountain, open terrace, underground water tank.",
+      vibe: "Supreme Cosmic Energy & Peace",
+      score: "100% Divine & Sacred",
+    };
+  }
+  if (normalized >= 67.5 && normalized < 112.5) {
+    return {
+      code: "E",
+      name: "East • पूर्व (Purva)",
+      deity: "Lord Indra / Surya (सूर्य / इंद्र)",
+      element: "Air & Fire (अग्नि / सूर्य ऊर्जा)",
+      color: "#195A50",
+      vastuSummary: "Main gate, study room, balcony, morning sunlight court.",
+      vibe: "Health, Vitality & Fame",
+      score: "95% Auspicious",
+    };
+  }
+  if (normalized >= 112.5 && normalized < 157.5) {
+    return {
+      code: "SE",
+      name: "South-East • आग्नेय (Agni Kon)",
+      deity: "Lord Agni (अग्नि देव)",
+      element: "Fire (अग्नि तत्व)",
+      color: "#EB725B",
+      vastuSummary: "Kitchen cooktop, electrical meter, inverter, boiler, heating appliances.",
+      vibe: "Energy, Passion & Health",
+      score: "Ideal for Kitchen",
+    };
+  }
+  if (normalized >= 157.5 && normalized < 202.5) {
+    return {
+      code: "S",
+      name: "South • दक्षिण (Dakshin)",
+      deity: "Lord Yama (यम)",
+      element: "Earth (पृथ्वी तत्व)",
+      color: "#195A50",
+      vastuSummary: "Heavy furniture, high boundary wall, store room, internal staircase.",
+      vibe: "Discipline, Endurance & Rest",
+      score: "Auspicious if Elevated & Heavy",
+    };
+  }
+  if (normalized >= 202.5 && normalized < 247.5) {
+    return {
+      code: "SW",
+      name: "South-West • नैऋत्य (Nairruti Kon)",
+      deity: "Nairruti / Ancestors (पितृ / नैऋत्य)",
+      element: "Earth (पृथ्वी तत्व)",
+      color: "#EB725B",
+      vastuSummary: "Master bedroom, head of family, heavy almirah / cash locker, overhead tank.",
+      vibe: "Leadership, Authority & Strength",
+      score: "Anchor of the Household",
+    };
+  }
+  if (normalized >= 247.5 && normalized < 292.5) {
+    return {
+      code: "W",
+      name: "West • पश्चिम (Pashchim)",
+      deity: "Lord Varuna (वरुण देव)",
+      element: "Space & Water (आकाश / जल)",
+      color: "#195A50",
+      vastuSummary: "Dining room, children study, overhead tank, home library.",
+      vibe: "Prosperity, Stability & Gains",
+      score: "Good for Dining & Study",
+    };
+  }
+  return {
+    code: "NW",
+    name: "North-West • वायव्य (Vayu Kon)",
+    deity: "Lord Vayu (वायु देव)",
+    element: "Air (वायु तत्व)",
+    color: "#EB725B",
+    vastuSummary: "Guest room, married daughters room, car garage, finished merchandise storage.",
+    vibe: "Motion, Travel & Social Ties",
+    score: "Perfect for Guests & Movement",
+  };
+}
+
 function UpdatesContent() {
   const searchParams = useSearchParams();
   const rawSection = searchParams.get("section") as InsightsSection;
   const initialSection: InsightsSection | null =
     rawSection &&
-    ["news", "blogs", "dictionary", "dos-donts", "podcasts", "vastu", "trends"].includes(rawSection)
+    ["news", "blogs", "dictionary", "dos-donts", "podcasts", "vastu", "trends", "compass"].includes(rawSection)
       ? rawSection
       : null;
 
@@ -377,6 +567,65 @@ function UpdatesContent() {
     });
   }, [trendCity, trendActionType]);
 
+  // ==========================================
+  // 8. VASTU COMPASS UTILITY STATE
+  // ==========================================
+  const [compassHeading, setCompassHeading] = useState<number>(0);
+  const [isSensorActive, setIsSensorActive] = useState<boolean>(false);
+  const [selectedRoomCheck, setSelectedRoomCheck] = useState<string>("entrance");
+
+  const toggleSensor = async () => {
+    if (typeof window === "undefined") return;
+    if (isSensorActive) {
+      setIsSensorActive(false);
+      return;
+    }
+    try {
+      if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        // @ts-expect-error iOS Safari permission API
+        typeof DeviceOrientationEvent.requestPermission === "function"
+      ) {
+        // @ts-expect-error iOS Safari permission API
+        const permission = await DeviceOrientationEvent.requestPermission();
+        if (permission !== "granted") {
+          triggerToast("Sensor permission denied");
+          return;
+        }
+      }
+
+      const handler = (e: DeviceOrientationEvent) => {
+        // @ts-expect-error webkitCompassHeading
+        let heading = e.webkitCompassHeading;
+        if (heading === undefined && e.alpha !== null) {
+          heading = 360 - e.alpha;
+        }
+        if (typeof heading === "number") {
+          setCompassHeading(Math.round(heading));
+          setIsSensorActive(true);
+        }
+      };
+
+      window.addEventListener("deviceorientation", handler, true);
+      setIsSensorActive(true);
+      triggerToast("Live Compass sensor connected");
+    } catch {
+      triggerToast("Device orientation not available. Use manual dial.");
+    }
+  };
+
+  const currentVastu = useMemo(() => getVastuDirection(compassHeading), [compassHeading]);
+  const activeRoomGuide = useMemo(
+    () => ROOM_VASTU_GUIDE.find((r) => r.id === selectedRoomCheck),
+    [selectedRoomCheck]
+  );
+
+  const handleCopyCompassReport = () => {
+    const text = "🧭 SUKOON VASTU COMPASS DIRECTION REPORT\n\nCurrent Heading: " + compassHeading + "° (" + currentVastu.name + ")\nDeity: " + currentVastu.deity + " • Element: " + currentVastu.element + "\nVibe: " + currentVastu.vibe + "\nBest Uses: " + currentVastu.vastuSummary + "\nScore: " + currentVastu.score + "\n\nSelected Room: " + (activeRoomGuide ? activeRoomGuide.name : "") + "\n• Best Direction: " + (activeRoomGuide ? activeRoomGuide.best : "") + "\n• Avoid: " + (activeRoomGuide ? activeRoomGuide.avoid : "") + "\n• Vastu Advice: " + (activeRoomGuide ? activeRoomGuide.tips : "") + "\n\n— Generated via Sukoon Proptech (https://sukoonproptech.com)";
+    navigator.clipboard?.writeText(text);
+    triggerToast("Vastu Direction Guidance copied!");
+  };
+
   return (
     <div className="w-full max-w-md mx-auto min-h-screen px-4 pt-3 pb-28 text-foreground">
       {/* Toast Notification */}
@@ -420,6 +669,8 @@ function UpdatesContent() {
             ? "Podcasts & Media"
             : section === "vastu"
             ? "Vastu Knowledge"
+            : section === "compass"
+            ? "Vastu Compass"
             : "Developer Trends"}
         </span>
       </div>
@@ -440,7 +691,7 @@ function UpdatesContent() {
           <div className="grid grid-cols-2 gap-3.5 mb-8">
             {INSIGHTS_FEATURES.map((item) => {
               const IconComp = item.icon;
-              const isAccent = item.id === "blogs" || item.id === "vastu";
+              const isAccent = item.id === "blogs" || item.id === "vastu" || item.id === "compass";
 
               return (
                 <button
@@ -1555,6 +1806,216 @@ function UpdatesContent() {
                 </div>
               ))
             )}
+          </div>
+        </section>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SECTION 8: VASTU COMPASS UTILITY */}
+      {/* ========================================================================= */}
+      {section === "compass" && (
+        <section className="space-y-6 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-[#EB725B]/15 text-[#EB725B]">
+                Interactive Utility
+              </span>
+              <h2 className="text-xl font-serif font-bold text-[#195A50] mt-1">
+                Vastu Compass
+              </h2>
+              <p className="text-xs text-[#7D8C83]">
+                Live direction reader, room zones &amp; Shubh Disha matrix.
+              </p>
+            </div>
+
+            <PinToHomeButton shortcutId="compass" />
+          </div>
+
+          {/* Real-time Compass Dial Card */}
+          <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-[0_6px_20px_rgba(25,90,80,0.05)] text-center space-y-4">
+            <div className="flex items-center justify-between text-xs pb-2 border-b border-[#E9DCCF]">
+              <span className="font-bold text-[#195A50] flex items-center gap-1.5">
+                <Compass size={15} className="text-[#EB725B]" /> Direction Dial
+              </span>
+              <button
+                type="button"
+                onClick={toggleSensor}
+                className={"tap-scale px-2.5 py-1 rounded-full text-[11px] font-bold transition flex items-center gap-1 " + (isSensorActive ? "bg-[#195A50] text-white" : "bg-[#FBEBE2] text-[#195A50] border border-[#E9DCCF] hover:bg-[#F6C6AF]")}
+              >
+                <Radio size={12} className={isSensorActive ? "animate-pulse" : ""} />
+                {isSensorActive ? "Live Sensor ON" : "Use Phone Compass"}
+              </button>
+            </div>
+
+            {/* Circular Compass Visual */}
+            <div className="relative w-56 h-56 mx-auto flex items-center justify-center my-2 select-none">
+              {/* Outer Dial Circle with Degree Markers */}
+              <div
+                className="w-full h-full rounded-full border-4 border-[#E9DCCF] bg-linear-to-b from-[#FFF7EF] to-[#FBEBE2] relative flex items-center justify-center shadow-inner transition-transform duration-300 ease-out"
+                style={{ transform: "rotate(" + (-compassHeading) + "deg)" }}
+              >
+                {/* 8 Cardinal Points */}
+                <span className="absolute top-2 font-bold text-xs text-[#EB725B]">N</span>
+                <span className="absolute right-2 font-bold text-xs text-[#195A50]">E</span>
+                <span className="absolute bottom-2 font-bold text-xs text-[#195A50]">S</span>
+                <span className="absolute left-2 font-bold text-xs text-[#195A50]">W</span>
+
+                <span className="absolute top-5 right-5 font-semibold text-[9px] text-[#7D8C83]">NE</span>
+                <span className="absolute bottom-5 right-5 font-semibold text-[9px] text-[#7D8C83]">SE</span>
+                <span className="absolute bottom-5 left-5 font-semibold text-[9px] text-[#7D8C83]">SW</span>
+                <span className="absolute top-5 left-5 font-semibold text-[9px] text-[#7D8C83]">NW</span>
+
+                {/* Sub-degree tick marks */}
+                <div className="absolute inset-4 rounded-full border border-dashed border-[#E9DCCF] pointer-events-none" />
+              </div>
+
+              {/* Fixed Needle Overlay pointing straight Up */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-1.5 h-36 relative flex flex-col justify-between items-center">
+                  {/* North Needle (Red/Coral) */}
+                  <div className="w-0 h-0 border-x-[7px] border-x-transparent border-b-[60px] border-b-[#EB725B] drop-shadow-sm" />
+                  {/* South Needle (Evergreen) */}
+                  <div className="w-0 h-0 border-x-[7px] border-x-transparent border-t-[60px] border-t-[#195A50] drop-shadow-sm" />
+                </div>
+                {/* Pivot Center Pin */}
+                <div className="absolute w-5 h-5 rounded-full bg-white border-2 border-[#195A50] shadow-md flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-[#EB725B]" />
+                </div>
+              </div>
+            </div>
+
+            {/* Readout Numbers & Current Vastu Zone */}
+            <div className="space-y-1">
+              <div className="text-3xl font-serif font-black text-[#195A50] tracking-tight">
+                {compassHeading}°
+              </div>
+              <div className="text-sm font-bold text-[#EB725B]">
+                {currentVastu.name}
+              </div>
+              <p className="text-[11px] text-[#7D8C83]">
+                Deity: <strong>{currentVastu.deity}</strong> • Element: <strong>{currentVastu.element}</strong>
+              </p>
+            </div>
+
+            {/* Quick Direction Selector Buttons */}
+            <div className="pt-2">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83] mb-2">
+                Quick Orient / Tap Direction
+              </div>
+              <div className="grid grid-cols-4 gap-1.5 text-xs">
+                {[
+                  { label: "North (0°)", deg: 0 },
+                  { label: "NE (45°)", deg: 45 },
+                  { label: "East (90°)", deg: 90 },
+                  { label: "SE (135°)", deg: 135 },
+                  { label: "South (180°)", deg: 180 },
+                  { label: "SW (225°)", deg: 225 },
+                  { label: "West (270°)", deg: 270 },
+                  { label: "NW (315°)", deg: 315 },
+                ].map((item) => (
+                  <button
+                    key={item.deg}
+                    type="button"
+                    onClick={() => {
+                      setCompassHeading(item.deg);
+                      setIsSensorActive(false);
+                    }}
+                    className={"tap-scale py-1.5 px-1 rounded-xl text-[11px] font-semibold border transition " + (Math.abs(compassHeading - item.deg) <= 22 ? "bg-[#195A50] text-white border-[#195A50] shadow-xs" : "bg-[#FFF7EF] text-[#195A50] border-[#E9DCCF] hover:bg-[#FBEBE2]")}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Current Direction Vastu Suitability Box */}
+            <div className="bg-[#FFF7EF] border border-[#E9DCCF] rounded-2xl p-3.5 text-left text-xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#7D8C83]">
+                  Directional Energy
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#195A50]/10 text-[#195A50]">
+                  {currentVastu.score}
+                </span>
+              </div>
+              <p className="font-semibold text-[#195A50] leading-snug">
+                {currentVastu.vibe}
+              </p>
+              <p className="text-[11px] text-[#7D8C83] leading-relaxed">
+                <strong>Best Uses:</strong> {currentVastu.vastuSummary}
+              </p>
+            </div>
+          </div>
+
+          {/* Room-by-Room Vastu Decision Engine */}
+          <div className="bg-white rounded-3xl border border-[#E9DCCF] p-5 shadow-[0_6px_20px_rgba(25,90,80,0.05)] space-y-3.5">
+            <div>
+              <h3 className="text-sm font-bold text-[#195A50]">
+                Room-by-Room Direction Guidance
+              </h3>
+              <p className="text-[11px] text-[#7D8C83]">
+                Select any room or feature of your property to inspect its ideal Vastu zone:
+              </p>
+            </div>
+
+            {/* Horizontal Room Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {ROOM_VASTU_GUIDE.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setSelectedRoomCheck(r.id)}
+                  className={"tap-scale shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition " + (selectedRoomCheck === r.id ? "bg-[#195A50] text-white border-[#195A50] shadow-xs" : "bg-[#FFF7EF] text-[#195A50] border-[#E9DCCF] hover:bg-[#FBEBE2]")}
+                >
+                  {r.name.split(" ")[0]}
+                </button>
+              ))}
+            </div>
+
+            {/* Active Room Guide Detail */}
+            {activeRoomGuide && (
+              <div className="bg-[#FFF7EF] border border-[#E9DCCF] rounded-2xl p-4 space-y-3 text-xs">
+                <div className="flex items-center justify-between pb-2 border-b border-[#E9DCCF]">
+                  <h4 className="font-serif font-bold text-sm text-[#195A50]">
+                    {activeRoomGuide.name}
+                  </h4>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EB725B]/15 text-[#EB725B]">
+                    {activeRoomGuide.badge}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="bg-white border border-[#E9DCCF] rounded-xl p-2.5 space-y-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-emerald-700" /> Best Direction
+                    </span>
+                    <p className="font-bold text-xs text-[#195A50]">{activeRoomGuide.best}</p>
+                  </div>
+                  <div className="bg-white border border-[#E9DCCF] rounded-xl p-2.5 space-y-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1">
+                      <AlertTriangle size={12} className="text-rose-700" /> Strictly Avoid
+                    </span>
+                    <p className="font-bold text-xs text-rose-900">{activeRoomGuide.avoid}</p>
+                  </div>
+                </div>
+
+                <div className="text-[11.5px] text-[#7D8C83] leading-relaxed bg-white/70 p-3 rounded-xl border border-[#E9DCCF]">
+                  <strong className="text-[#195A50]">Vastu Rule &amp; Practical Advice:</strong>{" "}
+                  {activeRoomGuide.tips}
+                </div>
+              </div>
+            )}
+
+            {/* Action Bar: Copy Summary */}
+            <div className="pt-1 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={handleCopyCompassReport}
+                className="tap-scale inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#195A50] text-white text-xs font-semibold shadow-xs hover:bg-[#103B34]"
+              >
+                <Copy size={13} /> Copy Direction Summary
+              </button>
+            </div>
           </div>
         </section>
       )}

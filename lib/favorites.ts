@@ -33,6 +33,7 @@ export interface ShortcutItem {
     | "podcasts"
     | "vastu"
     | "trends"
+    | "compass"
     | "dealers"
     | "architects"
     | "engineers"
@@ -271,6 +272,15 @@ export const ALL_AVAILABLE_SHORTCUTS: ShortcutItem[] = [
     color: "#0D9488",
     category: "Insights",
     iconType: "trends",
+  },
+  {
+    id: "compass",
+    title: "Vastu Compass",
+    subtitle: "Direction & Shubh Disha Tool",
+    href: "/updates?section=compass",
+    color: "#EB725B",
+    category: "Insights",
+    iconType: "compass",
   },
   {
     id: "drafts",

@@ -213,6 +213,15 @@ function ShortcutIcon({ type, className = "w-10 h-10" }: { type: ShortcutItem["i
           <rect height="12" rx="1" width="5" x="20" y="18" />
         </svg>
       );
+    case "compass":
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="14" />
+          <path d="M20 6v4M20 30v4M6 20h4M30 20h4" strokeWidth="1.8" />
+          <polygon points="20,10 24,19 20,28 16,19" fill="#EB725B" fillOpacity="0.85" stroke="#195A50" strokeWidth="1.5" />
+          <circle cx="20" cy="20" r="2.5" fill="#195A50" />
+        </svg>
+      );
     case "dealers":
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 40 40">
@@ -447,7 +456,7 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
     <div className="w-full max-w-md mx-auto min-h-screen px-5 pt-3 pb-28 flex flex-col justify-between relative">
       <div>
         {/* 1. Header with Centered Sukoon Logo, City Selector & Profile (Native Mobile Optimized) */}
-        <header className="relative flex items-center justify-between mb-7 pt-2.5 min-h-[48px] px-0.5">
+        <header className="relative flex items-center justify-between mb-6 pt-2 min-h-[58px] px-0.5">
           {/* Top Left: City Selector */}
           <button
             type="button"
@@ -460,19 +469,19 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
             <ChevronDown size={11} className="text-[#195A50] shrink-0" />
           </button>
 
-          {/* Center Brand Identity - Centered with Mathematical Precision & Safe Margins */}
-          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-24">
-            <div className="h-6.5 sm:h-7 flex items-center justify-center overflow-visible">
+          {/* Center Brand Identity - Sized Same as Search Bar & Center Aligned */}
+          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0">
+            <div className="w-52 flex items-center justify-center overflow-visible">
               <Image
                 src="/images/sukoon-brand-logo.png"
                 alt="Sukoon"
-                width={342}
-                height={79}
+                width={208}
+                height={48}
                 priority
-                className="h-6.5 sm:h-7 w-auto object-contain select-none mix-blend-multiply"
+                className="h-10 sm:h-11 w-auto max-w-[208px] object-contain select-none mix-blend-multiply"
               />
             </div>
-            <p className="sublogo-tracking text-[7.5px] sm:text-[8px] font-semibold text-[#7D8C83] uppercase mt-0.5 leading-none tracking-[0.24em] select-none whitespace-nowrap">
+            <p className="sublogo-tracking text-[8px] sm:text-[8.5px] font-semibold text-[#7D8C83] uppercase mt-0.5 leading-none tracking-[0.28em] select-none whitespace-nowrap">
               Escape the Chaos
             </p>
           </div>
