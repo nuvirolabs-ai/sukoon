@@ -1,58 +1,102 @@
 "use client";
 import Link from "next/link";
+import { Suspense, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Home, Building2, Plus, Compass, MoreHorizontal, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Home, Loader2, User, TrendingUp, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
 import { cx } from "@/lib/utils";
 import { useStore } from "./StoreProvider";
 import { t } from "@/lib/i18n";
 import { MotionSheet } from "./motion/MotionSheet";
 import { CollapsingHeader } from "./motion/CollapsingHeader";
 import { StatusTransition } from "./motion/StatusTransition";
-import { useScrollState } from "./motion/useScrollState";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell">
-      <a href="#main-content" className="skip-link">Skip to content</a><main id="main-content" className="app-workspace">{children}</main>
-      <BottomNav />
+    <div className="app-shell relative min-h-screen">
+      {/* Ambient Atmospheric Organic Backdrop Blobs - Constant across all pages */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        {/* Top-Right Warm Soft Peach Organic Shape */}
+        <svg
+          className="absolute -top-4 -right-4 w-48 h-48 sm:w-60 sm:h-60 text-[#F6C6AF]"
+          viewBox="0 0 160 160"
+          fill="currentColor"
+          preserveAspectRatio="none"
+        >
+          <path d="M160 0 H50 C65 65 110 115 160 115 Z" />
+        </svg>
+
+        {/* Bottom-Left Calming Sage Green Organic Shape */}
+        <svg
+          className="absolute -bottom-6 -left-6 w-52 h-52 sm:w-64 sm:h-64 text-[#CFDCCB]"
+          viewBox="0 0 160 160"
+          fill="currentColor"
+          preserveAspectRatio="none"
+        >
+          <path d="M0 160 V50 C65 65 115 110 115 160 Z" />
+        </svg>
+      </div>
+
+      <a href="#main-content" className="skip-link">Skip to content</a>
+      <main id="main-content" className="app-workspace relative z-10">{children}</main>
+      <Suspense fallback={null}><BottomNav /></Suspense>
     </div>
   );
 }
 
+const NAV_ICON = "h-[22px] w-[22px]";
+
 function BottomNav() {
   const path = usePathname();
-  const { compact, direction } = useScrollState(48);
   let lang: "en" | "hi" = "en";
   try {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { s } = useStore();
     lang = s.lang;
   } catch {}
-  const tabs = [
-    { href: "/", label: t("home", lang), active: path === "/", icon: <Home className="h-[22px] w-[22px]" /> },
-    { href: "/properties", label: t("properties", lang), active: path.startsWith("/propert"), icon: <Building2 className="h-[22px] w-[22px]" /> },
-  ];
-  const tabsAfter = [
-    { href: "/search", label: t("explore", lang), active: path.startsWith("/search") || path.startsWith("/buy-sell"), icon: <Compass className="h-[22px] w-[22px]" /> },
-    { href: "/more", label: t("more", lang), active: path.startsWith("/more") || path.startsWith("/guideline") || path.startsWith("/drafts") || path.startsWith("/guides") || path.startsWith("/construction") || path.startsWith("/bills") || path.startsWith("/updates") || path.startsWith("/vault") || path.startsWith("/reminders") || path.startsWith("/pricing"), icon: <MoreHorizontal className="h-[22px] w-[22px]" /> },
+  const inner = path !== "/" && path !== "/home-reference";
+  useEffect(() => {
+    document.documentElement.classList.toggle("is-inner", inner);
+    return () => {
+      document.documentElement.classList.remove("is-inner");
+    };
+  }, [inner]);
+  const navTabs = [
+    {
+      href: "/",
+      label: t("home", lang),
+      active: path === "/" || path === "/home-reference",
+      icon: <Home className={NAV_ICON} />,
+    },
+    {
+      href: "/stocks",
+      label: "Stock market",
+      active: path.startsWith("/stocks") || path.startsWith("/market"),
+      icon: <TrendingUp className={NAV_ICON} />,
+    },
+    {
+      href: "/my-sukoon",
+      label: "My Sukoon",
+      active: path.startsWith("/my-sukoon"),
+      icon: <Sparkles className={NAV_ICON} />,
+    },
+    {
+      href: "/profile",
+      label: "Profile",
+      active: path.startsWith("/profile"),
+      icon: <User className={NAV_ICON} />,
+    },
   ];
   const item = (href: string, label: string, active: boolean, icon: React.ReactNode) => (
     <Link href={href} aria-current={active ? "page" : undefined} className={cx("nav-item", active && "is-active")}>
       <span aria-hidden="true" className="nav-item__pill" />
       <span className="nav-item__icon">{icon}</span>
-      <span className="nav-item__label nav-label">{label}</span>
+      <span className="nav-item__label nav-label whitespace-nowrap text-[11px] font-semibold">{label}</span>
     </Link>
   );
   return (
-    <nav aria-label="Main navigation" className={cx("bottom-navigation", compact && direction === "down" && "is-compact")}>
+    <nav aria-label="Main navigation" className="bottom-navigation">
       <div className="nav-items">
-        {tabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
-        <div className="nav-fab">
-          <Link href="/property/new" aria-label="Add property">
-            <Plus className="h-7 w-7" />
-          </Link>
-        </div>
-        {tabsAfter.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
+        {navTabs.map((tab) => <span key={tab.href}>{item(tab.href, tab.label, tab.active, tab.icon)}</span>)}
       </div>
     </nav>
   );
@@ -106,7 +150,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 }
 
 export function EmptyState({ title, detail, action }: { title: string; detail?: string; action?: React.ReactNode }) {
-  return <Surface tone="soft" className="text-center"><p className="text-[18px] font-medium">{title}</p>{detail ? <p className="mt-1 text-[13px] leading-5 text-ink-muted">{detail}</p> : null}{action ? <div className="mt-3">{action}</div> : null}</Surface>;
+  return <Surface tone="soft" className="empty-state text-center"><p className="empty-state__title">{title}</p>{detail ? <p className="empty-state__detail">{detail}</p> : null}{action ? <div className="mt-3">{action}</div> : null}</Surface>;
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {

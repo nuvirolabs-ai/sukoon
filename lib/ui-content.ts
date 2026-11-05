@@ -256,11 +256,18 @@ export function attentionTitle(title: string, type?: string) {
 }
 
 export function documentStatusLabel(document: { scanStatus?: string | null; processingState?: string | null; reviewStatus?: string | null }) {
+  if (document.scanStatus === "owner_copy") return "In your vault";
   if (document.scanStatus === "unavailable" || document.scanStatus === "infected" || document.scanStatus === "failed") return "Couldn’t process";
   if (document.scanStatus && document.scanStatus !== "clean") return "Scanning";
   if (document.processingState === "ready" && document.reviewStatus === "in_review") return "Needs review";
   if (document.reviewStatus === "confirmed") return "Reviewed";
   return "Needs review";
+}
+
+export function recordReadinessLabel(assessment: string | undefined, score: number | undefined, papers: number) {
+  if (assessment === "RECORD_READINESS" && (score ?? 0) > 0) return `${score}% ready`;
+  if (papers > 0) return `${papers} ${papers === 1 ? "paper" : "papers"} on file`;
+  return "Not assessed";
 }
 
 export function layoutStressFixtures() {

@@ -7,11 +7,6 @@ import { sessionLifetimeSeconds } from "@/lib/session-policy";
 import { trustedOriginList } from "@/lib/trusted-origins";
 import { clientReviewAuthPlugin, stagingReviewAuthPlugin } from "@/lib/client-review-auth";
 
-const secret = process.env.BETTER_AUTH_SECRET;
-if (!secret || secret.length < 32) {
-  throw new Error("BETTER_AUTH_SECRET must be configured with at least 32 characters.");
-}
-
 const localTransportGuard = {
   id: "sukoon-local-email-transport-guard",
   version: "1.0.0",
@@ -25,7 +20,12 @@ const localTransportGuard = {
   },
 };
 
-export const auth = betterAuth({
+function createAuth() {
+  const secret = process.env.BETTER_AUTH_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("BETTER_AUTH_SECRET must be configured with at least 32 characters.");
+  }
+  return betterAuth({
   appName: "Sukoon",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3100",
   trustedOrigins: trustedOriginList(),
@@ -49,5 +49,20 @@ export const auth = betterAuth({
     }),
   ],
 });
+}
+
+type Auth = ReturnType<typeof createAuth>;
+
+const configuredSecret = process.env.BETTER_AUTH_SECRET;
+let deferredAuth: Auth | undefined;
+export const auth: Auth = configuredSecret && configuredSecret.length >= 32
+  ? createAuth()
+  : new Proxy({} as Auth, {
+      get(_target, prop, receiver) {
+        deferredAuth ??= createAuth();
+        const value = Reflect.get(deferredAuth, prop, receiver);
+        return typeof value === "function" ? value.bind(deferredAuth) : value;
+      },
+    });
 
 export default auth;

@@ -5,6 +5,7 @@ import { readStateForUser } from "@/lib/repository";
 import { getDocumentDetailsForUser, getProtectedDocumentBytes, deleteDocumentForUser, VaultInputError, VaultStorageError } from "@/lib/vault-repository";
 import { getWorkspaceForUser } from "@/lib/repository";
 import { getSharedDocumentBytesForUser, getSharedDocumentMetadataForUser, SharingInputError } from "@/lib/sharing";
+import { hostedPrivateStorageClosed } from "@/lib/preview-documents";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,7 @@ async function currentSession(request: Request) {
 }
 
 export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
-  if (process.env.NODE_ENV === "production") return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
+  if (hostedPrivateStorageClosed()) return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
   const session = await currentSession(request);
   if (!session) return errorResponse("AUTHENTICATION_REQUIRED", "Sign in required.", 401);
   const { id } = await context.params;
@@ -43,7 +44,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
 }
 
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
-  if (process.env.NODE_ENV === "production") return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
+  if (hostedPrivateStorageClosed()) return errorResponse("STORAGE_PROVIDER_UNAVAILABLE", "Private object storage is not configured outside local development.", 503);
   const session = await currentSession(request);
   if (!session) return errorResponse("AUTHENTICATION_REQUIRED", "Sign in required.", 401);
   const { id } = await context.params;

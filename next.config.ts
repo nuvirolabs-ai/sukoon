@@ -36,6 +36,12 @@ const nextDistDir = configuredDistDir === ".next" || configuredDistDir === ".nex
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "plus.unsplash.com" },
+    ],
+  },
   ...(!hosted ? { allowedDevOrigins: localDevHosts() } : {}),
   // Keep concurrent local profiles in separate development directories.
   ...(nextDistDir ? { distDir: nextDistDir } : {}),

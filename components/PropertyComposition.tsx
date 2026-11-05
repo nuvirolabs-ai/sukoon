@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { GroupedList, ListRow, Metric, SectionHeader, displayLabel, dueCopy } from "./consumer";
-import { formatPaiseCompact } from "@/lib/ui-content";
+import { GroupedList, ListRow, SectionHeader, displayLabel } from "./consumer";
 
 export type PropertySummary = {
   id: string;
@@ -34,29 +33,18 @@ export function PropertyComposition({ summary }: { summary: PropertySummary }) {
     <>
       {summary.projects.length > 0 ? (
         <>
-          <SectionHeader title="Build" />
+          <SectionHeader title="Build on this property" />
           <GroupedList>{summary.projects.map((p) => <ListRow key={p.id} title={p.name} detail={displayLabel(p.status)} href={`/construction/${p.id}`} />)}</GroupedList>
         </>
       ) : null}
-      <SectionHeader title="Upcoming" href={`${href}?tab=bills`} />
-      <GroupedList>
-        {summary.upcoming.map((item) => (
-          <ListRow key={item.id} title={item.title} detail={dueCopy(item.dueDate)} value={item.amountPaise === null ? "Reminder" : formatPaiseCompact(item.amountPaise)} href={`${href}?tab=bills&occurrence=${item.id}`} />
-        ))}
-        {!summary.upcoming.length ? <p className="p-5 text-ink-muted">Nothing upcoming.</p> : null}
-      </GroupedList>
-      <SectionHeader title="Property record" />
-      <div className="surface metric-group">
-        <Metric label="Documents" value={summary.records.documents} />
-        <Metric label="Bills" value={summary.records.bills} />
-        <Metric label="Maintenance" value={summary.records.maintenance} detail={summary.records.openMaintenance ? `${summary.records.openMaintenance} active` : undefined} />
-        <Metric label="Timeline" value={summary.records.timeline} />
-      </div>
-      <SectionHeader title="People" href={`${href}?tab=share`} detail="Manage" />
-      <GroupedList>
-        {summary.people.map((person) => <ListRow key={person.id} title={displayLabel(person.role)} detail={person.inviteeEmail || "Accepted"} href={`${href}?tab=share`} />)}
-        {!summary.people.length ? <p className="p-5 text-ink-muted">Only you.</p> : null}
-      </GroupedList>
+      {summary.people.length ? (
+        <>
+          <SectionHeader title="Who can see this" href={`${href}?tab=share`} detail={`${summary.people.length} ${summary.people.length === 1 ? "person" : "people"}`} />
+          <GroupedList>
+            {summary.people.map((person) => <ListRow key={person.id} title={displayLabel(person.role)} detail={person.inviteeEmail || "Accepted"} href={`${href}?tab=share`} />)}
+          </GroupedList>
+        </>
+      ) : null}
     </>
   );
 }

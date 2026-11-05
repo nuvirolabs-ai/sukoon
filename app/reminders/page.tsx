@@ -6,6 +6,7 @@ import { Disclosure, displayLabel, shortDate } from "@/components/consumer";
 import { EmptyState, ErrorState, PageHead, StatusPill } from "@/components/ui";
 import { AnimatedSegment } from "@/components/motion/AnimatedSegment";
 import { ListSkeleton } from "@/components/motion/Skeleton";
+import { NextBar, Scene, SCENE } from "@/components/PlaceCover";
 
 type DurableReminder = {
   id: string;
@@ -69,17 +70,20 @@ export default function RemindersPage() {
   const visible = unreadOnly ? reminders.filter((reminder) => !reminder.readAt) : reminders;
   return <div>
     <PageHead title="Reminders" sub="Your upcoming reminders and follow-ups" />
-    <div className="space-y-3 pb-6">
-      <div className="surface p-4 text-[13px] text-ink-muted">Reminders are based on records you entered. They are not official deadlines.</div>
+    <div className="space-y-3 pb-6 pb-next">
+      <Scene src={SCENE.dates}><p>Dates you set</p><strong>{visible[0]?.title || "Open one when you are ready"}</strong></Scene>
+      {visible[0] ? <Link href={visible[0].deepLink} className="guided-home-next scene-next block"><p className="guided-eyebrow">Next date</p><h2>{visible[0].title}</h2><p>{shortDate(visible[0].scheduledAt)} · Shows in Sukoon</p><span className="primary-disclosure">Open this <span aria-hidden="true">→</span></span></Link> : null}
+      <p className="next-quiet">These dates come from records you entered. They are not official deadlines.</p>
       <div className="flex gap-2 items-center"><AnimatedSegment label="Reminder filter" value={unreadOnly ? "unread" : "all"} onChange={(v) => setUnreadOnly(v === "unread")} options={[{ value: "all", label: "All" }, { value: "unread", label: "Unread" }]} /><button onClick={() => void markAllRead()} className="motion-pressable ml-auto min-h-11 rounded-full border border-line bg-white px-3 text-[13px]">Mark all read</button></div>
       {loading ? <ListSkeleton rows={3} /> : null}
       {error ? <ErrorState message={error} onRetry={() => void load()} /> : null}
       {!loading && !error && !visible.length ? <EmptyState title={unreadOnly ? "No unread reminders" : "No reminders"} detail="Enable reminders when you record an obligation from a property Bills tab." /> : null}
+      {visible[0] ? <NextBar kicker="Next date" title={visible[0].title} href={visible[0].deepLink} action="Open" /> : null}
       {visible.map((reminder) => <Disclosure key={reminder.id} title={reminder.title} detail={`${shortDate(reminder.scheduledAt)} · ${reminder.readAt?"Read":"Unread"}`}><div className="space-y-4">
-        <div className="flex items-start justify-between gap-2"><div><p className="text-[13px] font-semibold">{reminder.title}</p><p className="mt-1 text-[13px] text-ink-muted">{reminder.channel} • {reminder.offsetDays === 0 ? "on due date" : `${Math.abs(reminder.offsetDays)} day${Math.abs(reminder.offsetDays) === 1 ? "" : "s"} before due`} • {reminder.timezone} at {reminder.localTime}</p></div><StatusPill tone={tone(reminder.state)}>{displayLabel(reminder.state)}</StatusPill></div>
+        <div className="flex items-start justify-between gap-2"><div><p className="text-[13px] font-semibold">{reminder.title}</p><p className="mt-1 text-[13px] text-ink-muted">{reminder.channel === "IN_APP" || reminder.channel === "in_app" ? "Shows in Sukoon" : displayLabel(reminder.channel)} · {reminder.offsetDays === 0 ? "on the day" : `${Math.abs(reminder.offsetDays)} day${Math.abs(reminder.offsetDays) === 1 ? "" : "s"} before`} · {reminder.localTime}</p></div><StatusPill tone={tone(reminder.state)}>{displayLabel(reminder.state)}</StatusPill></div>
         <p className="mt-2 text-[14px]">{reminder.body}</p>
-        <p className="mt-1 text-[12px] text-ink-muted">Target {reminder.scheduledAt.slice(0, 16).replace("T", " ")} UTC • attempts {reminder.attemptCount}{reminder.failureReason ? ` • ${reminder.failureReason}` : ""}</p>
-        <div className="mt-2 flex flex-wrap gap-3 text-[13px]"><Link href={reminder.deepLink} className="underline">Open source record →</Link>{reminder.readAt ? <button onClick={() => void action(reminder.id, "unread")} className="underline">Mark unread</button> : <button onClick={() => void action(reminder.id, "read")} className="underline">Mark read</button>}{!(["CANCELLED", "FAILED_TERMINAL"].includes(reminder.state)) ? <button onClick={() => void action(reminder.id, "snooze", new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString())} className="underline">Snooze 1 day</button> : null}{reminder.state !== "CANCELLED" ? <button onClick={() => void action(reminder.id, "dismiss")} className="text-red-700 underline">Dismiss</button> : null}</div>
+        {reminder.failureReason ? <p className="mt-1 text-[12px] text-ink-muted">{reminder.failureReason}</p> : null}
+        <div className="action-row"><Link href={reminder.deepLink}>Open this</Link>{reminder.readAt ? <button type="button" onClick={() => void action(reminder.id, "unread")}>Mark unread</button> : <button type="button" onClick={() => void action(reminder.id, "read")}>Mark read</button>}{!(["CANCELLED", "FAILED_TERMINAL"].includes(reminder.state)) ? <button type="button" onClick={() => void action(reminder.id, "snooze", new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString())}>Snooze 1 day</button> : null}{reminder.state !== "CANCELLED" ? <button type="button" className="is-danger" onClick={() => void action(reminder.id, "dismiss")}>Dismiss</button> : null}</div>
       </div></Disclosure>)}
     </div>
   </div>;

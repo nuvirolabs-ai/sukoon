@@ -3,6 +3,7 @@ import { OwnershipRecords } from "@/components/OwnershipRecords";
 import { Suspense, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useStore } from "@/components/StoreProvider";
 import { Button, ErrorState, Input, PageHead, Sheet, Surface } from "@/components/ui";
 import { Assistant } from "@/components/Assistant";
@@ -14,14 +15,25 @@ import { ExportPanel } from "@/components/ExportPanel";
 import { healthFor } from "@/lib/health";
 import { type Property, type TimelineEvent } from "@/lib/types";
 import { randomId, todayISO, inr } from "@/lib/utils";
-import { Disclosure, GroupedList, ListRow, SectionHeader, displayLabel, documentStatusLabel, activityTitle, groupByActivity, presentDate, shortDate } from "@/components/consumer";
+import { Disclosure, GroupedList, ListRow, SectionHeader, displayLabel, documentStatusLabel, activityTitle, groupByActivity, presentDate, presentName, shortDate } from "@/components/consumer";
 import { AnimatedList } from "@/components/motion/AnimatedList";
-import { AnimatedSegment } from "@/components/motion/AnimatedSegment";
-import { StatusTransition } from "@/components/motion/StatusTransition";
 import { useToast } from "@/components/motion/Toast";
 import { propertyTab } from "@/lib/navigation";
 import { PropertyComposition, usePropertyComposition } from "@/components/PropertyComposition";
 import { GuidedPaperFlow } from "@/components/GuidedPaperFlow";
+import { NextBar, Scene, otherPaper, paperImage, placeImage } from "@/components/PlaceCover";
+import { dueCopy } from "@/lib/ui-content";
+
+const PROPERTY_SECTIONS = [
+  { value: "overview", label: "Overview" },
+  { value: "vault", label: "Papers" },
+  { value: "bills", label: "Bills" },
+  { value: "maint", label: "Maintenance" },
+  { value: "rent", label: "Rent" },
+  { value: "timeline", label: "Timeline" },
+  { value: "share", label: "Sharing" },
+  { value: "export", label: "Exports" },
+] as const;
 
 export default function PassportPage() {
   return <Suspense fallback={<p className="p-6">Loading Property Passport…</p>}><PassportContent /></Suspense>;
@@ -58,6 +70,15 @@ function PassportContent() {
   if (!p) return <div className="p-6 text-sm">Property not found. <Link href="/properties" className="underline">Back</Link></div>;
   const h = healthFor(p.id, s);
   const timeline = s.timeline.filter((t) => t.propertyId === p.id).sort((a,b)=>a.date<b.date?1:-1);
+  const papersOnFile = s.docs.filter((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt);
+  const leadPaper = otherPaper(papersOnFile, p.id);
+  const unpaidBills = s.bills.filter((bill) => bill.propertyId === p.id && bill.status !== "paid").slice().sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  const propertyBill = unpaidBills[0];
+  const propertyBuild = s.projects.find((project) => project.propertyId === p.id);
+  const shareCount = s.shares.filter((share) => share.propertyId === p.id).length;
+  const nextHref = propertyBill ? `/property/${p.id}?tab=bills` : leadPaper ? `/property/${p.id}/documents/${leadPaper.id}` : `/property/${p.id}?tab=vault`;
+  const nextTitle = propertyBill ? propertyBill.title : leadPaper ? (leadPaper.displayName || leadPaper.name) : "Add your first paper";
+  const nextAction = propertyBill ? "See this bill" : leadPaper ? "Open this paper" : "Add a paper";
 
   const addTimeline = (title: string, kind: TimelineEvent["kind"], detail?: string) =>
     update((st) => { st.timeline.push({ id: randomId(), propertyId: p.id, date: todayISO(), title, detail, kind }); return st; });
@@ -79,26 +100,33 @@ function PassportContent() {
   return (
     <div>
       <PageHead title={tab === "overview" ? p.name : `${({vault:"Documents",bills:"Bills & payments",maint:"Maintenance",share:"Sharing",timeline:"Timeline",rent:"Rent",export:"Exports"} as Record<string,string>)[tab] || displayLabel(tab)}`} sub={tab === "overview" ? `${displayLabel(p.type)} · ${p.area}${p.city ? `, ${p.city}` : ""}` : p.name} backHref={tab !== "overview" ? `/property/${p.id}?tab=overview` : undefined} backLabel="Property" right={<PropertySwitcher currentId={p.id} tab={tab} />} />
-      {tab !== "overview" && <div className="pb-2"><AnimatedSegment label="Property sections" value={tab} options={["overview","vault","bills","maint","rent","timeline","share","export"].map((v)=>({ value: v, label: v==="overview"?"Overview":v==="vault"?"Documents":v==="maint"?"Maintenance":v==="bills"?"Bills":displayLabel(v), href: `/property/${p.id}?tab=${v}` }))} /></div>}
+      {tab !== "overview" ? <nav className="section-switch pb-2" aria-label="Property sections">{PROPERTY_SECTIONS.map((section) => <Link key={section.value} href={section.value === "overview" ? `/property/${p.id}` : `/property/${p.id}?tab=${section.value}`} aria-current={tab === section.value ? "page" : undefined}>{section.label}</Link>)}</nav> : null}
 
-      <div className="pb-6 space-y-3">
+      <div className="space-y-3 pb-6">
         {tab==="overview" && (
           <>
-            <p className="text-[13px] text-ink-muted">Owner asserted</p>
-            <div className="surface p-5">
-              <p className="text-[13px] text-ink-muted">Record readiness</p>
-              <p className="text-[32px] tracking-tight mt-1"><StatusTransition statusKey={(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" ? `score-${summary?.readiness.score??h.score}` : "not-assessed"}>{(summary?.readiness.assessment??h.assessment) === "RECORD_READINESS" ? `${summary?.readiness.score??h.score}%` : "Not assessed"}</StatusTransition></p>
-              <Disclosure title="View readiness"><HealthAssessmentPanel propertyId={p.id}/></Disclosure>
-            </div>
-            <section className="guided-home-next surface" aria-labelledby="property-next-title">
-              <p className="guided-eyebrow">Next for this property</p>
-              <h2 id="property-next-title">{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Keep reviewing your papers" : "Add your first paper"}</h2>
-              <p>{s.docs.some((document) => document.propertyId === p.id && !document.deletedAt && !document.archivedAt) ? "Your papers, scan details and manual review live together here." : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
-              <Link href={`/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">Open documents <span aria-hidden="true">→</span></Link>
+            <Scene src={placeImage(p)}>
+              <p>{displayLabel(p.type)} · {presentName(p.area)}{p.city ? `, ${p.city}` : ""}</p>
+              <strong>{papersOnFile.length ? `${papersOnFile.length} ${papersOnFile.length === 1 ? "paper" : "papers"} on file` : "Add the first paper"}</strong>
+            </Scene>
+            <section className="guided-home-next scene-next" aria-labelledby="property-next-title">
+              <p className="guided-eyebrow">{propertyBill ? "Coming up" : leadPaper ? "Open a paper" : "Start here"}</p>
+              <h2 id="property-next-title">{propertyBill ? propertyBill.title : leadPaper ? (leadPaper.displayName || leadPaper.name) : "Add your first paper"}</h2>
+              <p>{propertyBill ? dueCopy(propertyBill.dueDate) : leadPaper ? `${leadPaper.type} · ready to preview` : "Start with a PDF or photo. Nothing is shared until you choose to share it."}</p>
+              <Link href={propertyBill ? `/property/${p.id}?tab=bills` : leadPaper ? `/property/${p.id}/documents/${leadPaper.id}` : `/property/${p.id}?tab=vault`} className="primary-disclosure motion-pressable">{propertyBill ? "See this bill" : leadPaper ? "Open this paper" : "Add a paper"} <span aria-hidden="true">→</span></Link>
             </section>
-            <GroupedList><AnimatedList>{[["vault","Documents",`${s.docs.filter(d=>d.propertyId===p.id).length}`],["bills","Bills & payments","Due, paid, reminders"],["maint","Maintenance",`${h.maint.open} active`],["timeline","Timeline",`${timeline.length}`],["share","Sharing","Who can see what"],["rent","Rent","Tenancies"],["export","Exports","Download records"]].map(([key,label,detail])=><ListRow key={key} title={label} detail={detail} href={`/property/${p.id}?tab=${key}`}/>)}</AnimatedList></GroupedList>
+            <div className="action-grid">
+              <Link className="action-tile" href={`/property/${p.id}?tab=vault`}><span>Papers</span><strong>{papersOnFile.length} {papersOnFile.length === 1 ? "paper" : "papers"}</strong><em>In the vault</em></Link>
+              <Link className="action-tile" href={`/property/${p.id}?tab=bills`}><span>Bills</span><strong>{unpaidBills.length ? `${unpaidBills.length} unpaid` : "None due"}</strong><em>{propertyBill ? propertyBill.title : "Nothing coming up"}</em></Link>
+              {propertyBuild ? <Link className="action-tile" href={`/construction/${propertyBuild.id}`}><span>Build</span><strong>{propertyBuild.name.split(" ")[0]}</strong><em>Continue</em></Link> : <Link className="action-tile" href={`/property/${p.id}?tab=maint`}><span>Maintenance</span><strong>{h.maint.open} open</strong><em>{h.maint.open === 1 ? "job" : "jobs"}</em></Link>}
+              <Link className="action-tile" href={`/property/${p.id}?tab=share`}><span>Sharing</span><strong>{shareCount ? `${shareCount} ${shareCount === 1 ? "share" : "shares"}` : "Private"}</strong><em>{shareCount ? "Who can see" : "Only you"}</em></Link>
+            </div>
+            <nav className="section-switch" aria-label="More property sections">
+              {PROPERTY_SECTIONS.filter((section) => !["overview", "vault", "bills"].includes(section.value)).map((section) => <Link key={section.value} href={`/property/${p.id}?tab=${section.value}`}>{section.label}{section.value === "timeline" ? ` · ${timeline.length}` : ""}</Link>)}
+            </nav>
             {summary&&<PropertyComposition summary={summary}/>} {composition.error&&<p role="alert">{composition.error}</p>}
-            <Disclosure title="Property details" detail="Ownership, area, loan">
+            <Disclosure title="Property details" detail="Ownership, area, papers">
+            <HealthAssessmentPanel propertyId={p.id} />
             <Link href={`/construction?propertyId=${p.id}`} className="block rounded-2xl p-4 text-[15px]">Construction <span className="float-right text-ink-muted">→</span></Link>
             <div className="surface p-4 bg-white">
               <p className="text-[16px] font-medium">Signals</p>
@@ -127,6 +155,7 @@ function PassportContent() {
               <div className="mt-2 space-y-1">{history.slice(-5).reverse().map((entry) => <p key={entry.id} className="text-[13px] text-ink-muted">{presentDate(entry.createdAt)} · {displayLabel(entry.field)}</p>)}</div>
             </Surface>
             </Disclosure><Disclosure title="Ask Sukoon" detail="Questions about this property"><Assistant propertyId={p.id} /></Disclosure>
+            <NextBar kicker={propertyBill ? "Coming up" : leadPaper ? "Open a paper" : "Start here"} title={nextTitle} href={nextHref} action={nextAction} />
           </>
         )}
 
@@ -155,7 +184,7 @@ function PassportContent() {
         )}
 
         {tab==="share" && <SharingPanel propertyId={p.id} />}
-        {tab==="export" && <ExportPanel propertyId={p.id} />}
+        {tab==="export" && <><ExportPanel propertyId={p.id} />{leadPaper ? <NextBar kicker="Open a paper first" title={leadPaper.displayName || leadPaper.name} href={`/property/${p.id}/documents/${leadPaper.id}`} action="Preview" /> : null}</>}
         {tab==="ai" && <Assistant propertyId={p.id} />}
       </div>
       <PropertyEditSheet key={`${p.id}-${editOpen}-${p.version ?? 0}`} property={p} open={editOpen} onClose={() => setEditOpen(false)} onSaved={(data) => { replace(data.state, data.version); setEditOpen(false); notify("Passport updated"); }} />
@@ -202,8 +231,15 @@ function VaultTab({ propertyId }: { propertyId: string }) {
   const [filter,setFilter]=useState("All");
   const [query, setQuery] = useState("");
   const docs = s.docs.filter((d)=>d.propertyId===propertyId && !d.deletedAt && !d.archivedAt);
+  const needsAttention = (document: (typeof docs)[number]) => document.scanStatus !== "owner_copy" && (document.reviewStatus !== "confirmed" || document.scanStatus !== "clean");
+  const attentionCount = docs.filter(needsAttention).length;
+  const reviewedCount = docs.filter((document) => document.reviewStatus === "confirmed" && document.scanStatus === "clean").length;
+  const categories = [...new Set(docs.map((document) => document.type))];
+  const statusFilters = attentionCount > 0 || reviewedCount > 0;
+  const filterOptions = statusFilters ? ["All", "Needs attention", "Reviewed"] : ["All", ...categories];
+  const activeFilter = filterOptions.includes(filter) ? filter : "All";
   const visibleDocs = docs.filter((document) => {
-    const matchesFilter = filter === "All" || (filter === "Reviewed" ? document.reviewStatus === "confirmed" && document.scanStatus === "clean" : document.reviewStatus !== "confirmed" || document.scanStatus !== "clean");
+    const matchesFilter = activeFilter === "All" || (statusFilters ? (activeFilter === "Reviewed" ? document.reviewStatus === "confirmed" && document.scanStatus === "clean" : needsAttention(document)) : document.type === activeFilter);
     const haystack = `${document.displayName || document.name} ${document.type}`.toLowerCase();
     return matchesFilter && (!query.trim() || haystack.includes(query.trim().toLowerCase()));
   });
@@ -215,18 +251,29 @@ function VaultTab({ propertyId }: { propertyId: string }) {
       <label className="guided-search-field">Search papers
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or category" />
       </label>
-      <AnimatedSegment label="Document filters" value={filter} onChange={setFilter} options={["All","Needs attention","Reviewed"].map((f)=>({ value: f, label: f }))} />
-      <GroupedList><AnimatedList stagger={false}>{visibleDocs.map((d)=>(
-        <ListRow key={d.id} href={`/property/${propertyId}/documents/${d.id}`} title={d.displayName || d.name} detail={`${d.type} · ${documentStatusLabel(d)} · ${presentDate(d.uploadDate)}`} />
-      ))}</AnimatedList></GroupedList>
+      <nav className="section-switch" aria-label="Document filters">{filterOptions.map((option) => <button key={option} type="button" aria-current={activeFilter === option ? "page" : undefined} onClick={() => setFilter(option)}>{option}</button>)}</nav>
+      <div className="paper-stack">{visibleDocs.map((d)=>(
+        <Link key={d.id} href={`/property/${propertyId}/documents/${d.id}`} className="paper-card motion-pressable">
+          <span className="paper-card__thumb"><Image src={paperImage(d.type)} alt="" fill sizes="76px" style={{ objectFit: "cover" }} /></span>
+          <span className="paper-card__body"><strong>{d.displayName || d.name}</strong><span>{d.type} · {documentStatusLabel(d)} · {presentDate(d.uploadDate)}</span></span>
+          <span className="paper-card__go" aria-hidden="true">→</span>
+        </Link>
+      ))}</div>
       {!visibleDocs.length ? <p className="p-5 text-[14px] text-ink-muted">No papers match this view.</p> : null}
+      {visibleDocs[0] ? <NextBar kicker="Open a paper" title={visibleDocs[0].displayName || visibleDocs[0].name} href={`/property/${propertyId}/documents/${visibleDocs[0].id}`} action="Preview" /> : null}
     </div>
   );
 }
 
 // ---- Bills ----
 function BillsTab({ propertyId }: { propertyId: string }) {
-  return <ObligationsPanel propertyId={propertyId} />;
+  const { s } = useStore();
+  const property = s.properties.find((item) => item.id === propertyId);
+  const paper = otherPaper(s.docs, propertyId);
+  return <>
+    <ObligationsPanel propertyId={propertyId} />
+    {paper ? <NextBar kicker={`Other paper on ${property?.name || "this property"}`} title={paper.displayName || paper.name} href={`/property/${propertyId}/documents/${paper.id}`} action="Open" /> : null}
+  </>;
   /* Legacy AppState bills remain available in the dedicated legacy views; new property records use S14 obligations.
   const { s, update } = useStore();
   const [t,setT]=useState<BillType>("Property tax"); const [title,setTitle]=useState(""); const [amt,setAmt]=useState(""); const [due,setDue]=useState(todayISO());
@@ -263,6 +310,7 @@ function BillsTab({ propertyId }: { propertyId: string }) {
 function RentTab({ propertyId }: { propertyId: string }) {
   const { s, update } = useStore();
   const [name,setName]=useState(""); const [rent,setRent]=useState(""); const [end,setEnd]=useState("2026-04-30");
+  const property = s.properties.find((item) => item.id === propertyId);
   const tenants=s.tenants.filter(x=>x.propertyId===propertyId);
   const active=tenants.find(x=>x.status==="active");
   const add=()=>{
@@ -284,11 +332,14 @@ function RentTab({ propertyId }: { propertyId: string }) {
     update((st)=>{ st.bills.push({ id: randomId(), propertyId, type: "Rent", title: `Rent self-reported received — ${tn.name}`, amount: tn.rentAmount, dueDate: todayISO(), paidDate: todayISO(), status: "paid", recurring: "monthly", notes: "Self-reported by account holder; not payment verification." }); return st; });
   };
   return (
-    <div className="space-y-2">
-      <div className="surface bg-white p-3">
-        <p className="text-[13px] font-semibold">Rent collection {active?`• ${active.name} ₹${active.rentAmount.toLocaleString("en-IN")}/mo`:"• vacant"}</p>
-        {active && <p className="text-[13px] text-ink-muted">Agreement till {active.endDate} • deposit is not recorded in this local flow • a local reminder is derived at 90 days</p>}
-      </div>
+    <div className="space-y-3">
+      {property ? <Scene src={placeImage(property)}><p>Rent</p><strong>{active ? `${active.name} is recorded here` : "No tenant recorded"}</strong></Scene> : null}
+      <section className="guided-home-next scene-next">
+        <p className="guided-eyebrow">{active ? "On file" : "Next"}</p>
+        <h2>{active ? `${active.name} · ₹${active.rentAmount.toLocaleString("en-IN")}/mo` : "Record a tenant when you have one"}</h2>
+        <p>{active ? `Until ${active.endDate}. This note is not a rent agreement or proof of payment.` : "A name and a monthly amount stay on this property. Sukoon does not collect the rent."}</p>
+      </section>
+      <p className="next-quiet">What you type here is your record. It is not an agreement and not a payment receipt.</p>
       <div className="surface bg-white p-3 space-y-2">
         <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Tenant name" className="h-10 w-full rounded-xl border border-line px-3 text-[13px]" />
         <div className="flex gap-2">

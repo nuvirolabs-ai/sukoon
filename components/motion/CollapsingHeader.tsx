@@ -30,7 +30,7 @@ export function CollapsingHeader({
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
     const observer = new IntersectionObserver(([entry]) => setCompact(!entry.isIntersecting), {
-      rootMargin: "-64px 0px 0px 0px",
+      rootMargin: "0px",
     });
     observer.observe(sentinel);
     return () => observer.disconnect();

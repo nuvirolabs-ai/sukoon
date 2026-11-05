@@ -9,6 +9,7 @@ import { ScanRetry } from "@/components/ScanRetry";
 import { useStore } from "@/components/StoreProvider";
 import { useToast } from "@/components/motion/Toast";
 import { ListSkeleton } from "@/components/motion/Skeleton";
+import { NextBar, Scene, otherPaper, paperImage } from "@/components/PlaceCover";
 
 type OwnerDocument = {
   id: string;
@@ -67,7 +68,8 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
   const status = documentStatusLabel(current);
   const previewHref = mode === "shared" ? `/api/shared/documents/${current.id}` : `/api/documents/${current.id}`;
   const downloadHref = mode === "shared" ? null : `/api/documents/${current.id}?download=true`;
-  const canPreview = mode === "shared" || current.scanStatus === "clean";
+  const ownerCopy = current.scanStatus === "owner_copy";
+  const canPreview = mode === "shared" || current.scanStatus === "clean" || ownerCopy;
   const uploaded = current.uploadDate || current.uploadedAt;
   const confirmed = current.extracted && typeof current.extracted === "object" ? Object.entries(current.extracted).filter(([, value]) => value) : [];
 
@@ -84,7 +86,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
       const body = await response.json();
       if (!response.ok) throw new Error(body.error?.message || "Replace failed.");
       if (body.data?.state) replace(body.data.state, body.data.version);
-      notify("Replacement uploaded — scanning");
+      notify(body.data?.document?.scanStatus === "owner_copy" ? "Added to your vault" : "Replacement uploaded — scanning");
       router.refresh();
     } catch (reason) {
       const message = reason instanceof Error ? reason.message : "Replace failed.";
@@ -113,16 +115,30 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
       <PageHead title={title} backHref={backHref} backLabel={backLabel} />
       <div className="space-y-6 pb-8">
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
-        <p className="text-[15px]">{status}</p>
-        <p className="text-[15px] text-ink-muted">Security scan · {document.scanStatus === "clean" || mode === "shared" ? "No threats detected" : displayLabel(document.scanStatus || "pending")}</p>
-        {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Preview <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview blocked until this version is clean.</p>}
+        <Scene src={paperImage(current.type)}>
+          <p>{document.type}</p>
+          <strong>{status}</strong>
+        </Scene>
+        <section className="guided-home-next scene-next">
+          <p className="guided-eyebrow">This file</p>
+          <h2>{ownerCopy ? "Your copy is ready to open" : status}</h2>
+          <p>{current.type}</p>
+          {canPreview ? <a className="primary-disclosure motion-pressable" href={previewHref} target="_blank" rel="noreferrer">Open the PDF <span aria-hidden="true">→</span></a> : <p className="text-sm text-ink-muted">Preview stays closed until this version can be opened.</p>}
+          {ownerCopy ? <p className="next-quiet">Malware scanning is not connected on this preview.</p> : <p className="next-quiet">Security scan · {displayLabel(document.scanStatus || "pending")}</p>}
+        </section>
+        {(() => {
+          const paper = otherPaper(s.docs, propertyId, current.id);
+          const propertyName = s.properties.find((property) => property.id === propertyId)?.name || "this property";
+          if (paper) return <NextBar kicker={/tax receipt/i.test(paper.type) ? `Other paper on ${propertyName}` : `Also on ${propertyName}`} title={paper.displayName || paper.name} href={`/property/${propertyId}/documents/${paper.id}`} action="Open" />;
+          return <NextBar kicker="Back to the property" title={propertyName} href={`/property/${propertyId}`} action="Open" />;
+        })()}
         {mode === "owner" && document.scanStatus === "unavailable" ? <ScanRetry documentId={document.id} /> : null}
         <section>
           <SectionHeader title="Details" />
           <GroupedList>
             <div className="list-row"><span className="row-copy"><span className="row-title">Category</span><span className="row-detail">{document.type}</span></span></div>
             {uploaded ? <div className="list-row"><span className="row-copy"><span className="row-title">Uploaded</span><span className="row-detail">{presentDate(uploaded, "long")}</span></span></div> : null}
-            <div className="list-row"><span className="row-copy"><span className="row-title">Source</span><span className="row-detail">{document.provenance ? displayLabel(document.provenance) : "Added by you"}</span></span></div>
+            <div className="list-row"><span className="row-copy"><span className="row-title">Source</span><span className="row-detail">{document.provenance === "user_uploaded" || document.provenance === "user_replaced" || !document.provenance ? "Added by you" : displayLabel(document.provenance)}</span></span></div>
           </GroupedList>
         </section>
         {confirmed.length ? (
@@ -141,7 +157,7 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
                 <div className="list-row" key={version.id}>
                   <span className="row-copy">
                     <span className="row-title">v{version.version}</span>
-                    <span className="row-detail">{version.version === document.version ? "Current" : "Previous"} · {displayLabel(version.reviewStatus)}</span>
+                    <span className="row-detail">{version.version === document.version ? "Current" : "Previous"} · {version.scanStatus === "owner_copy" ? "In your vault" : displayLabel(version.reviewStatus)}</span>
                   </span>
                 </div>
               ))}
@@ -150,14 +166,14 @@ export function DocumentDetailView({ documentId, propertyId, mode, backHref, bac
         ) : null}
         {mode === "owner" ? (
           <>
-            <Disclosure title="Security & provenance" detail="Scan evidence on request">
+            <Disclosure title="About this copy" detail="What this file is">
               <p className="text-sm text-ink-muted mb-3">A scan does not establish authenticity or government verification.</p>
               <DocumentEvidenceDetails documentId={document.id} />
             </Disclosure>
             {stored && document.scanStatus === "clean" ? <>{status !== "Reviewed" ? <ManualDocumentReview document={stored} onConfirmed={() => setData((current) => current ? { ...current, reviewStatus: "confirmed" } : current)} /> : null}<DocumentReview document={stored} propertyId={propertyId} /></> : null}
             <Disclosure title="More actions">
               <div className="space-y-3">
-                {downloadHref && document.scanStatus === "clean" ? <a className="block underline" href={downloadHref}>Download</a> : null}
+                {downloadHref && (document.scanStatus === "clean" || document.scanStatus === "owner_copy") ? <a className="block underline" href={downloadHref}>Download</a> : null}
                 <label className="block text-sm">Replace
                   <input type="file" accept="application/pdf,image/jpeg,image/png" disabled={busy} className="block mt-1" onChange={(event) => { const file = event.target.files?.[0]; if (file) void replaceFile(file); event.target.value = ""; }} />
                 </label>

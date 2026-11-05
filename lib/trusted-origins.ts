@@ -22,6 +22,12 @@ export function trustedOriginList(env: NodeJS.Dict<string> = process.env): strin
     addOrigin(origins, "http://localhost:3100");
     addOrigin(origins, "http://127.0.0.1:3100");
   }
+  if (env.SUKOON_PUBLIC_PREVIEW === "1" && env.APP_ENV === "staging" && env.SUKOON_RUNTIME_PROFILE === "STAGING") {
+    for (const host of [env.VERCEL_URL, env.VERCEL_BRANCH_URL]) {
+      const value = host?.trim().replace(/^https:\/\//, "").split("/")[0];
+      if (value && value.endsWith(".vercel.app")) origins.add(`https://${value}`);
+    }
+  }
   if (isHostedRuntime(env)) return [...origins].filter((origin) => origin.startsWith("https://"));
   return [...origins];
 }

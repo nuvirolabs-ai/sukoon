@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { GroupedList, ListRow } from "@/components/consumer";
 import { EmptyState, PageHead } from "@/components/ui";
+import { NextBar, Scene, SCENE } from "@/components/PlaceCover";
 
 type Content = { slug: string; title: string; summary: string; sourceName: string; reviewer: string; reviewedAt: string; effectiveFrom: string; expiresAt: string | null };
 export default function Guides() {
@@ -10,8 +11,10 @@ export default function Guides() {
   useEffect(() => { void fetch("/api/education", { cache: "no-store" }).then(async (response) => { const body = await response.json() as { data?: { education: Content[] }; error?: { message?: string } }; if (!response.ok || !body.data) throw new Error(body.error?.message || "Education could not be loaded."); setRows(body.data.education); }).catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Education could not be loaded.")); }, []);
   return (
     <div>
-      <PageHead title="Guides" sub="Reviewed information only" />
-      <div className="space-y-4 pb-6">
+      <PageHead title="Guides" sub="How Sukoon works" />
+      <div className="space-y-4 pb-6 pb-next">
+        <Scene src={SCENE.papers}><p>How Sukoon works</p><strong>{rows[0]?.title || "Read a guide, then open the record"}</strong></Scene>
+        <p className="next-quiet">These explain the product. They are not legal, tax, or circle-rate advice.</p>
         {error ? <p className="text-[14px] text-red-700">{error}</p> : null}
         {rows.length ? (
           <GroupedList>
@@ -20,6 +23,7 @@ export default function Guides() {
         ) : !error ? (
           <EmptyState title="No current guides" detail="Unpublished and expired content stays hidden." />
         ) : null}
+        {rows[0] ? <NextBar kicker="Start here" title={rows[0].title} href={`/guides/${rows[0].slug}`} action="Read" /> : null}
       </div>
     </div>
   );

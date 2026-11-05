@@ -5,6 +5,8 @@ import { useStore } from "@/components/StoreProvider";
 import { PageHead } from "@/components/ui";
 import { inr, todayISO } from "@/lib/utils";
 import { AnimatedList } from "@/components/motion/AnimatedList";
+import { NextBar, Scene, SCENE } from "@/components/PlaceCover";
+import Link from "next/link";
 
 type Obligation = { id: string; propertyId: string; label: string; type: string; amount: number | null; dueDate: string; direction: string };
 
@@ -12,6 +14,7 @@ export default function BillsPage() {
   const { s } = useStore();
   const [items, setItems] = useState<Array<Obligation & { propertyName: string }>>([]);
   const list = [...s.bills].sort((a, b) => a.dueDate < b.dueDate ? -1 : 1);
+  const nextBill = list.find((bill) => bill.status !== "paid");
   const due = list.filter((b) => b.status !== "paid").reduce((a, b) => a + b.amount, 0);
   const spent = s.bills.filter((b) => b.type !== "Rent" && b.status === "paid").reduce((a, b) => a + b.amount, 0)
     + s.maintenance.reduce((a, m) => a + (m.finalCost ?? m.quote ?? 0), 0);
@@ -31,13 +34,18 @@ export default function BillsPage() {
       rows.push(`"${b.title}","${b.type}",${b.amount},${b.status},${b.dueDate},${b.paidDate ?? ""},"${p}"`);
     }
     const blob = new Blob([rows.join("\n")], { type: "text/csv" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `ca-pack-${todayISO()}.csv`; a.click();
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `sukoon-bills-${todayISO()}.csv`; a.click();
   };
   const upcoming = items.reduce((sum, item) => sum + (item.amount ?? 0), 0);
   return (
     <div>
       <PageHead title="Bills & payments" sub="Recorded by you" />
-      <div className="space-y-4 pb-6">
+      <div className="space-y-4 pb-6 pb-next">
+        <Scene src={SCENE.dates}>
+          <p>Bills you recorded</p>
+          <strong>{nextBill ? nextBill.title : "Nothing due yet"}</strong>
+        </Scene>
+        {nextBill ? <Link href={`/property/${nextBill.propertyId}?tab=bills`} className="guided-home-next scene-next block"><p className="guided-eyebrow">Next date</p><h2>{nextBill.title}</h2><p>{dueCopy(nextBill.dueDate)}</p><span className="primary-disclosure">Open this bill <span aria-hidden="true">→</span></span></Link> : null}
         <div className="surface metric-group">
           <Metric label="Upcoming" value={inr(upcoming || due)} />
           <Metric label="Paid" value={inr(spent)} />
@@ -60,7 +68,8 @@ export default function BillsPage() {
           );
         })}
         {!items.length && !list.length ? <p className="text-[14px] text-ink-muted">No bills yet.</p> : null}
-        <Disclosure title="CA pack" detail="CSV of recorded bills"><button type="button" onClick={caExport} className="h-11 w-full rounded-full border border-line">Download CSV</button></Disclosure>
+        <Disclosure title="Spreadsheet" detail="Bills you recorded"><button type="button" onClick={caExport} className="h-11 w-full rounded-full border border-line">Download spreadsheet</button></Disclosure>
+        {nextBill ? <NextBar kicker="Next date" title={nextBill.title} href={`/property/${nextBill.propertyId}?tab=bills`} action="Open" /> : null}
       </div>
     </div>
   );

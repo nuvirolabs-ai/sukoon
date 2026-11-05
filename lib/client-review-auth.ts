@@ -44,6 +44,11 @@ export function stagingReviewAuthConfigured(env: NodeJS.Dict<string> = process.e
   return stagingReviewAuthEnvironment(env) && validReviewEmail(email) && code.length >= 32;
 }
 
+/** Opens the synthetic staging account on an explicitly marked preview host. Production cannot enable this. */
+export function publicPreviewWorkspaceEnabled(env: NodeJS.Dict<string> = process.env) {
+  return env.SUKOON_PUBLIC_PREVIEW === "1" && stagingReviewAuthEnvironment(env) && validReviewEmail(configuredStagingEmail(env));
+}
+
 export function clientReviewAuthConfigured(env: NodeJS.Dict<string> = process.env) {
   const email = configuredEmail(env);
   const code = configuredCode(env);
@@ -182,6 +187,20 @@ export function stagingReviewAuthPlugin(): BetterAuthPlugin {
         expectedEmail: configuredStagingEmail,
         expectedCode: configuredStagingCode,
         keyPrefix: "staging-review",
+      }),
+      previewWorkspaceEnter: createAuthEndpoint("/preview-workspace/enter", {
+        method: "POST",
+        metadata: { noStore: true },
+      }, async (ctx) => {
+        if (!publicPreviewWorkspaceEnabled()) throw APIError.fromStatus("NOT_FOUND");
+        const email = configuredStagingEmail();
+        const found = await ctx.context.internalAdapter.findUserByEmail(email);
+        const user = found?.user;
+        if (!user || !user.emailVerified) throw APIError.fromStatus("SERVICE_UNAVAILABLE", { message: "The preview workspace is not ready." });
+        const session = await ctx.context.internalAdapter.createSession(user.id);
+        if (!session) throw APIError.fromStatus("INTERNAL_SERVER_ERROR", { message: "The preview session could not be created." });
+        await setSessionCookie(ctx, { session, user });
+        return ctx.json({ status: true });
       }),
     },
   };
