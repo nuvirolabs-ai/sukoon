@@ -461,13 +461,18 @@ export function DiscoveryHomeView({ mark = "AK" }: { mark?: string }) {
           </button>
 
           {/* Center Brand Identity - Centered with Mathematical Precision & Safe Margins */}
-          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-20">
-            <div className="flex items-center text-[22px] sm:text-[24px] font-black tracking-[0.06em] font-serif leading-none select-none">
-              <span className="text-[#195A50]">SUK</span>
-              <span className="text-[#EB725B]">OO</span>
-              <span className="text-[#195A50]">N</span>
+          <div className="absolute inset-x-0 top-0 bottom-0 flex flex-col items-center justify-center pointer-events-none z-0 px-24">
+            <div className="h-6.5 sm:h-7 flex items-center justify-center overflow-visible">
+              <Image
+                src="/images/sukoon-brand-logo.png"
+                alt="Sukoon"
+                width={342}
+                height={79}
+                priority
+                className="h-6.5 sm:h-7 w-auto object-contain select-none mix-blend-multiply"
+              />
             </div>
-            <p className="text-[7.5px] sm:text-[8px] font-bold uppercase tracking-[0.28em] text-[#195A50] mt-1 leading-none select-none whitespace-nowrap">
+            <p className="sublogo-tracking text-[7.5px] sm:text-[8px] font-semibold text-[#7D8C83] uppercase mt-0.5 leading-none tracking-[0.24em] select-none whitespace-nowrap">
               Escape the Chaos
             </p>
           </div>
